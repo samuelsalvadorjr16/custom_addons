@@ -1,0 +1,179 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+       <record model="ir.ui.view" id="pcso_view_res_partner_form">
+            <field name="name">pcso.view.res.partner.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form[1]" position="attributes">
+                    <attribute name="string">Claimant</attribute>
+                </xpath>
+
+                <field name='type' position="after">
+                    <field name="last_name" attrs="{'invisible': [('partner_claimant', '=', False)], 'required': [('partner_claimant', '=', True)]}"/>
+                    <field name="first_name" attrs="{'invisible': [('partner_claimant', '=', False)], 'required': [('partner_claimant', '=', True)]}"/>
+                    <field name="middle_name" attrs="{'invisible': [('partner_claimant', '=', False)], 'required': [('partner_claimant', '=', True)]}"/>
+                    <field name="civil_status" attrs="{'invisible': [('partner_claimant', '=', False)], 'required': [('partner_claimant', '=', True)]}"/>
+                    <field name="birthdate" attrs="{'invisible': [('partner_claimant', '=', False)], 'required': [('partner_claimant', '=', True)]}"/>
+                    <field name="gender" attrs="{'invisible': [('partner_claimant', '=', False)], 'required': [('partner_claimant', '=', True)]}"/>
+                </field>
+
+                <field name='function' position="after">
+                    <field name="id_type" attrs="{'invisible': [('partner_claimant', '=', False)], 'required': [('partner_claimant', '=', True)]}"/>
+                    <field name="id_number" attrs="{'invisible': [('partner_claimant', '=', False)], 'required': [('partner_claimant', '=', True)]}"/>
+                    
+                </field>                
+
+                <field name='street2' position="attributes">
+                     <attribute name="placeholder">Barangay</attribute>
+                </field>
+
+                <field name = 'state_id' position="after">
+                    <field name="province" class="o_address_state" placeholder="Province" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)], 'invisible': [('partner_claimant', '=', False)]}"/>
+                </field>
+                <!--<field name = 'state_id' position="replace"/>    -->
+
+                <field name='state_id' position="attributes">
+                     <attribute name="attrs">{'invisible': [('partner_claimant', '=', True)]}</attribute>
+                </field>
+
+                <field name='category_id' position="attributes">
+                     <attribute name="attrs">{'invisible': [('partner_claimant', '=', True)]}</attribute>
+                </field>
+                <field name='website' position="attributes">
+                     <attribute name="attrs">{'invisible': [('partner_claimant', '=', True)]}</attribute>
+                </field>
+                <field name='title' position="attributes">
+                     <attribute name="attrs">{'invisible': [('partner_claimant', '=', True)]}</attribute>
+                </field>
+                <field name='lang' position="attributes">
+                     <attribute name="attrs">{'invisible': [('partner_claimant', '=', True)]}</attribute>
+                </field>                
+
+                <xpath expr="//page[@name='sales_purchases']" position="attributes">
+                        <attribute name="string">Sales, Purchases &amp; Claims</attribute>
+                </xpath>
+
+                <xpath expr="//group[@name='purchase']" position="after">
+                        <group string="Claimant" name="claimant">
+                            <field name="partner_claimant" string="Is a Claimant?"/>
+                        </group>
+                </xpath>
+
+            </field>
+       </record>
+
+       <record model="ir.ui.view" id="pcso_res_partner_kanban_view">
+            <field name="name">pcso.view.res.partner.kanban.view</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+            <field name="arch" type="xml"> 
+                <field name='type' position="after">
+                    <field name="province"/>
+                </field>   
+
+                <xpath expr="//li[@t-if='record.city.raw_value and !record.country_id.raw_value']" position="before">
+                        <li t-if="record.street.raw_value and !record.street.raw_value"><field name="street"/></li>
+                        <li t-if="record.street2.raw_value and !record.street2.raw_value"><field name="street2"/></li>
+                        <li t-if="record.province.raw_value and !record.province.raw_value"><field name="province"/></li>
+                </xpath>
+
+                <xpath expr="//li[@t-if='record.city.raw_value and record.country_id.raw_value']" position="replace">
+                        <li t-if="record.city.raw_value and record.country_id.raw_value"><field name="street"/> <field name="street2"/>, <field name="city"/>, <field name="province"/> <field name="country_id"/></li>
+                </xpath>                
+            </field>
+       </record>
+
+
+
+       <record model="ir.ui.view" id="pcso_view_res_partner_filter">
+            <field name="name">pcso.view.res.partner.filter</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml"> 
+                <filter name='customer' position="before">
+                    <filter string="Claimant" name="partner_claimant_filter" domain="[('partner_claimant','=',1), ('parent_id', '=', False)]"/>
+                </filter>
+            </field>
+       </record>
+
+
+
+
+
+
+        <record id="open_pcso_claimant_form" model="ir.actions.act_window">
+            <field name="name">Claimant Form</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{'default_partner_claimant': 1, 'search_default_partner_claimant_filter': 1,'default_customer':0 }</field>
+            <field name="search_view_id" ref="pcso_view_res_partner_filter"/>
+            <!--<field name="filter" eval="True"/>-->
+
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a Claimant Information
+              </p><p>
+                Odoo helps you easily track all activities related to
+                a claimant and its information: documents, etc.
+              </p>
+            </field>
+        </record>
+
+
+        <record id="action_pcso_claimant_form_view" model="ir.actions.act_window.view">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="pcso_res_partner_kanban_view"/>
+            <field name="act_window_id" ref="open_pcso_claimant_form"/>
+        </record>
+        <record id="action_pcso_claimant_form_view_kanban" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="pcso_view_res_partner_form"/>
+            <field name="act_window_id" ref="open_pcso_claimant_form"/>
+        </record>
+
+        <record id="action__pcso_claimant_form_view_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="base.view_partner_tree"/>
+            <field name="act_window_id" ref="open_pcso_claimant_form"/>
+        </record>        
+        <!--
+        <record id="open_pcso_claimant_form" model="ir.actions.act_window">
+            <field name="name">Claimant Form</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="pcso_view_res_partner_form"/>
+            <field name="search_view_id" ref="pcso_view_res_partner_filter"/>
+            
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a Claimant Information
+              </p>
+            </field>
+        </record>     
+        -->
+
+        <menuitem id="menu_pcso_claims" name="Claims" 
+                  parent="account.menu_finance"
+                  sequence="4"
+                  groups="account.group_account_user,account.group_account_manager,account.group_account_invoice"
+                  />
+
+
+        <menuitem id="menu_pcso_claimant_form" name="Claimant Form" 
+                  parent="menu_pcso_claims"
+                  action="open_pcso_claimant_form"
+                  sequence="1"
+                  groups="account.group_account_user,account.group_account_manager,account.group_account_invoice"
+                  />    
+
+    </data>
+</odoo>

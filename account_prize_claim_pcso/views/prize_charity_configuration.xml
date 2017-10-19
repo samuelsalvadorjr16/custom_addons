@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <menuitem id="menu_config_claims" name="Claims" 
+                  parent="account.menu_finance_configuration"
+                  sequence="11"
+                  groups="account.group_account_manager,account.group_account_invoice"
+                  />        
+
+        <!-- Branch List -->
+        <record id="view_config_prize_branch_tree" model="ir.ui.view">
+            <field name="name">config.prize.branch.tree</field>
+            <field name="model">config.prize.branch</field>
+            <field name="arch" type="xml">
+                <tree string="Branch" editable="top">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="open_config_prize_branch" model="ir.actions.act_window">
+            <field name="name">Branch</field>
+            <field name="res_model">config.prize.branch</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_config_prize_branch_tree"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to add a new Branch Information
+              </p>
+            </field>
+        </record>     
+
+        <menuitem id="menu_config_prize_branch" name="Branch List" 
+                  parent="menu_config_claims"
+                  action="open_config_prize_branch"
+                  sequence="1"
+                  groups="account.group_account_manager,account.group_account_invoice"
+                  />  
+
+        <!-- Transaction Type -->
+        <record id="view_config_prize_transactiontype_tree" model="ir.ui.view">
+            <field name="name">config.prize.transactiontpye.tree</field>
+            <field name="model">config.prize.transactiontype</field>
+            <field name="arch" type="xml">
+                <tree string="Transaction Type" editable="top">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="open_config_prize_transactiontype" model="ir.actions.act_window">
+            <field name="name">Transaction Type</field>
+            <field name="res_model">config.prize.transactiontype</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_config_prize_transactiontype_tree"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to add a new Transaction Type
+              </p>
+            </field>
+        </record>     
+
+        <menuitem id="menu_config_prize_transactiontype" name="Transaction Type" 
+                  parent="menu_config_claims"
+                  action="open_config_prize_transactiontype"
+                  sequence="2"
+                  groups="account.group_account_manager,account.group_account_invoice"
+                  />     
+
+
+        <!-- Agency -->
+        <record id="view_config_prize_agency_tree" model="ir.ui.view">
+            <field name="name">config.prize.agency.tree</field>
+            <field name="model">config.prize.agency</field>
+            <field name="arch" type="xml">
+                <tree string="Agency" editable="top">
+                    <field name="name"/>
+                    <field name="agency_id"/>
+                    <field name="owner_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="open_config_prize_agency" model="ir.actions.act_window">
+            <field name="name">Agency</field>
+            <field name="res_model">config.prize.agency</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_config_prize_agency_tree"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to add a new Agency
+              </p>
+            </field>
+        </record>     
+
+        <menuitem id="menu_config_prize_agency" name="Agency" 
+                  parent="menu_config_claims"
+                  action="open_config_prize_agency"
+                  sequence="3"
+                  groups="account.group_account_manager,account.group_account_invoice"
+                  />     
+
+
+        <!-- Game Type -->
+        <record id="view_config_prize_gametype_tree" model="ir.ui.view">
+            <field name="name">config.prize.gametype.tree</field>
+            <field name="model">config.prize.gametype</field>
+            <field name="arch" type="xml">
+                <tree string="Game Type" editable="top">
+                    <field name="name"/>
+                    <field name="id_char"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="open_config_prize_gametype" model="ir.actions.act_window">
+            <field name="name">Game Type</field>
+            <field name="res_model">config.prize.gametype</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_config_prize_gametype_tree"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to add a new Game Type
+              </p>
+            </field>
+        </record>     
+
+        <menuitem id="menu_config_prize_gametype" name="Game type" 
+                  parent="menu_config_claims"
+                  action="open_config_prize_gametype"
+                  sequence="4"
+                  groups="account.group_account_manager,account.group_account_invoice"
+                  />     
+
+
+
+        <!-- Bet Type -->
+        <record id="view_config_prize_bettype_tree" model="ir.ui.view">
+            <field name="name">config.prize.bettype.tree</field>
+            <field name="model">config.prize.bettype</field>
+            <field name="arch" type="xml">
+                <tree string="Bet Type" editable="top">
+                    <field name="name"/>
+                    <field name="id_char"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="open_config_prize_bettype" model="ir.actions.act_window">
+            <field name="name">Bet Type</field>
+            <field name="res_model">config.prize.bettype</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_config_prize_gametype_tree"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to add a new Bet Type
+              </p>
+            </field>
+        </record>     
+
+        <menuitem id="menu_config_prize_bettype" name="Bet Type" 
+                  parent="menu_config_claims"
+                  action="open_config_prize_bettype"
+                  sequence="5"
+                  groups="account.group_account_manager,account.group_account_invoice"
+                  />     
+
+        <!-- Draws -->
+        <record id="view_config_prize_draws_form" model="ir.ui.view">
+            <field name="name">config.prize.draws.form</field>
+            <field name="model">config.prize.draws</field>
+            <field name="arch" type="xml">
+                <form string="Draws">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="drawid"/>
+                                <field name="draw_date"/>
+                                <field name="draw_result"/>
+                                <field name="gametype_id"/>                             
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="view_config_prize_draws_tree" model="ir.ui.view">
+            <field name="name">config.prize.draws.tree</field>
+            <field name="model">config.prize.draws</field>
+            <field name="arch" type="xml">
+                <tree string="Draws">
+                    <field name="drawid"/>
+                    <field name="draw_date"/>
+                    <field name="draw_result"/>
+                    <field name="gametype_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="open_config_prize_draws" model="ir.actions.act_window">
+            <field name="name">Draws</field>
+            <field name="res_model">config.prize.draws</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_config_prize_draws_tree"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to add a new Draws
+              </p>
+            </field>
+        </record>     
+
+        <menuitem id="menu_config_prize_agency" name="Draws" 
+                  parent="menu_config_claims"
+                  action="open_config_prize_draws"
+                  sequence="6"
+                  groups="account.group_account_manager,account.group_account_invoice"
+                  />     
+    </data>
+</odoo>
