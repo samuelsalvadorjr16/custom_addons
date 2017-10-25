@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<odoo>
+        <record id="module_category_prize_claim" model="ir.module.category">
+            <field name="name">Prize Claim</field>
+            <field name="sequence" eval="9" />
+        </record>
+
+        <record id="pcf_group_allow_to_submit" model="res.groups">
+            <field name="name">Allow to Submit except Jackpot Prize</field>
+            <field name="category_id" ref="module_category_prize_claim"/>
+            <field name="comment">User that can submit a Claim More than 10,000 except Jackpot Prize.</field>
+        </record>
+
+        <record id="pcf_group_allow_to_submit_jackpot" model="res.groups">
+             <field name="category_id" ref="module_category_prize_claim"/>
+            <field name="name">Allow to Submit Jackpot</field>
+            <field name="comment">User that can submit a Claim for Jackpot Prize.</field>
+        </record>
+
+        <record id="pcf_group_allow_to_approve" model="res.groups">
+             <field name="category_id" ref="module_category_prize_claim"/>
+            <field name="name">Allow to Approve except Jackpot Prize</field>
+            <field name="comment">User that can Approve a Claim for more than 10,000 except Jackpot Prize.</field>
+        </record>
+        <record id="pcf_group_allow_to_approve_jackpot" model="res.groups">
+             <field name="category_id" ref="module_category_prize_claim"/>
+            <field name="name">Allow to Approve Jackpot</field>
+            <field name="comment">User that can Approve a Claim for Jackpot Prize.</field>
+        </record>
+</odoo>
+

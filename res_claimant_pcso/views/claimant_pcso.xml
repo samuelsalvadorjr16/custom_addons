@@ -168,8 +168,16 @@
                   />
 
 
-        <menuitem id="menu_pcso_claimant_form" name="Claimant Form" 
+        <menuitem id="menu_pcso_claimant_document" name="Documents" 
                   parent="menu_pcso_claims"
+                  sequence="1"
+                  groups="account.group_account_user,account.group_account_manager,account.group_account_invoice"
+                  />    
+
+
+
+        <menuitem id="menu_pcso_claimant_form" name="Claimant Form" 
+                  parent="menu_pcso_claimant_document"
                   action="open_pcso_claimant_form"
                   sequence="1"
                   groups="account.group_account_user,account.group_account_manager,account.group_account_invoice"

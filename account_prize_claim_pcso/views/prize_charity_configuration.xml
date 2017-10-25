@@ -2,8 +2,8 @@
 <odoo>
     <data>
 
-        <menuitem id="menu_config_claims" name="Claims" 
-                  parent="account.menu_finance_configuration"
+        <menuitem id="menu_config_claims" name="Master Data" 
+                  parent="res_claimant_pcso.menu_pcso_claims"
                   sequence="11"
                   groups="account.group_account_manager,account.group_account_invoice"
                   />        

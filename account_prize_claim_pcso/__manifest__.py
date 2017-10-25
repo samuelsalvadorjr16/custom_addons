@@ -21,12 +21,11 @@
 
     # always loaded
     'data': [
-        #'data/ir_sequence_data.xml',
+        'data/prize_charity_fund_data.xml',
+        'data/res_groups.xml',
+        'reports/disbursement_voucher.xml',
+        'views/account_payment.xml',
         'views/prize_charity_configuration.xml',
         'views/prize_claim_pcso.xml',
-        #'views/mrp_repair_pictures.xml',
-        #'views/templates.xml',
     ],
-    # only loaded in demonstration mode
-    #'demo': ['demo/demo.xml',],
 }

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- OVERRIDE PAYMENT FOR SUPPLIER -->
+        <record id="account.action_account_payments_payable" model="ir.actions.act_window">
+            <field name="name">Payments</field>
+            <field name="res_model">account.payment</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,kanban,form,graph</field>
+            <field name="context">{'default_payment_type': 'outbound', 'default_partner_type': 'supplier'}</field>
+            <field name="domain">[('partner_type', '=', 'supplier'), ('pcso_transaction_type', '=', False)]</field>
+            <field name="view_id" ref="account.view_account_supplier_payment_tree"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                  Click to register a payment
+                </p><p>
+                  Payments are used to register liquidity movements (send, collect or transfer money).
+                  You can then process those payments by your own means or by using installed facilities.
+                </p>
+            </field>
+        </record>
+
+
+        <record id="act_acc_invo_paymt_prize" model="ir.actions.act_window">
+            <field name="name">Prize Claim Register Payment</field>
+            <field name="res_model">account.payment</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="account.view_account_payment_invoice_form"/>
+            <field name="context">{'default_invoice_ids': [(4, active_id, None)], 'default_pcso_transaction_type': 'prize_claim'}</field>
+            <field name="target">new</field>
+        </record>
+
+
+        <!-- MENU FOR PAYMENT CHARITY AND P.CLAIM -->
+        <record id="action_acct_pymt_char_prz_payable" model="ir.actions.act_window">
+            <field name="name">Payments</field>
+            <field name="res_model">account.payment</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,kanban,form,graph</field>
+            <field name="context">{'default_payment_type': 'outbound', 'default_partner_type': 'supplier'}</field>
+            <field name="domain">[('partner_type', '=', 'supplier'), ('pcso_transaction_type', 'in', ['prize_claim', 'charity'])]</field>
+            <field name="view_id" ref="account.view_account_supplier_payment_tree"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                  Click to register a payment
+                </p><p>
+                  Payments are used to register liquidity movements (send, collect or transfer money).
+                  You can then process those payments by your own means or by using installed facilities.
+                </p>
+            </field>
+        </record>   
+
+        <menuitem id="menu_pymnt_pcso" name="Payment" 
+                  parent="res_claimant_pcso.menu_pcso_claimant_document"
+                  action="action_acct_pymt_char_prz_payable"
+                  sequence="5"
+                  groups="account.group_account_user,account.group_account_manager,account.group_account_invoice"
+                  />                 
+    </data>
+</odoo>
