@@ -12,7 +12,8 @@
             <field eval="False" name="view_id"/>
             <field name="domain">[('type','=','in_invoice'), ('transaction_type','=',False)]</field>
             <field name="context">{'default_type': 'in_invoice', 'type': 'in_invoice', 'journal_type': 'purchase'}</field>
-            <field name="search_view_id" ref="account.view_account_invoice_filter_inherit_invoices"/>
+            <!--<field name="search_view_id" ref="account.view_account_invoice_filter_inherit_invoices"/>-->
+            <field name="search_view_id" ref="account.view_account_invoice_filter"/>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
                 Click to record a new vendor bill.
@@ -54,22 +55,35 @@
                 </div>
                 <field name="has_outstanding" invisible="1"/>
                 <sheet string="Prize Claim">
+                    <!--
                     <div>
                         <label string="Draft Claim" attrs="{'invisible': [('state','!=','draft')]}"/>
                         <label string="Submitted Claim" attrs="{'invisible': [('state','!=','submit')]}"/>
                         <label string="Denied Claim" attrs="{'invisible': [('state','!=','denied')]}"/>
                         <label string="- First Number:" attrs="{'invisible': [('sequence_number_next_prefix','=',False)]}"/>
                         <label string="Draft Credit Note" attrs="{'invisible': ['|',('state','!=','draft'), ('type','!=','in_refund')]}"/>
-                        <!--<label string="Bill " attrs="{'invisible': ['|',('state', '=', 'draft'), ('type','!=','in_invoice')]}"/>-->
+                        COMMENT <label string="Bill " attrs="{'invisible': ['|',('state', '=', 'draft'), ('type','!=','in_invoice')]}"/>
                         <label string="Credit Note " attrs="{'invisible': ['|',('state', '=', 'draft'), ('type','!=','in_refund')]}"/>
                         <h1 class="mt0">
                             <field name="number" class="oe_inline"  attrs="{'invisible': [('state', '=', 'draft')]}"/>
+                            
                             <div  attrs="{'invisible': [('sequence_number_next_prefix','=',False)]}">
                                 <field name="sequence_number_next_prefix" class="oe_inline"/>
                                 <field name="sequence_number_next" class="oe_inline"/>
                             </div>
+                        
                         </h1>
                     </div>
+                    -->
+                    <div>
+                        <label string="Draft Bill" attrs="{'invisible': ['|',('state','&lt;&gt;','draft'), ('type','&lt;&gt;','in_invoice')]}"/>
+                        <label string="Draft Refund" attrs="{'invisible': ['|',('state','&lt;&gt;','draft'), ('type','&lt;&gt;','in_refund')]}"/>
+                        <label string="Bill " attrs="{'invisible': ['|',('state', '=', 'draft'), ('type','&lt;&gt;','in_invoice')]}"/>
+                        <label string="Refund " attrs="{'invisible': ['|',('state', '=', 'draft'), ('type','&lt;&gt;','in_refund')]}"/>
+                        <h1 class="mt0">
+                            <field name="number" class="oe_inline" attrs="{'invisible': [('state', '=', 'draft')]}"/>
+                        </h1>
+                    </div>                    
                     <field name="type" invisible="1"/>
                     <group>
                         <group>
@@ -105,7 +119,7 @@
                     </group>
                     <notebook>
                         <page string="Prize Claims">
-                            <field context="{'type': type, 'journal_id': journal_id}" name="invoice_line_ids">
+                            <field context="{'type': type, 'journal_id': journal_id, 'transaction_type':transaction_type}" name="invoice_line_ids">
                                 <tree string="Prize Claim lines" editable="bottom">
                                     <field name="sequence" widget="handle" />
                                     <!--
@@ -202,7 +216,9 @@
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers"/>
+                    <!--
                     <field name="activity_ids" widget="mail_activity"/>
+                -->
                     <field name="message_ids" widget="mail_thread"/>
                 </div>
                 </form>
@@ -247,8 +263,8 @@
             -->
 
             <field name="domain">[('type','=','in_invoice'), ('transaction_type', '=', 'prize_claim'), ('transaction_type', '!=', False)]</field>
-            <field name="context">{'default_type': 'in_invoice', 'type': 'in_invoice', 'journal_type': 'purchase', 'default_transaction_type': 'prize_claim', 'transaction_type': 'prize_claim'}</field>            
-            <field name="search_view_id" ref="account.view_account_invoice_filter_inherit_invoices"/>
+            <field name="context">{'default_type': 'in_invoice', 'type': 'in_invoice', 'journal_type': 'purchase', 'default_transaction_type': 'prize_claim', 'transaction_type': 'prize_claim', 'default_journal_id': 7}</field>            
+            <field name="search_view_id" ref="account.view_account_invoice_filter"/>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
                 Click to record a new Prize Claim.
@@ -439,7 +455,7 @@
         <menuitem id="menu_pcso_prize_claim_form" name="Prize Claim" 
                   parent="res_claimant_pcso.menu_pcso_claimant_document"
                   action="action_invoice_prize_claim"
-                  sequence="2"
+                  sequence="3"
                   groups="account.group_account_user,account.group_account_manager,account.group_account_invoice"
                   />    
     </data>

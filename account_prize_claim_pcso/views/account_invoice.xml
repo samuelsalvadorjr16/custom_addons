@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- OVERRIDE THE VENDOR BILL -->
+        <!--
+        <record id="account.action_invoice_tree2" model="ir.actions.act_window">
+            <field name="name">Vendor Bills</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+            <field eval="False" name="view_id"/>
+            <field name="domain">[('type','=','in_invoice'), ('transaction_type','=',False)]</field>
+            <field name="context">{'default_type': 'in_invoice', 'type': 'in_invoice', 'journal_type': 'purchase'}</field>
+            <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to record a new vendor bill.
+              </p><p>
+                You can control the invoice from your vendor according to
+                what you purchased or received.
+              </p>
+            </field>
+        </record>        
+        -->
+        <!-- OVERRIDE MENU -->
+        <menuitem id="account.menu_finance_payables" name="Operational Expenses"  parent="account.menu_finance"/>    
+
+
+        <!-- OVERRIDE THE SUPPLIER FORM -->
+       <record model="ir.ui.view" id="pcso_invoice_supplier_form">
+            <field name="name">pcso.account.invoice.supplier.form</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+
+
+                <xpath expr="//header[1]" position="replace">
+                    <header>
+                            <button name="action_to_submit_prize_claim" type="object" states="draft" string="Submit" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_allow_to_submit_opex"/>
+
+
+                            <button name="action_invoice_open" type="object" states="submit" string="Approved" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_opex"/>
+
+                            <button name="action_to_denied_prize_claim" type="object" states="submit" string="Deny" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_opex"/>
+
+
+                            <button name="124" type="action" states="open" string="Register Payment" groups="account.group_account_invoice" class="oe_highlight"/>
+                            <button name="187" type="action" string="Ask Refund" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_opex" attrs="{'invisible': ['|',('type', 'in', ['in_refund','out_refund']),('state','not in',('open','paid'))]}"/>
+
+                            <button name="action_invoice_cancel" type="object" states="draft,submit,apporoved,proforma2" string="Cancel Bill" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_opex"/>
+                            <button name="action_invoice_draft" states="cancel" string="Set to Draft" type="object" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_opex"/>
+
+                        <field name="state" widget="statusbar" statusbar_visible="draft,submit,approved,denied,open,paid"/>
+                    </header>                    
+
+                </xpath>                
+
+
+
+            </field>
+       </record>
+
+    </data>
+</odoo>

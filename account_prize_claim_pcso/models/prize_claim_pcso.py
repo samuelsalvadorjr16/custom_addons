@@ -9,6 +9,7 @@ from odoo.modules.module import get_module_resource
 from odoo.exceptions import AccessError, UserError, RedirectWarning, ValidationError, Warning
 from datetime import datetime
 import odoo.addons.decimal_precision as dp
+from odoo.tools.float_utils import float_compare
 
 _logger = logging.getLogger(__name__)
 
@@ -78,12 +79,12 @@ class account_invoice_prize_claim(models.Model):
 	def _onchange_amount_total(self):
 		if hasattr(super(account_invoice_prize_claim, self), '_onchange_amount'):
 			super(account_invoice_prize_claim, self)._onchange_amount()
-		self.amount_in_words = self.currency_id.amount_to_text(self.amount_total)
+		self.amount_in_words =  self.env['account.payment']._get_check_amount_in_words(self.amount_total) #self.currency_id.amount_to_text(self.amount_total)
 
 	@api.multi
 	def get_amount_in_words(self):
 		self.ensure_one()
-		return self.currency_id.amount_to_text(self.amount_total).upper() + ' ONLY'
+		return  self.env['account.payment']._get_check_amount_in_words(self.amount_total).upper() + ' ONLY'  #self.currency_id.amount_to_text(self.amount_total).upper() + ' ONLY'
 
 	@api.multi
 	def get_approver_name(self):
@@ -93,6 +94,24 @@ class account_invoice_prize_claim(models.Model):
 			return obj_employee.name
 		else:
 			return self.approve_uid.name
+
+	@api.multi
+	def get_approver_dig_sig(self):
+		self.ensure_one()
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.approve_uid.id or False)])
+		if obj_employee:
+			return obj_employee.image_signature
+		else:
+			return False
+
+	@api.multi
+	def get_submitter_dig_sig(self):
+		self.ensure_one()
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.submitted_uid.id or False)])
+		if obj_employee:
+			return obj_employee.image_signature
+		else:
+			return False
 
 	@api.multi
 	def get_submitter_name(self):
@@ -163,7 +182,7 @@ class account_invoice_prize_claim(models.Model):
 
 	    for invoice in self.filtered(lambda invoice: invoice.partner_id not in invoice.message_partner_ids):
 	        invoice.message_subscribe([invoice.partner_id.id])
-	    self._check_duplicate_supplier_reference()
+	    #self._check_duplicate_supplier_reference()
 	    return self.write({'state': 'approved', 'approve_uid': self._uid})
 
 	@api.multi
@@ -181,9 +200,9 @@ class account_invoice_prize_claim(models.Model):
 	        raise UserError(_("You cannot validate an invoice with a negative total amount. You should create a credit note instead."))
 	    for invoice in self.filtered(lambda invoice: invoice.partner_id not in invoice.message_partner_ids):
 	        invoice.message_subscribe([invoice.partner_id.id])
-	    if self.env.ref('account_prize_claim_pcso.pcf_group_allow_to_approve') in self.env.user.groups_id and self.amount_total >=1000000.00:
+	    if self.env.ref('account_prize_claim_pcso.pcf_group_allow_to_approve') in self.env.user.groups_id and to_open_invoices.filtered(lambda inv: inv.transaction_type == 'prize_claim'):# and self.amount_total >=1000000.00:
 	    	raise UserError(_("User has no rights to Deny the Claim. Prize Claim is a Jackpot Prize."))
-	    self._check_duplicate_supplier_reference()
+	    #self._check_duplicate_supplier_reference()
 	    return self.write({'state': 'denied', 'denied_uid': self._uid})
 
 	@api.multi
@@ -194,15 +213,16 @@ class account_invoice_prize_claim(models.Model):
 	def invoice_validate_submit(self):
 	    for invoice in self.filtered(lambda invoice: invoice.partner_id not in invoice.message_partner_ids):
 	        invoice.message_subscribe([invoice.partner_id.id])
-	    self._check_duplicate_supplier_reference()
+	    #self._check_duplicate_supplier_reference()
 	    return self.write({'state': 'submit', 'submitted_uid': self._uid})
 
 	@api.multi
 	def action_invoice_open(self):
 	    # lots of duplicate calls to action_invoice_open, so we remove those already open
 	    to_open_invoices = self.filtered(lambda inv: inv.state != 'open')
-	    if to_open_invoices.filtered(lambda inv: inv.state != 'draft') and to_open_invoices.filtered(lambda inv: inv.transaction_type == False):
-	        raise UserError(_("Invoice must be in draft state in order to validate it."))
+	    if to_open_invoices.filtered(lambda inv: inv.state != 'submit') and to_open_invoices.filtered(lambda inv: inv.transaction_type == False):
+	    	#if to_open_invoices.filtered(lambda inv: inv.state != 'draft')
+	        raise UserError(_("Invoice must be in submit state in order to validate it."))
 	    #if to_open_invoices.filtered(lambda inv: inv.state != 'approved') and to_open_invoices.filtered(lambda inv: inv.transaction_type != False):
 	    #    raise UserError(_("Price Claim must be in approved state in order to validate it."))	       
 	    if to_open_invoices.filtered(lambda inv: inv.amount_total < 0):
@@ -219,6 +239,39 @@ class account_invoice_prize_claim(models.Model):
 	def invoice_validate(self):
 		res = super(account_invoice_prize_claim, self).invoice_validate()
 		return self.write({'approve_uid': self._uid})
+
+	def _prepare_invoice_line_from_po_line(self, line):
+	    if line.product_id.purchase_method == 'purchase':
+	        qty = line.product_qty - line.qty_invoiced
+	    else:
+	        qty = line.qty_received - line.qty_invoiced
+
+	    if line.order_id.is_from_rfp == True:
+	    	qty = 1
+	    	
+	    if float_compare(qty, 0.0, precision_rounding=line.product_uom.rounding) <= 0:
+	        qty = 0.0
+	    taxes = line.taxes_id
+	    invoice_line_tax_ids = line.order_id.fiscal_position_id.map_tax(taxes)
+	    invoice_line = self.env['account.invoice.line']
+	    data = {
+	        'purchase_line_id': line.id,
+	        'name': line.order_id.name+': '+line.name,
+	        'origin': line.order_id.origin,
+	        'uom_id': line.product_uom.id,
+	        'product_id': line.product_id.id,
+	        'account_id': invoice_line.with_context({'journal_id': self.journal_id.id, 'type': 'in_invoice'})._default_account(),
+	        'price_unit': line.order_id.currency_id.with_context(date=self.date_invoice).compute(line.price_unit, self.currency_id, round=False),
+	        'quantity': qty,
+	        'discount': 0.0,
+	        'account_analytic_id': line.account_analytic_id.id,
+	        'analytic_tag_ids': line.analytic_tag_ids.ids,
+	        'invoice_line_tax_ids': invoice_line_tax_ids.ids
+	    }
+	    account = invoice_line.get_invoice_line_account('in_invoice', line.product_id, line.order_id.fiscal_position_id, self.env.user.company_id)
+	    if account:
+	        data['account_id'] = account.id
+	    return data
 
 
 	@api.multi

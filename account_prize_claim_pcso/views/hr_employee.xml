@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+       <record model="ir.ui.view" id="pcso_hr_employee_form_extend">
+            <field name="name">pcso.hr.employee.form.extend</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <field name="bank_account_id" position="after">
+                    <field name="image_signature"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

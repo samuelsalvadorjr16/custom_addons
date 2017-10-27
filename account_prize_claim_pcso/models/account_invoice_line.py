@@ -20,11 +20,19 @@ class account_invoice_line_prize_claim(models.Model):
 	def _compute_prize(self):
 		self.price_unit = self.first_prize+ self.second_prize  + self.third_prize  + self.fourth_prize  + self.fifth_prize 
 
+
+	@api.onchange('first_prize', 'second_prize', 'third_prize', 'third_prize',
+				 'fourth_prize', 'fifth_prize')
+	def onchange_amount(self):		
+		self.price_unit = self.first_prize+ self.second_prize  + self.third_prize  + self.fourth_prize  + self.fifth_prize 
+
+
 	@api.model
 	def _default_product_id(self):
 		if self._context.get('transaction_type'):
 			if self._context.get('transaction_type') == 'prize_claim':
-				return self.env.ref('account_prize_claim_pcso.product_product_prize_claim_cost')
+				#raise Warning(self.env.ref('account_prize_claim_pcso.product_product_prize_claim_cost'))
+				return  self.env.ref('account_prize_claim_pcso.product_product_prize_claim_cost') #2189 #self.env.ref('account_prize_claim_pcso.product_product_prize_claim_cost_product_template')
 			else:
 				return False
 

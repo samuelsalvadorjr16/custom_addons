@@ -48,13 +48,15 @@
         </template>
 
         <template id="print_disbursment_voucher">
-            <t t-call="web.html_container">
+            <t t-call="report.html_container">
                 <t t-foreach="docs" t-as="o">
                     <!--
                     <div t-foreach="pages(o)" t-as="page" class="page ckus_page ckus_top_page_mactycoon" t-attf-style="top: {{ o.company_id.us_check_margin_top }}in; left: {{ o.company_id.us_check_margin_left }}in;">
                     -->
-                    <t t-call="web.basic_layout">
-                        <table class="table table-bordered table-condensed" style="column-count:14;border:1px solid;">
+                    <!--<t t-call="report.basic_layout">  -->
+                    <!--<t t-call="report.layout">-->
+                    <div class="page">
+                        <table class="table  table-bordered table-condensed" style="column-count:14;border:1px solid;">
                             <tbody>
                                 <!-- DONT REMOVE THIS IS HOW I TRACK THE LENGHT OF EACH COLUMN
                                 <tr>
@@ -91,15 +93,15 @@
                                 </tr>  
                                 -->                             
                                 <tr>
-                                    <td class="text-center" colspan="7" style="border-top: 1px solid;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 80%;">Republic of the Philippines </td>
-                                    <td  colspan="7" style="border-top: 1px solid;border-bottom: none;border-right: 1px solid;font-size: 90%;"/>
+                                    <td class="text-center" colspan="7" style="border-top: 1px solid;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 75%;">Republic of the Philippines </td>
+                                    <td colspan="7" style="border-top: 1px solid;border-bottom: none;border-right: 1px solid;font-size: 90%;"/>
                                 </tr>   
                                 <tr>
                                     <td class="text-center" colspan="7" rowspan="2" style="border-bottom: none;border-left: 1px solid;border-right: 1px solid;background-color=red;font-size: 120%;">DISBURSEMENT VOUCHER </td>
-                                    <td class="text-left"  colspan="7"  style="border-bottom: none;border-right: 1px solid;background-color=red">VOUCHER NO.  &amp;emsp; <span t-field="o.number"/>.</td>
+                                    <td class="text-left" colspan="7" style="border-bottom: none;border-right: 1px solid;background-color=red;font-size: 80%">VOUCHER NO.  &amp;emsp; <span t-field="o.number"/>.</td>
                                 </tr> 
                                 <tr>
-                                    <td class="text-left" colspan="7" style="border-bottom: none;border-right: 1px solid;background-color=red"> &amp;emsp; &amp;emsp; &amp;emsp; &amp;emsp; &amp;emsp; &amp;emsp; &amp;emsp;<span t-esc="o.get_date_in_words()"/> </td>
+                                    <td class="text-left" colspan="7" style="border-bottom: none;border-right: 1px solid;background-color=red;font-size: 80%"> &amp;emsp; &amp;emsp; &amp;emsp; &amp;emsp; &amp;emsp; &amp;emsp; &amp;emsp;<span t-esc="o.get_date_in_words()"/> </td>
                                 </tr> 
                                 <tr>
                                     <td class="text-left" colspan="10" style="border-top: 1px solid;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 90%;">PAYING AGENCY </td>
@@ -124,57 +126,98 @@
                               </tr>  
                               <tr>
                                   <td class="text-left" colspan="10" style="border-top: 1px solid;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 85%;">To Payment as per Prize details:</td>
-                                  <td class="text-center" colspan="4" style="border-top: 1px solid;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 85%;"/>
+                                  <td class="text-center" colspan="4" style="border-top: 1px solid;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 85%;"> Php &amp;emsp; &amp;emsp;  <span t-field="o.amount_total"/></td>
                               </tr> 
+                              <!--
                               <tr>
                                   <td class="text-center" colspan="10" style="border-top: 1px solid;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 85%;"/>
                                   <td class="text-left" colspan="4" style="border-top: 1px solid;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 100%;">Php &amp;emsp; &amp;emsp;  <span t-field="o.amount_total"/></td>
                                  
                               </tr> 
+                              -->
                               <tr>
-                                  <td class="text-center" colspan="10" style="border-top: 1px solid;
-                                                                             border-bottom: 1px solid;border-left: 1px solid;
-                                                                             border-right: 1px solid;font-size: 85%;">
-                                    <table class="table table-bordered table-condensed">
-                                      <tbody>
-                                        <tr>
-                                          <td class="text-center">DRAW ID</td>
-                                          <td class="text-center">DRAW DATE</td>
-                                          <td class="text-center">DRAW RESULT</td>
-                                          <td class="text-center">GAME TYPE</td>
-                                          <td class="text-center">TICKET SERIAL NO./ CLAIM RECEIPT NO.</td>
-                                          <td class="text-center">PRIZE AMOUNT.</td>
-                                        </tr>
-                                        <t t-foreach="o.invoice_line_ids" t-as="line">
-                                          <tr>
-                                            <td class="text-center"><span t-field="line.draw_id"/> </td>
-                                            <td class="text-center"><span t-field="line.draw_date"/> </td>
-                                            <td class="text-center"><span t-field="line.draw_result"/> </td>
-                                            <td class="text-center"><span t-field="line.draw_gametype"/> </td>
-                                            <td class="text-left"><span t-field="line.ticket_serial"/> </td>
-                                            <td class="text-right"><span t-field="line.price_unit"/> </td>
-                                          </tr>                                          
-                                        </t> 
-                                        <tr>
-                                          <td class="text-center" colspan="4"/>
-                                          <td class="text-left" style="border-bottom:1px solid;">TOTAL</td>
-                                          <td class="text-right" style="border-bottom:1px solid;"><span t-field="o.amount_total"/></td>
-                                        </tr>  
-                                        <t t-set= "loop" t-value="1" />
-
-                                        <t t-foreach="loop" t-as="doc_loop">
-                                            <tr> 
-                                              <td colspan="4"> &amp;emsp;</td> 
-                                              <td colspan="2"></td>
+                                  <td class="text-center" colspan="10" style="border-top: 1px solid;border-bottom: 1px solid;border-left: 1px solid;border-right: 1px solid;font-size: 85%;">
+                                    <t t-if="o.transaction_type=='prize_claim'">
+                                        <table class="table table-bordered table-condensed">
+                                          <tbody>
+                                            
+                                            <tr>
+                                              <td class="text-center" style="font-size: 75%;">DRAW ID</td>
+                                              <td class="text-center" style="font-size:75%;">DRAW DATE</td>
+                                              <td class="text-center" style="font-size:75%;">DRAW RESULT</td>
+                                              <td class="text-center" style="font-size:75%;">GAME TYPE</td>
+                                              <td class="text-center" style="font-size:75%;">TICKET SERIAL NO./ CLAIM RECEIPT NO.</td>
+                                              <td class="text-center" style="font-size:75%;">RIZE AMOUNT.</td>
                                             </tr>
-                                            <tr> 
-                                              <td colspan="4">&amp;emsp;</td> 
-                                              <td colspan="2"></td>
-                                            </tr>                             
-                                        </t>                                        
+                                            <t t-foreach="o.invoice_line_ids" t-as="line">
+                                              <tr>
+                                                <td class="text-center" style="font-size:75%"><span t-field="line.draw_id"/> </td>
+                                                <td class="text-center" style="font-size:75%"><span t-field="line.draw_date" t-field-options="{&quot;format&quot;: &quot;MM/dd/yyyy&quot;}"/> </td>
+                                                <td class="text-center" style="font-size:75%"><span t-field="line.draw_result"/> </td>
+                                                <td class="text-center" style="font-size:75%"><span t-field="line.draw_gametype"/> </td>
+                                                <td class="text-left" style="font-size:75%"><span t-field="line.ticket_serial"/> </td>
+                                                <td class="text-right" style="font-size:75%"><span t-field="line.price_unit"/> </td>
+                                              </tr>                                          
+                                            </t> 
+                                            <tr>
+                                              <td class="text-center" colspan="4" style="font-size:75%"/>
+                                              <td class="text-left" style="border-bottom:1px solid;font-size:75%">TOTAL</td>
+                                              <td class="text-right" style="border-bottom:1px solid;font-size:75%"><span t-field="o.amount_total"/></td>
+                                            </tr>  
+                                            <t t-set="loop" t-value="0"/>
 
-                                      </tbody>
-                                    </table>
+                                            <t t-foreach="loop" t-as="doc_loop">
+                                                <tr> 
+                                                  <td colspan="4"> &amp;emsp;</td> 
+                                                  <td colspan="2"/>
+                                                </tr>
+                                                <tr> 
+                                                  <td colspan="4">&amp;emsp;</td> 
+                                                  <td colspan="2"/>
+                                                </tr>                             
+                                            </t>                                        
+                                          </tbody>
+                                        </table>
+
+                                    </t>
+                                    <t t-if="o.transaction_type==False">
+                                        <table class="table table-bordered table-condensed">
+                                          <tbody>
+                                            
+                                            <tr>
+                                              <td class="text-center" style="font-size: 75%;">DESCRIPTION</td>
+                                              <td class="text-center" style="font-size:75%;">ACCOUNT</td>
+                                              <td class="text-center" style="font-size:75%;">RIZE AMOUNT.</td>
+                                            </tr>
+                                            <t t-foreach="o.invoice_line_ids" t-as="line">
+                                              <tr>
+                                                <td class="text-center" style="font-size:75%"><span t-field="line.name"/> </td>
+                                                <td class="text-center" style="font-size:75%"><span t-field="line.account_id"/></td>
+                                                <td class="text-right" style="font-size:75%"><span t-field="line.price_unit"/> </td>
+                                              </tr>                                          
+                                            </t> 
+                                            <tr>
+                                              <td class="text-center" style="font-size:75%"/>
+                                              <td class="text-left" style="border-bottom:1px solid;font-size:75%">TOTAL</td>
+                                              <td class="text-right" style="border-bottom:1px solid;font-size:75%"><span t-field="o.amount_total"/></td>
+                                            </tr>  
+                                            <t t-set="loop" t-value="0"/>
+
+                                            <t t-foreach="loop" t-as="doc_loop">
+                                                <tr> 
+                                                  <td colspan="4"> &amp;emsp;</td> 
+                                                  <td colspan="2"/>
+                                                </tr>
+                                                <tr> 
+                                                  <td colspan="4">&amp;emsp;</td> 
+                                                  <td colspan="2"/>
+                                                </tr>                             
+                                            </t>                                        
+                                          </tbody>
+                                        </table>
+                                      
+                                    </t>                                    
+
 
                                   </td>
                                   <td colspan="6" class="text-left" style="border-top: 1px solid;border-bottom: 1px solid;border-left: 1px solid;border-right: 1px solid;font-size: 100%;"/>
@@ -189,7 +232,14 @@
                                     <table class="table table-bordered table-condensed">
                                       <tbody>
                                         <tr>
-                                          <td class="text-center" style="border-bottom:1px solid;"><span t-esc="o.get_submitter_name()"/>  </td>
+
+                                          <td class="text-center" style="border-bottom:1px solid;">
+                                              <t t-if="o.get_submitter_dig_sig()">
+                                                 <img t-att-src="'data:image/png;base64,%s' % o.get_submitter_dig_sig()" width='130px' height='35px'/>
+                                                 <br/>                                                  
+                                              </t>                                              
+                                              <span t-esc="o.get_submitter_name()"/>  
+                                          </td>
                                         </tr>
                                         <tr>
                                           <td class="text-center"><span t-esc="o.get_submitter_position()"/>  </td>
@@ -201,53 +251,53 @@
                               </tr> 
                               <tr>
                                   <td class="text-left" colspan="14" style="border-top: 1px solid;border-bottom: 1px solid;border-left: 1px solid;border-right: 1px solid;font-size: 100%;">
-                                      B <p  style="margin-top:-20px;margin-left:20px; text-align:center;">ACCOUNTING ENTRIES</p>
+                                      B <p style="margin-top:-20px;margin-left:20px; text-align:center;">ACCOUNTING ENTRIES</p>
                                   </td>
                               </tr>  
                               <tr>
-                                  <td class="text-center" colspan="1" style="border-top: 1px solid;border-bottom: 1px solid;border-left: 1px solid;border-right: 1px solid;font-size: 100%;">OBLIGATION NO.</td>
-                                  <td class="text-center" colspan="1" style="border-top: 1px solid;border-bottom: 1px solid;border-left: 1px solid;border-right: 1px solid;font-size: 100%;">F.F.A.</td>
-                                  <td class="text-center" colspan="3" style="border-top: 1px solid;border-bottom: 1px solid;border-left: 1px solid;border-right: 1px solid;font-size: 100%;">OBJECT CODE</td>
-                                  <td class="text-center" colspan="5" style="border-top: 1px solid;border-bottom: 1px solid;border-left: 1px solid;border-right: 1px solid;font-size: 100%;">ACCOUNT CODE</td>
-                                  <td class="text-center" colspan="2" style="border-top: 1px solid;border-bottom: 1px solid;border-left: 1px solid;border-right: 1px solid;font-size: 100%;">DEBIT</td>
-                                  <td class="text-center" colspan="2" style="border-top: 1px solid;border-bottom: 1px solid;border-left: 1px solid;border-right: 1px solid;font-size: 100%;">CREDIT</td>
+                                  <td class="text-center" colspan="1" style="border-top: 1px solid;border-bottom: 1px solid;border-left: 1px solid;border-right: 1px solid;font-size: 75%;">OBLIGATION NO.</td>
+                                  <td class="text-center" colspan="1" style="border-top: 1px solid;border-bottom: 1px solid;border-left: 1px solid;border-right: 1px solid;font-size: 75%;">F.F.A.</td>
+                                  <td class="text-center" colspan="3" style="border-top: 1px solid;border-bottom: 1px solid;border-left: 1px solid;border-right: 1px solid;font-size: 75%;">OBJECT CODE</td>
+                                  <td class="text-center" colspan="5" style="border-top: 1px solid;border-bottom: 1px solid;border-left: 1px solid;border-right: 1px solid;font-size: 75%;">ACCOUNT CODE</td>
+                                  <td class="text-center" colspan="2" style="border-top: 1px solid;border-bottom: 1px solid;border-left: 1px solid;border-right: 1px solid;font-size: 75%;">DEBIT</td>
+                                  <td class="text-center" colspan="2" style="border-top: 1px solid;border-bottom: 1px solid;border-left: 1px solid;border-right: 1px solid;font-size: 75%;">CREDIT</td>
                               </tr>  
                               
                               <t t-foreach="o.move_id" t-as="move_id_line">
                                 <t t-foreach="move_id_line.line_ids" t-as="j_line">
                                   <tr>
-                                    <td class="text-left" colspan="1" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 80%;"/>
-                                    <td class="text-left" colspan="1" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 80%;"/>
-                                    <td class="text-left" colspan="3" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 80%;"><span t-field="j_line.account_id.name"/></td>
-                                    <td class="text-left" colspan="5" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 80%;"><span t-field="j_line.account_id.code"/></td>
-                                    <td class="text-right" colspan="2" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 80%;"><span t-field="j_line.debit"/></td>
-                                    <td class="text-right" colspan="2" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 80%;"><span t-field="j_line.credit"/></td>
+                                    <td class="text-left" colspan="1" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 75%;"/>
+                                    <td class="text-left" colspan="1" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 75%;"/>
+                                    <td class="text-left" colspan="3" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 75%;"><span t-field="j_line.account_id.name"/></td>
+                                    <td class="text-left" colspan="5" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 75%;"><span t-field="j_line.account_id.code"/></td>
+                                    <td class="text-right" colspan="2" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 75%;"><span t-field="j_line.debit"/></td>
+                                    <td class="text-right" colspan="2" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 75%;"><span t-field="j_line.credit"/></td>
                                   </tr>    
                                 </t>
-                                <t t-set= "loop" t-value="5" />
+                                <t t-set="loop" t-value="3"/>
 
                                 <t t-foreach="loop" t-as="doc_loop">
                                     <tr> 
                                       <td colspan="1" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 80%;"> &amp;emsp;</td> 
-                                      <td colspan="1" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 80%;"></td>
-                                      <td colspan="3" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 80%;"></td>
-                                      <td colspan="5" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 80%;"></td>
-                                      <td colspan="2" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 80%;"></td>
-                                      <td colspan="2" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 80%;"></td>
+                                      <td colspan="1" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 80%;"/>
+                                      <td colspan="3" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 80%;"/>
+                                      <td colspan="5" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 80%;"/>
+                                      <td colspan="2" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 80%;"/>
+                                      <td colspan="2" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 80%;"/>
                                     </tr>                                  
                                 </t>
                                 
 
                                 <tr>
-                                  <td class="text-center" colspan="2" style="border-top: 1px solid;border-bottom:  none;border-left: 1px solid;border-right: 1px solid;font-size: 100%;">
-                                        <p style="text-align:left">Journalized &amp;emsp; <span t-field="move_id_line.create_uid"/></p>
-                                        <p>by/date &amp;emsp; <span t-field="move_id_line.create_date"/></p>
+                                  <td class="text-center" colspan="2" style="border-top: 1px solid;border-bottom:  none;border-left: 1px solid;border-right: 1px solid;font-size: 75%;">
+                                        <p style="text-align:left;margin-bottom:0px">Journalized &amp;emsp; <span t-field="move_id_line.create_uid"/></p>
+                                        <p>by/date &amp;emsp; <span t-field="move_id_line.create_date" t-field-options="{&quot;format&quot;: &quot;MM/dd/yyyy&quot;}"/></p>
                                   </td>
                                   <!--
                                   <td class="text-center" colspan="1" style="border-top: 1px solid;border-bottom: none;border-left: 1px solid;border-right: none;"/>
                                   -->
-                                  <td class="text-left" colspan="8" style="border-top: 1px solid;border-bottom: none;border-left: none;border-right: none;font-size: 100%;">
-                                        <p>Indexed</p>
+                                  <td class="text-left" colspan="8" style="border-top: 1px solid;border-bottom: none;border-left: none;border-right: none;font-size: 75%;">
+                                        <p style="margin-bottom:0px">Indexed</p>
                                         <p>by/date</p>
                                   </td>
                                   <td class="text-left" colspan="4" style="border-top: 1px solid;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 100%;">
@@ -260,90 +310,104 @@
                               
                               <tr>
                                   <td class="text-left" colspan="10" style="border-top: 1px solid;border-bottom: 1px solid;border-left: 1px solid;border-right: 1px solid;">
-                                  <p style="margin-left:44px;margin-right:118px;font-size:15px">
+                                  <p style="margin-left:10px;font-size:12px">
                                     CERTIFIED : &amp;emsp; Adequate available Funds / budgetary allotment in the amount of <u><span t-field="o.amount_total"/></u>__;
                                     expenditure properly certified; supported by documents marked(x) per checklist and back hereof; account codes proper; previous cash advance /
-                                    liquidated / accounted for.
-                                    
+                                    liquidated / accounted for.                                    
+
                                   </p>
-                                  <br/>  
-                                  <p class="text-center"> MA. TERESITA V. CARBONEL 
+                                  <br/>
+                                  <p class="text-center" style="margin-bottom:0px"> MA. TERESITA V. CARBONEL 
                                   </p> 
-                                  <p class="text-center">PRINTED NAME AND SIGNATURE OF ACCOUNTANT
+                                  <p class="text-center" style="font-size:12px">PRINTED NAME AND SIGNATURE OF ACCOUNTANT
                                   </p>                                   
                                   </td>
                                   
                                   <td colspan="4" style="border-top: none;border-bottom: 1px solid;border-right: 1px solid;font-size: 90%;" class="text-center">
-                                      <u><span  t-esc="o.get_amount_in_words()"/></u>  
+                                      <u><span t-esc="o.get_amount_in_words()"/></u>  
                                       <br/>
                                       <br/>
                                       <br/>
-                                      <p class="text-center"> <span t-esc="o.get_approver_name()"/></p> 
+                                      <t t-if="o.get_approver_dig_sig()">
+                                          <img t-att-src="'data:image/png;base64,%s' % o.get_approver_dig_sig()" width='130px' height='35px'/>
+                                      </t>
+                                          
+                                      <p class="text-center" style="margin-bottom:0px"> <span t-esc="o.get_approver_name()"/></p> 
                                       <!-- 
                                       <p class="text-center"> APPROVER HERE</p> 
                                     -->
-                                      <p class="text-center"> PRINTED NAME AND SIGNATURE OF APPROVING OFFICER/REPRESENTATIVE
+                                      <p class="text-center" style="font-size:12px"> PRINTED NAME AND SIGNATURE OF APPROVING OFFICER/REPRESENTATIVE
                                       </p>                                      
                                   </td>
                               </tr>     
                               
                               <tr>
-                                  <td colspan="2"  class="text-center" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;border-left: 1px solid;font-size: 90%;"> CHECK</td>
-                                  <td colspan="1"> <span>RECEIVED FROM </span></td>
-                                  <td colspan="7" class="text-center" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;border-left: none;font-size: 90%;">TREASURY DEPARTMENT </td>
-                                  <td colspan="4" class="text-center" style="border-top: 1px solid;border-bottom: none;border-right: 1px solid;border-left: 1px solid;font-size: 90%;">FOR COA USE ONLY</td>
+                                  <td colspan="2" class="text-center" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;border-left: 1px solid;font-size: 10px;"> CHECK</td>
+                                  <td colspan="8" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;border-left: 1px solid;font-size: 10px;" class="text-center"> 
+                                        <p style="margin-bottom:0px"><span>RECEIVED FROM </span> <u>&amp;emsp;TREASURY DEPARTMENT&amp;emsp;</u></p>
+                                  </td>
+                                  <!--
+                                  <td colspan="7" class="text-center" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;border-left: none;font-size: 10px;">TREASURY DEPARTMENT </td>
+                                  -->
+                                  <td colspan="4" class="text-center" style="border-top: 1px solid;border-bottom: none;border-right: 1px solid;border-left: 1px solid;font-size: 10px;">FOR COA USE ONLY</td>
                               </tr>                     
                               <tr>
-                                  <td colspan="1" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;border-left: 1px solid;font-size: 90%;">No.</td>
-                                  <td colspan="1" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;font-size: 90%;">
+                                  <td colspan="1" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;border-left: 1px solid;font-size: 10px">No.</td>
+                                  <td colspan="1" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;font-size: 10px">
                                       <t t-foreach="o.payment_ids" t-as="payment_lines">
                                           <span t-field="payment_lines.check_number"/>
                                       </t>
 
                                   </td>
-                                  <td colspan="1" style="border-top: 1px solid;border-bottom: none;border-right: none;border-left: none;font-size: 90%;"></td>
-                                  <td colspan="7" class="text-center" style="border-top: none;border-bottom: none;border-right: 1px solid;border-left: none;font-size: 90%;">RELEASING OFFICER </td>
-                                  <td colspan="4" style="border-top: none;border-bottom: none;border-right: 1px solid;border-left: 1px solid;font-size: 90%;" class="text-center">ALLOWED AUDIT: FOR(P_____)</td>
+                                  <!--
+                                  <td colspan="8" style="border-top: 1px solid;border-bottom: none;border-right: none;border-left: none;font-size: 10px;"/>
+                                  -->
+                                  
+                                  <td colspan="8" class="text-center" style="border-top: none;border-bottom: none;border-right: 1px solid;border-left: none;font-size: 10px;">RELEASING OFFICER </td>
+                                
+                                  <td colspan="4" style="border-top: none;border-bottom: none;border-right: 1px solid;border-left: 1px solid;font-size: 10px;" class="text-center">ALLOWED AUDIT: FOR(P_____)</td>
                               </tr>                     
                               <tr>
-                                  <td colspan="1" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;border-left: 1px solid;font-size: 90%;">Amount</td>
-                                  <td colspan="1" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;font-size: 90%;"><span t-field="o.amount_total"/></td>
-                                  <td colspan="8" style="border-top: none;border-bottom: none;border-right: 1px solid;border-left: none;font-size: 90%;"/>
-                                  <td colspan="4" style="border-top: none;border-bottom: none;border-right: 1px solid;border-left: 1px solid;font-size: 90%;"/>
+                                  <td colspan="1" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;border-left: 1px solid;font-size: 10px;">Amount</td>
+                                  <td colspan="1" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;font-size: 10px;"><span t-field="o.amount_total"/></td>
+                                  <td colspan="8" style="border-top: none;border-bottom: none;border-right: 1px solid;border-left: none;font-size: 10px;"/>
+                                  <td colspan="4" style="border-top: none;border-bottom: none;border-right: 1px solid;border-left: 1px solid;font-size: 10px"/>
                               </tr>  
                               <tr>
-                                  <td colspan="1" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;border-left: 1px solid;font-size: 90%;">Date</td>
-                                  <td colspan="1" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;font-size: 90%;"><span t-field="o.transaction_date"/></td>
+                                  <td colspan="1" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;border-left: 1px solid;font-size: 10px;">Date</td>
+                                  <td colspan="1" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;font-size: 10px"><span t-field="o.transaction_date"/></td>
                                 
-                                  <td colspan="8" class="text-center" style="border-top: none;border-bottom: none;border-right: 1px solid;border-left: 1px solid;font-size: 90%;">
+                                  <td colspan="8" class="text-center" style="border-top: none;border-bottom: none;border-right: 1px solid;border-left: 1px solid;font-size: 10px">
                                        <u> 
                                           &amp;emsp;
                                           <span t-esc="o.get_amount_in_words()" class="text-center"/> 
                                           &amp;emsp;
                                         </u>
                                   </td>
-                                  <td colspan="4" class="text-center" style="border-top: none;border-bottom: none;border-right: 1px solid;border-left: 1px solid;font-size: 90%;">______________________________________</td>                                  
+                                  <td colspan="4" class="text-center" style="border-top: none;border-bottom: none;border-right: 1px solid;border-left: 1px solid;font-size: 10px;">______________________________________</td>                                  
                               </tr>         
                               <tr>
-                                  <td colspan="2" class="text-center" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;border-left: 1px solid;font-size: 90%;"> OFFICIAL RECEIPT</td>
-                                  <td colspan="8" class="text-center" style="border-top: none;border-bottom: none;border-right: 1px solid;border-left: 1px solid;font-size: 90%;">AMOUNT IN WORDS</td>
-                                  <td colspan="4" class="text-center" style="border-top: none;border-bottom: none;border-right: 1px solid;border-left: 1px solid;font-size: 90%;">AMOUNT IN WORDS</td>                                                                    
+                                  <td colspan="2" class="text-center" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;border-left: 1px solid;font-size: 10px;"> OFFICIAL RECEIPT</td>
+                                  <td colspan="8" class="text-center" style="border-top: none;border-bottom: none;border-right: 1px solid;border-left: 1px solid;font-size: 10px;">AMOUNT IN WORDS</td>
+                                  <td colspan="4" class="text-center" style="border-top: none;border-bottom: none;border-right: 1px solid;border-left: 1px solid;font-size: 10px;">AMOUNT IN WORDS</td>                                                                    
                               </tr>  
                               <tr>
-                                  <td colspan="1" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;border-left: 1px solid;font-size: 90%;">No.</td>
-                                  <td colspan="1" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;font-size: 90%;"></td>
-                                  <td colspan="8" class="text-center" style="border-top: none;border-bottom: none;border-right: 1px solid;border-left: 1px solid;font-size: 90%;">______________________________________</td>
-                                  <td colspan="4" class="text-center" style="border-top: none;border-bottom: none;border-right: 1px solid;border-left: 1px solid;font-size: 90%;">______________________________________</td>                                                                    
+                                  <td colspan="1" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;border-left: 1px solid;font-size: 10px;">No.</td>
+                                  <td colspan="1" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;font-size: 90%;"/>
+                                  <td colspan="8" class="text-center" style="border-top: none;border-bottom: none;border-right: 1px solid;border-left: 1px solid;font-size: 10px;">______________________________________</td>
+                                  <td colspan="4" class="text-center" style="border-top: none;border-bottom: none;border-right: 1px solid;border-left: 1px solid;font-size: 10px;">______________________________________</td>                                                                    
                               </tr> 
                               <tr>
-                                  <td colspan="1" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;border-left: 1px solid;font-size: 90%;">Date.</td>
-                                  <td colspan="1" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;font-size: 90%;"></td>
-                                  <td colspan="8" style="border-top: none;border-bottom: 1px solid;border-right: 1px solid;border-left: 1px solid;font-size: 90%;" class="text-center"><span>PRINTED NAME AND SIGNATURE OF CLAIMANT</span></td>
-                                  <td colspan="4" style="border-top: none;border-bottom: 1px solid;border-right: 1px solid;border-left: 1px solid;font-size: 90%;" class="text-center">PRINTED NAME AND SIGNATURE OF AUDITOR</td>                                                                    
+                                  <td colspan="1" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;border-left: 1px solid;font-size: 10px;">Date.</td>
+                                  <td colspan="1" style="border-top: 1px solid;border-bottom: 1px solid;border-right: 1px solid;font-size: 90%;"/>
+                                  <td colspan="8" style="border-top: none;border-bottom: 1px solid;border-right: 1px solid;border-left: 1px solid;font-size: 10px;" class="text-center"><span>PRINTED NAME AND SIGNATURE OF CLAIMANT</span></td>
+                                  <td colspan="4" style="border-top: none;border-bottom: 1px solid;border-right: 1px solid;border-left: 1px solid;font-size: 10px;" class="text-center">PRINTED NAME AND SIGNATURE OF AUDITOR</td>                                                                    
                               </tr>  
                             </tbody>
                         </table>
-                    </t>
+                    </div>
+                    <!--</t>-->
+                    <!--</t> -->
                 </t>
             </t>
         </template>
@@ -354,7 +418,7 @@
             name="account_prize_claim_pcso.print_disbursment_voucher"
             file="account_prize_claim_pcso.print_disbursment_voucher"
             report_type="qweb-pdf"
-            attachment_use="0"
+            attachment_use="false"
             attachment="'voucher_'+(object.partner_id.name or '')+'_'+(object.name or '')+'.pdf'" />
 
     </data>

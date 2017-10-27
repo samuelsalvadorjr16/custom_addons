@@ -161,7 +161,7 @@
         </record>     
         -->
 
-        <menuitem id="menu_pcso_claims" name="Claims" 
+        <menuitem id="menu_pcso_claims" name="Prize" 
                   parent="account.menu_finance"
                   sequence="4"
                   groups="account.group_account_user,account.group_account_manager,account.group_account_invoice"

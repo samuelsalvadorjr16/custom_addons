@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="request_for_payment_order_form" model="ir.ui.view">
+            <field name="name">rfp.order.form</field>
+            <field name="model">purchase.order</field>
+            <field name="arch" type="xml">
+                <form string="Request for Payment">
+                <header>
+
+                	<button name="action_submit_rfp" states="draft" string="Submit" type="object"  groups="account_prize_claim_pcso.pcf_group_allow_to_submit_rfp" class="oe_highlight"/>
+                	<button name="action_approved_rfp" states="submit" string="Approved" type="object" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_rfp"   class="oe_highlight"/>
+                	<button name="action_deny_rfp" states="submit" string="Deny" type="object" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_rfp"  class="oe_highlight"/>
+                	<field name="state" widget="statusbar" statusbar_visible="draft,submit,approved,denied" readonly="1"/>
+
+<!--
+
+                    <button name="button_confirm" type="object" states="draft" string="Confirm Order" id="draft_confirm"/>
+                    <button name="button_confirm" type="object" states="sent" string="Confirm Order" class="oe_highlight" id="bid_confirm"/>
+                    <button name="button_approve" type="object" states='to approve' string="Approve Order" class="oe_highlight" groups="purchase.group_purchase_manager"/>
+                    <button name="action_rfq_send" states="purchase" string="Send PO by Email" type="object" context="{'send_rfq':False}"/>
+                    <button name="action_view_picking" string="Receive Products" class="oe_highlight" type="object" attrs="{'invisible': ['|', '|' , ('is_shipped', '=', True), ('state','not in', ('purchase','done')), ('picking_count', '=', 0)]}"/>
+                    <button name="button_draft" states="cancel" string="Set to Draft" type="object" />
+                    <button name="button_cancel" states="draft,to approve,sent,purchase" string="Cancel" type="object" />
+                    <button name="button_done" type="object" string="Lock" states="purchase"/>
+                    <button name="button_unlock" type="object" string="Unlock" states="done" groups="purchase.group_purchase_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submit,approved,denied,to_invoiced" readonly="1"/>
+-->                    
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                    	<!--
+                        <button type="object"
+                            name="action_view_picking"
+                            class="oe_stat_button"
+                            icon="fa-truck" attrs="{'invisible':[('state', 'in', ('draft','sent','to approve')),('picking_ids','=',[])]}">
+                            <field name="picking_count" widget="statinfo" string="Shipment" help="Incoming Shipments"/>
+                            <field name="picking_ids" invisible="1"/>
+                        </button>
+                    	-->
+                        <button type="object"  name="action_view_invoice"
+                            class="oe_stat_button"
+                            icon="fa-pencil-square-o" attrs="{'invisible':[('state', 'in', ('draft','sent','to approve', 'submit', 'denied')),('invoice_ids','=',[])]}">
+                            <field name="invoice_count" widget="statinfo" string="OpEx"/>
+                            <field name='invoice_ids' invisible="1"/>
+                        </button> 
+                    </div>
+                    <div class="oe_title">
+                        <label string="Request for Payment " attrs="{'invisible': [('state','not in',('draft','sent','bid'))]}"/>
+                        <label string="RFP " attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id" context="{'search_default_supplier':1, 'default_supplier':1, 'default_customer':0}" domain="[('supplier','=',True)]" string ="Payee"/>
+                            <field name="partner_ref" string ="Payee Reference Number"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                            <field name="is_shipped" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="date_order"/>
+                            <field name="origin" attrs="{'invisible': [('origin','=',False)]}"/>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="RFP Line/s">
+                            <field name="order_line" attrs="{'readonly': [('state', 'in', ('done', 'cancel'))]}">
+                                 <tree string="Purchase Order Lines" editable="bottom">
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="state" invisible="1"/>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id" attrs="{'readonly': [('state', 'in', ('purchase', 'to approve','done', 'cancel'))]}" context="{'partner_id':parent.partner_id, 'quantity':product_qty,'uom':product_uom, 'company_id': parent.company_id}"/>
+                                    <field name="name"/>
+                                    <field name="date_planned"/>
+                                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                                    <field name="account_analytic_id" context="{'default_partner_id':parent.partner_id}" groups="purchase.group_analytic_accounting"/>
+                                    <field name="analytic_tag_ids" groups="purchase.group_analytic_accounting" widget="many2many_tags"/>
+                                    <field name="product_qty"/>
+                                    <field name="qty_received" invisible="not context.get('show_purchase', False)"/>
+                                    <field name="qty_invoiced" invisible="not context.get('show_purchase', False)"/>
+                                    <field name="product_uom" groups="product.group_uom" attrs="{'readonly': [('state', 'in', ('purchase', 'done', 'cancel'))]}"/>
+                                    <field name="price_unit"/>
+                                    <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use','=','purchase')]" context="{'default_type_tax_use': 'purchase'}"/>
+                                    <field name="price_subtotal" widget="monetary"/>
+                                </tree>
+                                <form string="RFP Lines">
+                                    <sheet>
+                                        <group>
+                                            <group>
+                                                <field name="product_id"
+                                                       context="{'partner_id': parent.partner_id}"/>
+                                                <label for="product_qty"/>
+                                                <div>
+                                                    <field name="product_qty" class="oe_inline"/>
+                                                    <span class="oe_inline">&#160;</span>
+                                                    <field name="product_uom" groups="product.group_uom" class="oe_inline"/>
+                                                </div>
+                                                <field name="price_unit"/>
+                                            </group>
+                                            <group>
+                                                <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use', '=', 'purchase')]"/>
+                                                <field name="date_planned" widget="date"/>
+                                                <field name="account_analytic_id" colspan="2" groups="purchase.group_analytic_accounting"/>
+                                                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                                            </group>
+                                        </group>
+                                        <notebook>
+                                        <page string="Notes">
+                                            <field name="name"/>
+                                        </page><page string="Invoices and Incoming Shipments">
+                                            <field name="invoice_lines"/>
+                                            <field name="move_ids"/>
+                                        </page>
+                                        </notebook>
+                                    </sheet>
+                                </form>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <div class="oe_subtotal_footer_separator oe_inline">
+                                    <label for="amount_total"/>
+                                </div>
+                                <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            </group>
+                            <field name="notes" class="oe_inline" placeholder="An administrator can set up default Terms and conditions in your Company settings."/>
+                            <div class="oe_clear"/>
+                        </page>
+                        <page string="Deliveries &amp; Invoices">
+                            <group>
+                                <group>
+                                    <label for="date_planned"/>
+                                    <div>
+                                        <field name="date_planned" required="1" attrs="{'readonly': [('state', 'not in', ('draft', 'sent'))]}"/>
+                                        <button name="action_set_date_planned" type="object"
+                                            states="draft,sent"
+                                            string="Set date to all order lines"
+                                            help="This changes the scheduled date of all order lines to the given date"
+                                            class="fa fa-calendar o_icon_button oe_edit_only"/>
+                                    </div>
+                                    <field name="picking_type_id" domain="[('code','=','incoming')]" options="{'no_create': True}" groups="stock.group_stock_multi_locations"/>
+                                    <field name="dest_address_id" groups="stock.group_stock_multi_locations" attrs="{'invisible': [('default_location_dest_id_usage', '!=', 'customer')], 'required': [('default_location_dest_id_usage', '=', 'customer')]}"/>
+                                    <field name="default_location_dest_id_usage" invisible="1"/>
+                                    <field name="incoterm_id"/>
+                                </group>
+                                <group>
+                                    <field name="invoice_status"/>
+                                    <field name="payment_term_id" options="{'no_open': True, 'no_create': True}" attrs="{'readonly': ['|', ('invoice_status','=', 'invoiced'), ('state', '=', 'done')]}"/>
+                                    <field name="fiscal_position_id" attrs="{'readonly': ['|', ('invoice_status','=', 'invoiced'), ('state', '=', 'done')]}"/>
+                                    <field name="date_approve" groups="base.group_no_one"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+                </form>
+            </field>
+        </record>
+
+       <record id="view_rfp_order_filter" model="ir.ui.view">
+            <field name="name">request.rfp.select</field>
+            <field name="model">purchase.order</field>
+            <field name="arch" type="xml">
+                <search string="Search Request for Payment">
+                    <field name="name" string="Reference"/>
+                    <field name="partner_id" operator="child_of"/>
+                    <field name="product_id" string ="Payee"/>
+                    <field name="create_uid"/>
+                    <filter name="draft" string="Draft" domain="[('state','in',('draft','sent','to approve'))]"/>
+                    <filter name="approved" string="Approve" domain="[('state','in',('approved','done'))]"/>
+                    <filter name="submit" string="Submitted" domain="[('state', '=', 'submitted')]"/>
+                    <separator/>
+                    <filter name="not_invoiced" string="Waiting Bills" domain="[('invoice_status','=', 'to invoice')]" help="RFP that include lines not invoiced."/>
+                    <filter name="invoiced" string="Bills Received" domain="[('invoice_status','=', 'invoiced')]" help="RFP that have been invoiced."/>
+                    <filter string="Unread Messages" name="message_needaction" domain="[('message_needaction','=',True)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Payee" domain="[]" context="{'group_by':'partner_id'}"/>
+                        <filter string="Order Date" domain="[]" context="{'group_by':'date_order'}"/>
+                        <filter string="Expected Date" domain="[]" context="{'group_by':'date_planned'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="view_rfp_kanban">
+            <field name="name">rfp.order.kanban</field>
+            <field name="model">purchase.order</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="amount_total"/>
+                    <field name="state"/>
+                    <field name="date_order"/>
+                    <field name="currency_id"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <strong><span><t t-esc="record.partner_id.value"/></span></strong>
+                                    </div>
+                                    <div class="col-xs-6 pull-right text-right">
+                                        <strong><field name="amount_total" widget="monetary"/></strong>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <span><t t-esc="record.name.value"/> <t t-esc="record.date_order.value and record.date_order.value.split(' ')[0] or False"/></span>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <span class="pull-right text-right">
+                                            <field name="state" widget="kanban_label_selection" options="{'classes': {'draft': 'default', 'cancel': 'default', 'done': 'success', 'approved': 'warning'}}"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="rfp_tree" model="ir.ui.view">
+            <field name="name">rfp.tree</field>
+            <field name="model">purchase.order</field>
+            <field name="arch" type="xml">
+                <tree decoration-bf="message_unread==True" decoration-muted="state=='cancel'" decoration-info="state in ('wait','confirmed')" string="Purchase Order">
+                    <field name="message_unread" invisible="1"/>
+                    <field name="name" string="Reference"/>
+                    <field name="date_order" />
+                    <field name="partner_id" string="Payee"/>
+                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                    <field name="date_planned" invisible="context.get('quotation_only', False)"/>
+                    <field name="origin"/>
+                    <field name="amount_untaxed" sum="Total Untaxed amount" string="Untaxed" widget="monetary"/>
+                    <field name="amount_total" sum="Total amount" widget="monetary"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="state"/>
+                    <!--<field name="invoice_status" invisible="not context.get('show_purchase', False)"/>-->
+                </tree>
+            </field>
+        </record>	
+
+
+        <record id="rfp_form_action" model="ir.actions.act_window">
+            <field name="name">Request for Payment</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order</field>
+            <field name="view_mode">tree,kanban,form,pivot,graph,calendar</field>
+            <field name="context">{'search_default_todo':1, 'show_purchase': True, 'default_is_from_rfp':True}</field>
+            <field name="domain">[('state','not in',('draft','sent','bid', 'confirmed')),('is_from_rfp','=',True)]</field>
+            <field name="search_view_id" ref="view_rfp_order_filter"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a Request for Payment
+
+              </p>
+              <!--
+              <p>
+                Use this menu to search within your purchase orders by
+                references, vendor, products, etc. For each purchase order,
+                you can track the related discussion with the vendor, control
+                the products received and control the vendor bills.
+              </p>
+          		-->
+            </field>
+        </record>
+
+        <record id="action_pcso_rfp_view" model="ir.actions.act_window.view">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="view_rfp_kanban"/>
+            <field name="act_window_id" ref="rfp_form_action"/>
+        </record>
+        <record id="action_pcso_claimant_form_view_kanban" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="request_for_payment_order_form"/>
+            <field name="act_window_id" ref="rfp_form_action"/>
+        </record>
+
+        <record id="action__pcso_claimant_form_view_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="rfp_tree"/>
+            <field name="act_window_id" ref="rfp_form_action"/>
+        </record>           
+        <menuitem action="rfp_form_action" id="menu_rfp_action" parent="account.menu_finance_payables" sequence="1"/>        
+
+		<!-- Override -->
+        <record id="purchase.purchase_form_action" model="ir.actions.act_window">
+            <field name="name">Purchase Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order</field>
+            <field name="view_mode">tree,kanban,form,pivot,graph,calendar</field>
+            <field name="context">{'search_default_todo':1, 'show_purchase': True}</field>
+            <field name="domain">[('state','not in',('draft','sent','bid', 'confirmed')),('is_from_rfp','=',False)]</field>
+            <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a quotation that will be converted into a purchase order. 
+              </p><p>
+                Use this menu to search within your purchase orders by
+                references, vendor, products, etc. For each purchase order,
+                you can track the related discussion with the vendor, control
+                the products received and control the vendor bills.
+              </p>
+            </field>
+        </record>		
+</odoo>

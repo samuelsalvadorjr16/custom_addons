@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <odoo>
+        <!-- Price Claim -->
         <record id="module_category_prize_claim" model="ir.module.category">
             <field name="name">Prize Claim</field>
             <field name="sequence" eval="9" />
@@ -27,5 +28,61 @@
             <field name="name">Allow to Approve Jackpot</field>
             <field name="comment">User that can Approve a Claim for Jackpot Prize.</field>
         </record>
+
+        <!-- Operation Expenses -->
+        <record id="module_category_operation_expenses" model="ir.module.category">
+            <field name="name">Operation Expense</field>
+            <field name="sequence" eval="10" />
+        </record>
+
+        <record id="pcf_group_allow_to_submit_opex" model="res.groups">
+            <field name="name">Allow to Submit Opex</field>
+            <field name="category_id" ref="module_category_operation_expenses"/>
+            <field name="comment">User can Submit a Operation Expense.</field>
+        </record>
+<!--
+        <record id="pcf_group_allow_to_submit_jackpot" model="res.groups">
+             <field name="category_id" ref="module_category_prize_claim"/>
+            <field name="name">Allow to Submit Jackpot</field>
+            <field name="comment">User that can submit a Claim for Jackpot Prize.</field>
+        </record>
+-->
+        <record id="pcf_group_allow_to_approve_opex" model="res.groups">
+             <field name="category_id" ref="module_category_operation_expenses"/>
+            <field name="name">Allow to Approve Opex</field>
+            <field name="comment">User can Approve a Operation Expense</field>
+        </record>
+<!--        
+        <record id="pcf_group_allow_to_approve_jackpot" model="res.groups">
+             <field name="category_id" ref="module_category_prize_claim"/>
+            <field name="name">Allow to Approve Jackpot</field>
+            <field name="comment">User that can Approve a Claim for Jackpot Prize.</field>
+        </record>
+-->
+
+        <!-- Operation Expenses -->
+        <record id="module_category_request_for_payment" model="ir.module.category">
+            <field name="name">RFP</field>
+            <field name="sequence" eval="11" />
+        </record>
+
+        <record id="pcf_group_allow_to_submit_rfp" model="res.groups">
+            <field name="name">Allow to Submit RFP</field>
+            <field name="category_id" ref="module_category_request_for_payment"/>
+            <field name="comment">User can Submit a Request for Payment.</field>
+        </record>
+<!--
+        <record id="pcf_group_allow_to_submit_jackpot" model="res.groups">
+             <field name="category_id" ref="module_category_prize_claim"/>
+            <field name="name">Allow to Submit Jackpot</field>
+            <field name="comment">User that can submit a Claim for Jackpot Prize.</field>
+        </record>
+-->
+        <record id="pcf_group_allow_to_approve_rfp" model="res.groups">
+             <field name="category_id" ref="module_category_request_for_payment"/>
+            <field name="name">Allow to Approve RFP</field>
+            <field name="comment">User can Approve a Request for Payment.</field>
+        </record>
+
 </odoo>
 
