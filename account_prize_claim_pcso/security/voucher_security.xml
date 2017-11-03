@@ -19,13 +19,74 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
-        <record id="account_prize_claim_pcso.charity_claim_processor_viewing" model="ir.rule">
-            <field name="name">Prize Claim Processor Rule</field>
+        <record id="account_prize_claim_pcso.prize_claim_reviewer_viewing" model="ir.rule">
+            <field name="name">Prize Claim Reviewers Rule</field>
             <field name="model_id" ref="account.model_account_invoice"/>
             <field name="global" eval="False"/>
             <!--<field name="groups" eval="[(4, ref('stock.group_stock_multi_warehouses'))]"/>-->
+            <field name="groups" eval="[(4, [ref('pcf_group_allow_to_approve_non_jack_below_100k_rev'), ref('pcf_group_allow_to_approve_non_jack_above_100k_rev'),ref('pcf_group_allow_to_approve_jackpot_rev')])]"/>
+            <field name="domain_force">[('transaction_type','=','prize_claim')]</field>
+            <field name="active" eval="True"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>   
+
+
+        <record id="account_prize_claim_pcso.prize_claim_approver_viewing" model="ir.rule">
+            <field name="name">Prize Claim Reviewers Rule</field>
+            <field name="model_id" ref="account.model_account_invoice"/>
+            <field name="global" eval="False"/>
+            <!--<field name="groups" eval="[(4, ref('stock.group_stock_multi_warehouses'))]"/>-->
+            <field name="groups" eval="[(4, [ref('pcf_group_allow_to_approve_non_jack_below_100k_for_approv'), ref('pcf_group_allow_to_approve_non_jack_above_100k_for_approv'),ref('pcf_group_allow_to_approve_jackpot_for_approv'),ref('pcf_group_allow_to_approve_non_jack_below_100k_approved'), ref('pcf_group_allow_to_approve_non_jack_above_100k_approved'),ref('pcf_group_allow_to_approve_jackpot_approved')])]"/>
+            <field name="domain_force">[('transaction_type','=','prize_claim')]</field>
+            <field name="active" eval="True"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>               
+
+        <record id="account_prize_claim_pcso.charity_claim_processor_viewing" model="ir.rule">
+            <field name="name">Charity Claim Processor Rule</field>
+            <field name="model_id" ref="account.model_account_invoice"/>
+            <field name="global" eval="False"/>
             <field name="groups" eval="[(4, ref('ccf_group_processor'))]"/>
             <field name="domain_force">[('create_uid','=',[user.id]),('transaction_type','=','charity')]</field>
+            <field name="active" eval="True"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+
+        <record id="account_prize_claim_pcso.charity_claim_reviewer_viewing" model="ir.rule">
+            <field name="name">Charity Claim Reviewer Rule</field>
+            <field name="model_id" ref="account.model_account_invoice"/>
+            <field name="global" eval="False"/>
+            <field name="groups" eval="[(4, [ref('ccf_group_allow_to_approve_below_100k_for_rev1'),
+                                             ref('ccf_group_allow_to_approve_below_100k_for_rev2'),
+                                             ref('ccf_group_allow_to_approve_above_100k_bel_200k_for_rev1'),
+                                             ref('ccf_group_allow_to_approve_above_100k_bel_200k_for_rev2'), 
+                                             ref('ccf_group_allow_to_approve_above_200k_for_rev1'),
+                                             ref('ccf_group_allow_to_approve_above_200k_for_rev2')])]"/>
+            <field name="domain_force">[('transaction_type','=','charity')]</field>
+            <field name="active" eval="True"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+
+        <record id="account_prize_claim_pcso.charity_claim_approver_viewing" model="ir.rule">
+            <field name="name">Charity Claim Approver Rule</field>
+            <field name="model_id" ref="account.model_account_invoice"/>
+            <field name="global" eval="False"/>
+            <field name="groups" eval="[(4, [ref('ccf_group_allow_to_approve_below_100k_for_approval'), ref('ccf_group_allow_to_approve_below_100k_approved'),ref('ccf_group_allow_to_approve_above_100k_bel_200k_for_approval'),ref('ccf_group_allow_to_approve_above_100k_bel_200k_approved'), ref('ccf_group_allow_to_approve_above_200k_for_approval'),ref('ccf_group_allow_to_approve_above_200k_approved')])]"/>
+            <field name="domain_force">[('create_uid','=',[user.id])]</field>
             <field name="active" eval="True"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="False"/>

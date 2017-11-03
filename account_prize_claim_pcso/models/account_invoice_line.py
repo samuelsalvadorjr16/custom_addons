@@ -33,6 +33,12 @@ class account_invoice_line_prize_claim(models.Model):
 			if self._context.get('transaction_type') == 'prize_claim':
 				#raise Warning(self.env.ref('account_prize_claim_pcso.product_product_prize_claim_cost'))
 				return  self.env.ref('account_prize_claim_pcso.product_product_prize_claim_cost') #2189 #self.env.ref('account_prize_claim_pcso.product_product_prize_claim_cost_product_template')
+			elif self._context.get('transaction_type') == 'charity':
+				product_obj = self.env['product.product'].search([('name', '=', 'IMAP'),('default_code', '=', '424-2A1')])
+				if product_obj:
+					return product_obj.id
+				return False
+				#return  self.env.ref('account_prize_claim_pcso.product_product_prize_claim_cost')
 			else:
 				return False
 
@@ -54,6 +60,13 @@ class account_invoice_line_prize_claim(models.Model):
 	price_unit = fields.Float(string='Unit Price', digits=dp.get_precision('Product Price'),required=True)
 	# For Charity
 	guarantee_number = fields.Char('Guarantee Number')
+	patient_name = fields.Char('Patient Name')
+	approved_amount = fields.Float(string='Approved Amount', digits=dp.get_precision('Price Claim First Prize'))
 
 	product_id = fields.Many2one('product.product', string='Product',
 	    ondelete='restrict', index=True, default=_default_product_id)
+
+
+	@api.onchange('approved_amount')
+	def _approved_amount_onchange(self):
+		self.price_unit = self.approved_amount

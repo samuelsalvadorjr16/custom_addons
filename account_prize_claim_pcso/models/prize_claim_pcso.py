@@ -56,6 +56,7 @@ class account_invoice_prize_claim(models.Model):
 	        ('return','Return'),
 	        ('submit', 'Submitted'),
 	        ('under_review', 'Under Review'),
+	        ('under_2nd_review', '2nd Review'),
 	        ('for_approval', 'For Approval'),
 	        ('approved', 'Approved'),
 	        ('denied', 'Denied'),	        
@@ -86,6 +87,7 @@ class account_invoice_prize_claim(models.Model):
 	amount_in_words = fields.Char('Amount in Words')
 
 	certified_correct_uid = fields.Many2one('res.users', 'Certified Correct By')
+	certified_correct_2_uid = fields.Many2one('res.users', 'Endorsed By')
 	under_review_uid = fields.Many2one('res.users', 'Endorsed By')
 	for_approval_uid = fields.Many2one('res.users', 'Approval By')
 
@@ -95,16 +97,117 @@ class account_invoice_prize_claim(models.Model):
 	cancelled_uid = fields.Many2one('res.users', 'Cancelled By')
 
 
+	#New Signatory Workflow for Charity
+	@api.multi
+	def action_to_submit_charity_claim(self):
+	    to_open_invoices = self.filtered(lambda inv: inv.state not in ['draft', 'return'])
+	    if to_open_invoices.filtered(lambda inv: inv.state not in ['draft', 'return']):
+	        raise UserError(_("Prize Claim must be in draft state in order to validate it."))
+	    if to_open_invoices.filtered(lambda inv: inv.amount_total < 0):
+	        raise UserError(_("You cannot validate a Prize Claim with a negative total amount."))
+
+	    stats_his = ''
+	    if self.status_history:
+	    	stats_his = self.status_history
+	    state_dict ={'state': 'submit', 'submitted_uid': self._uid,
+	    	 'status_history': 'SUBMITTED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + stats_his or ''}
+	    if self.state == 'draft':
+	    	state_dict['status_history'] = 'SUBMITTED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + stats_his or ''
+	    elif self.state == 'return':
+	    	state_dict['status_history'] = 'RE-SUBMITTED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + stats_his or ''
+	    return self.write(state_dict)	
+
+	@api.multi
+	def action_to_approve_for_1st_review_charity_claim(self):	
+	    to_open_invoices = self.filtered(lambda inv: inv.state != 'submit')
+	    if to_open_invoices.filtered(lambda inv: inv.state != 'submit'):
+	        raise UserError(_("Prize Claim must be in Submitted state in order to validate it."))
+	    if to_open_invoices.filtered(lambda inv: inv.amount_total < 0):
+	        raise UserError(_("You cannot validate a Prize Claim with a negative total amount."))
+	    if self.amount_total < 100000.00:
+	    	if self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_approve_below_100k_for_rev1') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to Approved the Claim."))
+	    elif self.amount_total >= 100000.00 and self.amount_total < 200000.00:
+	    	if self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_approve_above_100k_bel_200k_for_rev1') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to Approved the Claim."))
+	    elif self.amount_total >= 200000.00:
+	    	if self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_approve_above_200k_for_rev1') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to Approved the Claim."))
+	    stats_his = ''
+	    if self.status_history:
+	    	stats_his = self.status_history
+	    return self.write({'state': 'under_review', 'certified_correct_uid': self._uid, 
+						   'status_history': 'ENDORSED FOR 1ST REVIEW : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + stats_his or ''})
+
+
+	@api.multi
+	def action_to_approve_for_2nd_review_charity_claim(self):	
+	    to_open_invoices = self.filtered(lambda inv: inv.state != 'under_review')
+	    if to_open_invoices.filtered(lambda inv: inv.state != 'under_review'):
+	        raise UserError(_("Prize Claim must be in Under Review state in order to validate it."))
+	    if to_open_invoices.filtered(lambda inv: inv.amount_total < 0):
+	        raise UserError(_("You cannot validate a Prize Claim with a negative total amount."))
+	    if self.amount_total < 100000.00:
+	    	if self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_approve_below_100k_for_rev2') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to Approved the Claim."))
+	    elif self.amount_total >= 100000.00 and self.amount_total < 200000.00:
+	    	if self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_approve_above_100k_bel_200k_for_rev2') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to Approved the Claim."))
+	    elif self.amount_total >= 200000.00:
+	    	if self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_approve_above_200k_for_rev2') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to Approved the Claim."))
+	    stats_his = ''
+	    if self.status_history:
+	    	stats_his = self.status_history
+	    return self.write({'state': 'under_2nd_review', 'certified_correct_2_uid': self._uid, 
+						   'status_history': 'ENDORSED FOR 2ND REVIEW : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + stats_his or ''})
+
+	@api.multi
+	def action_to_approve_for_approval_charity_claim(self):
+	    to_open_invoices = self.filtered(lambda inv: inv.state != 'under_2nd_review')
+	    if to_open_invoices.filtered(lambda inv: inv.state != 'under_2nd_review'):
+	        raise UserError(_("Prize Claim must be in 2nd Review state in order to validate it."))
+	    if to_open_invoices.filtered(lambda inv: inv.amount_total < 0):
+	        raise UserError(_("You cannot validate a Prize Claim with a negative total amount."))
+	    if self.amount_total < 100000.00:
+	    	if self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_approve_below_100k_for_approval') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to Approved the Claim."))
+	    elif self.amount_total >= 100000.00 and self.amount_total < 200000.00:
+	    	if self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_approve_above_100k_bel_200k_for_approval') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to Approved the Claim."))
+	    elif self.amount_total >= 200000.00:
+	    	if self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_approve_above_200k_for_approval') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to Approved the Claim."))
+	    stats_his = ''
+	    if self.status_history:
+	    	stats_his = self.status_history
+	    return self.write({'state': 'for_approval', 'for_approval_uid': self._uid, 
+						   'status_history': 'ENDORSED FOR APPROVAL : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + stats_his or ''})
+
+	@api.multi
+	def action_final_approve_charity_claim(self):
+	    to_open_invoices = self.filtered(lambda inv: inv.state != 'for_approval')
+	    if to_open_invoices.filtered(lambda inv: inv.state != 'for_approval'):
+	        raise UserError(_("Prize Claim must be in For Approval state in order to validate it."))
+	    if to_open_invoices.filtered(lambda inv: inv.amount_total < 0):
+	        raise UserError(_("You cannot validate a Prize Claim with a negative total amount."))
+	    if self.amount_total < 100000.00:
+	    	if self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_approve_below_100k_approved') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to Approved the Claim."))
+	    elif self.amount_total >= 100000.00 and self.amount_total < 200000.00:
+	    	if self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_approve_above_100k_bel_200k_approved') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to Approved the Claim."))
+	    elif self.amount_total >= 200000.00:
+	    	if self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_approve_above_200k_approved') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to Approved the Claim."))
+	    stats_his = ''
+	    if self.status_history:
+	    	stats_his = self.status_history
+	    return self.write({'state': 'approved', 'approve_uid': self._uid, 
+						   'status_history': 'APPROVED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + stats_his or ''})
 
 
 	#New Signatory Workflow for Prize Claim
-	#@api.model
-	#def action_prize_claim_under_review_apprv_lv(self, priz_id, uid, status_history, level):
-#		object_invoice = self.env['account.invoice'].search([('id', '=', priz_id)])
-#		return object_invoice.write({'reviewing_state': 'under_review_prze_approved_lv_' + level, 'under_review_lv_'+level+'_approve_uid': uid,
-#									 'status_history': 'Certified Correct by : ' + '['+ object_invoice.write_date +'] ' + self.env.user.name + '\n' + status_history})
-
-
 	@api.multi
 	def action_to_submit_prize_claim(self):
 	    to_open_invoices = self.filtered(lambda inv: inv.state not in ['draft', 'return'])

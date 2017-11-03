@@ -2,8 +2,7 @@
 <odoo>
     <data>
         
-        <!--  Return Prize Claim -->
-        
+        <!--  Return Prize Claim -->        
         <record id="view_return_voucher" model="ir.ui.view">
             <field name="name">Return</field>
             <field name="model">account.voucher.cancel</field>
@@ -19,13 +18,13 @@
                 </form>
             </field>
         </record>         
-
+        <!--  Cancel Prize Claim -->
         <record id="view_cancel_voucher" model="ir.ui.view">
             <field name="name">Cancel</field>
             <field name="model">account.voucher.cancel</field>
             <field name="arch" type="xml">
                 <form string="Cancel Voucher">
-                    <group string="This operation will Cancel the Price Claim.">
+                    <group string="This operation will Cancel the Voucher.">
                         <field name="reason" required="1" string="Reason"/>
                     </group>                    
                     <footer>
@@ -68,6 +67,41 @@
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_cancel_voucher"/>
             <field name="act_window_id" ref="action_cancel_voucher"/>
+        </record>
+
+
+
+        <record id="action_return_voucher_charity" model="ir.actions.act_window">
+            <field name="name">Return Charity Claim</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.voucher.cancel</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record> 
+
+        <record id="action_return_voucher_charity_form" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_return_voucher"/>
+            <field name="act_window_id" ref="action_return_voucher_charity"/>
+        </record>
+
+
+        <record id="action_cancel_voucher_charity" model="ir.actions.act_window">
+            <field name="name">Cancel Charity Claim</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.voucher.cancel</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>         
+
+        <record id="action_cancel_voucher_charity_form" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_cancel_voucher"/>
+            <field name="act_window_id" ref="action_cancel_voucher_charity"/>
         </record>
 
     </data>

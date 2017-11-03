@@ -237,5 +237,94 @@
                   sequence="6"
                   groups="account.group_account_manager,account.group_account_invoice"
                   />     
+
+
+        <!-- MASTER DATA IMAP CLAIMS -->
+
+
+        <menuitem id="menu_pcso_charity" name="IMAP" 
+                  parent="account.menu_finance"
+                  sequence="5"
+                  groups="account.group_account_user,account.group_account_manager,account.group_account_invoice"
+                  />
+
+
+        <menuitem id="menu_pcso_charity_document" name="Documents" 
+                  parent="menu_pcso_charity"
+                  sequence="1"
+                  groups="ccf_group_processor"
+                  />    
+
+
+        <menuitem id="menu_config_charity_claims" name="Master Data" 
+                  parent="menu_pcso_charity"
+                  sequence="2"
+                  groups="account.group_account_manager,account.group_account_invoice"
+                  />         
+
+
+
+
+        <record id="view_config_charity_documents_form" model="ir.ui.view">
+            <field name="name">config.charity.documents.form</field>
+            <field name="model">config.charity.documents</field>
+            <field name="arch" type="xml">
+                <form string="Documents">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="attachment_id"/>
+                                <field name="name"/>                            
+                            </group>                           
+                        </group>
+                        <notebook>
+                            <page string="Attachments">
+                                <field name="document_attachment_ids">
+                                    <tree string="Document Attachments" editable="bottom">
+                                        <field name="sequence" widget="handle" />
+                                        <field name="attachment_id" required="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>                        
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="view_config_charity_documents_tree" model="ir.ui.view">
+            <field name="name">cconfig.charity.documents.tree</field>
+            <field name="model">config.charity.documents</field>
+            <field name="arch" type="xml">
+                <tree string="Documents">
+                    <field name="attachment_id"/>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="open_config_charity_documents" model="ir.actions.act_window">
+            <field name="name">Checklist Documents</field>
+            <field name="res_model">config.charity.documents</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_config_charity_documents_tree"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to add a new Checklist Documents
+              </p>
+            </field>
+        </record>     
+
+        <menuitem id="menu_config_charity_documents" name="Document Checklists" 
+                  parent="menu_config_charity_claims"
+                  action="open_config_charity_documents"
+                  sequence="1"
+                  groups="account.group_account_manager,account.group_account_invoice"
+                  />
+
+
+
     </data>
 </odoo>

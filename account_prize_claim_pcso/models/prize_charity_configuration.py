@@ -79,3 +79,34 @@ class prize_config_draws(models.Model):
 	third_prize = fields.Float(string='Third Prize', digits=dp.get_precision('Price Claim Third Prize'))
 	fourth_prize = fields.Float(string='Fourth Prize', digits=dp.get_precision('Price Claim Fourth Prize'))
 	fifth_prize = fields.Float(string='Fifth Prize', digits=dp.get_precision('Price Claim Fifth Prize'))	
+
+class charity_config_checklist_doc(models.Model):
+	_name = "config.charity.documents"
+	_rec_name='attachment_id'
+
+	attachment_id = fields.Char('Attachment ID', required=True)
+	name = fields.Char('Description', required=True)
+
+	document_attachment_ids = fields.One2many('config.charity.docs.attachlist', 'document_id', string='Attachments')
+	@api.multi
+	def name_get(self):
+		result=[]
+		context = self._context or {}
+		for record in self:
+			result.append((record.id, '[' + record.attachment_id + '] ' + record.name))
+		return result
+
+class charity_config_checklist_doc_att_list(models.Model):
+	_name = 'config.charity.docs.attachlist'
+	_order ='document_id,sequence,id'
+
+	sequence = fields.Integer('Sequence', default=10)
+	name = fields.Char(related='attachment_id.name')
+	document_id = fields.Many2one('config.charity.documents', 'Charity Document')
+	attachment_id = fields.Many2one('config.charity.docs.attachtype', 'Attachment Type', required=True)
+
+class charity_config_checklist_doc_attachment(models.Model):
+	_name = 'config.charity.docs.attachtype'
+
+	name = fields.Char('Attachment Title', required=True)
+	active = fields.Boolean('Active', default=True)

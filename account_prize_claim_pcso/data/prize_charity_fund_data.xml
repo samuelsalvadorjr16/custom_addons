@@ -25,5 +25,24 @@
             <field name="padding">10</field>
             <field name="company_id" eval="False"/>
         </record>        
+
+
+
+        <!-- CHECKLIST 
+        <record id="char_document_imapchemo" model="config.charity.documents">
+            <field name="attachment_id">IMAPCHEMO</field>
+            <field name="name">IMAP - CHEMOTHERAPHY</field>
+        </record>              
+
+        <record id="char_document_imapchemo" model="config.charity.documents">
+            <field name="attachment_id">IMAPCHEMO</field>
+            <field name="name">IMAP - CHEMOTHERAPHY</field>
+        </record>              
+
+        <record id="char_document_imapchemo" model="config.charity.documents">
+            <field name="attachment_id">IMAPCHEMO</field>
+            <field name="name">IMAP - CHEMOTHERAPHY</field>
+        </record>      
+        -->                        
     </data>
 </odoo>
