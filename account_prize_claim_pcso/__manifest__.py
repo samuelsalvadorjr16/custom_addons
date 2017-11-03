@@ -26,13 +26,12 @@
         'security/voucher_security.xml',
         'wizard/voucher_cancel_return.xml',
         'reports/disbursement_voucher.xml',
-        'views/account_invoice.xml',
-        'views/account_payment.xml',
         'views/hr_employee.xml',
         'views/prize_charity_configuration.xml',
         'views/request_for_payment.xml',
-        'views/prize_claim_pcso.xml',
+        'views/account_payment.xml',        
+        'views/prize_claim_pcso.xml',        
+        'views/account_invoice.xml',
         'views/charity_claim_pcso.xml',
-
     ],
 }
