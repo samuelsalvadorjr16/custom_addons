@@ -178,7 +178,6 @@
                                             </t>                                        
                                           </tbody>
                                         </table>
-
                                     </t>
                                     <t t-if="o.transaction_type==False">
                                         <table class="table table-bordered table-condensed">
@@ -214,10 +213,45 @@
                                                 </tr>                             
                                             </t>                                        
                                           </tbody>
-                                        </table>
-                                      
+                                        </table>                                      
                                     </t>                                    
+                                    <t t-if="o.transaction_type=='charity'">
+                                        <table class="table table-bordered table-condensed">
+                                          <tbody>
+                                            
+                                            <tr>
+                                               <td class="text-center" style="font-size: 75%;">GUARANTEE NUMBER</td>
+                                              <td class="text-center" style="font-size: 75%;">DESCRIPTION</td>
+                                              <td class="text-center" style="font-size:75%;">ACCOUNT</td>
+                                              <td class="text-center" style="font-size:75%;">RIZE AMOUNT.</td>
+                                            </tr>
+                                            <t t-foreach="o.invoice_line_ids" t-as="line">
+                                              <tr><td class="text-center" style="font-size:75%"><span t-field="line.guarantee_number"/> </td>
+                                                <td class="text-center" style="font-size:75%"><span t-field="line.name"/> </td>
+                                                <td class="text-center" style="font-size:75%"><span t-field="line.account_id"/></td>
+                                                <td class="text-right" style="font-size:75%"><span t-field="line.price_unit"/> </td>
+                                              </tr>                                          
+                                            </t> 
+                                            <tr>
+                                              <td class="text-center" colspan="2" style="font-size:75%"/>
+                                              <td class="text-left" style="border-bottom:1px solid;font-size:75%">TOTAL</td>
+                                              <td class="text-right" style="border-bottom:1px solid;font-size:75%"><span t-field="o.amount_total"/></td>
+                                            </tr>  
+                                            <t t-set="loop" t-value="0"/>
 
+                                            <t t-foreach="loop" t-as="doc_loop">
+                                                <tr> 
+                                                  <td colspan="4"> &amp;emsp;</td> 
+                                                  <td colspan="2"/>
+                                                </tr>
+                                                <tr> 
+                                                  <td colspan="4">&amp;emsp;</td> 
+                                                  <td colspan="2"/>
+                                                </tr>                             
+                                            </t>                                        
+                                          </tbody>
+                                        </table>                                      
+                                    </t>       
 
                                   </td>
                                   <td colspan="6" class="text-left" style="border-top: 1px solid;border-bottom: 1px solid;border-left: 1px solid;border-right: 1px solid;font-size: 100%;"/>
@@ -290,7 +324,7 @@
 
                                 <tr>
                                   <td class="text-center" colspan="2" style="border-top: 1px solid;border-bottom:  none;border-left: 1px solid;border-right: 1px solid;font-size: 75%;">
-                                        <p style="text-align:left;margin-bottom:0px">Journalized &amp;emsp; <span t-field="move_id_line.create_uid"/></p>
+                                        <p style="text-align:left;margin-bottom:0px">Journalized &amp;emsp; <span t-field="o.submitted_uid"/></p>
                                         <p>by/date &amp;emsp; <span t-field="move_id_line.create_date" t-field-options="{&quot;format&quot;: &quot;MM/dd/yyyy&quot;}"/></p>
                                   </td>
                                   <!--
@@ -317,6 +351,11 @@
 
                                   </p>
                                   <br/>
+                                  <p class="text-center"> 
+                                      <t t-if="o.get_approver_acc_dig_sig()">
+                                          <img t-att-src="'data:image/png;base64,%s' % o.get_approver_acc_dig_sig()" width='130px' height='35px'/>
+                                      </t>                                  
+                                  </p>
                                   <p class="text-center" style="margin-bottom:0px"> MA. TERESITA V. CARBONEL 
                                   </p> 
                                   <p class="text-center" style="font-size:12px">PRINTED NAME AND SIGNATURE OF ACCOUNTANT
@@ -332,7 +371,7 @@
                                           <img t-att-src="'data:image/png;base64,%s' % o.get_approver_dig_sig()" width='130px' height='35px'/>
                                       </t>
                                           
-                                      <p class="text-center" style="margin-bottom:0px"> <span t-esc="o.get_approver_name()"/></p> 
+                                      <p class="text-center" style="margin-bottom:0px"> ALEXANDER F. BALUTAN <!--<span t-esc="o.get_approver_name()"/> --></p> 
                                       <!-- 
                                       <p class="text-center"> APPROVER HERE</p> 
                                     -->

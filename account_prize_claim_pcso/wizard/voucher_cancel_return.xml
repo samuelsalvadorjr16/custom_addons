@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!--  Return Prize Claim -->
+        
+        <record id="view_return_voucher" model="ir.ui.view">
+            <field name="name">Return</field>
+            <field name="model">account.voucher.cancel</field>
+            <field name="arch" type="xml">
+                <form string="Return Voucher">
+                    <group string="This operation will returned to concerned processor for correction/adjustment.">
+                        <field name="reason" required="1" string="Reason"/>
+                    </group>                    
+                    <footer>
+                        <button name="action_return" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>         
+
+        <record id="view_cancel_voucher" model="ir.ui.view">
+            <field name="name">Cancel</field>
+            <field name="model">account.voucher.cancel</field>
+            <field name="arch" type="xml">
+                <form string="Cancel Voucher">
+                    <group string="This operation will Cancel the Price Claim.">
+                        <field name="reason" required="1" string="Reason"/>
+                    </group>                    
+                    <footer>
+                        <button name="action_cancel" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>     
+
+        <record id="action_return_voucher_prize" model="ir.actions.act_window">
+            <field name="name">Return Prize Claim</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.voucher.cancel</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record> 
+
+        <record id="action_return_voucher_prize_form" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_return_voucher"/>
+            <field name="act_window_id" ref="action_return_voucher_prize"/>
+        </record>
+
+        
+
+        <record id="action_cancel_voucher" model="ir.actions.act_window">
+            <field name="name">Cancel Prize Claim</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.voucher.cancel</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>         
+
+        <record id="action_cancel_voucher_prize_form" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_cancel_voucher"/>
+            <field name="act_window_id" ref="action_cancel_voucher"/>
+        </record>
+
+    </data>
+</odoo>    

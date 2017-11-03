@@ -38,7 +38,7 @@ class account_invoice_line_prize_claim(models.Model):
 
 	draw_id = fields.Many2one('config.prize.draws', 'Draw ID')
 	draw_date = fields.Datetime(related='draw_id.draw_date', string='Draw Date')
-	draw_result = fields.Char(related='draw_id.draw_result', string='Draw Date')
+	draw_result = fields.Char(related='draw_id.draw_result', string='Draw Result')
 	draw_gametype = fields.Many2one('config.prize.gametype',related='draw_id.gametype_id', string='Game Type')
 	bettype_id = fields.Many2one('config.prize.bettype', 'Bet Type')
 	agency_id = fields.Many2one('config.prize.agency', 'Agency')

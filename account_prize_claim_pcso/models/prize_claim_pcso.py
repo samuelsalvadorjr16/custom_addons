@@ -2,7 +2,7 @@
 
 import logging
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo import tools, _
 from odoo.modules.module import get_module_resource
 
@@ -21,7 +21,8 @@ class account_invoice_prize_claim(models.Model):
 	    track_visibility='always')
 
 	branch_id = fields.Many2one('config.prize.branch', string='Branch', readonly=True, states={'draft': [('readonly', False)]})
-	transaction_id = fields.Many2one('config.prize.transactiontype', string='Transaction Type')
+	#transaction_id = fields.Many2one('config.prize.transactiontype', string='Transaction Type')
+	draft_number_sequence = fields.Char(String='Number',default=lambda self: _('New Voucher'))
 
 	claimant_id = fields.Many2one('res.partner', string='Claimant')
 	claimant_type_id = fields.Selection(related='partner_id.id_type', string='ID Type')
@@ -33,8 +34,9 @@ class account_invoice_prize_claim(models.Model):
 	transaction_date = fields.Date('Transaction Date', default=fields.Date.context_today)
 	jackpot_prize = fields.Boolean('Jackpot Winner', readonly=True, states={'draft': [('readonly', False)]})
 
+	write_date = fields.Datetime('Write Date', track_visibility='always', copy=True)
 	transaction_type = fields.Selection([
-	        ('prize_claim','Prize Claim'),
+	        ('prize_claim','Prize Fund'),
 	        ('charity','Charity Fund'),
 	    ], index=True, change_default=True,string='Transaction Type')
 
@@ -51,7 +53,10 @@ class account_invoice_prize_claim(models.Model):
 
 	state = fields.Selection([
 	        ('draft','Draft'),
+	        ('return','Return'),
 	        ('submit', 'Submitted'),
+	        ('under_review', 'Under Review'),
+	        ('for_approval', 'For Approval'),
 	        ('approved', 'Approved'),
 	        ('denied', 'Denied'),	        
 	        ('open', 'Open'),
@@ -68,13 +73,137 @@ class account_invoice_prize_claim(models.Model):
 	         " * The 'Approved' status is used when user approved a submitted Prize Claim\n."
 	         " * The 'Denied' status is used when user denied a submitted Prize Claim.")
 
+	#reviewing_state =fields.Selection([('under_review_prze_approved_lv_1', 'Under Review Aprrove Level 1'),
+	#									('under_review_prze_approved_lv_2', 'Under Review Aprrove Level 2'), 
+	#									('under_review_prze_approved_lv_3', 'Under Review Aprrove Level 3')],
+	#				track_visibility='onchange', string= 'Review Status')
 
+
+	status_history = fields.Text('History')
+
+
+	progress_state = fields.Integer('Progress', default=1)
 	amount_in_words = fields.Char('Amount in Words')
+
+	certified_correct_uid = fields.Many2one('res.users', 'Certified Correct By')
+	under_review_uid = fields.Many2one('res.users', 'Endorsed By')
+	for_approval_uid = fields.Many2one('res.users', 'Approval By')
 
 	approve_uid = fields.Many2one('res.users', 'Approved By')
 	submitted_uid = fields.Many2one('res.users', 'Submitted By')
 	denied_uid = fields.Many2one('res.users', 'Denied By')
+	cancelled_uid = fields.Many2one('res.users', 'Cancelled By')
 
+
+
+
+	#New Signatory Workflow for Prize Claim
+	#@api.model
+	#def action_prize_claim_under_review_apprv_lv(self, priz_id, uid, status_history, level):
+#		object_invoice = self.env['account.invoice'].search([('id', '=', priz_id)])
+#		return object_invoice.write({'reviewing_state': 'under_review_prze_approved_lv_' + level, 'under_review_lv_'+level+'_approve_uid': uid,
+#									 'status_history': 'Certified Correct by : ' + '['+ object_invoice.write_date +'] ' + self.env.user.name + '\n' + status_history})
+
+
+	@api.multi
+	def action_to_submit_prize_claim(self):
+	    to_open_invoices = self.filtered(lambda inv: inv.state not in ['draft', 'return'])
+	    if to_open_invoices.filtered(lambda inv: inv.state not in ['draft', 'return']):
+	        raise UserError(_("Prize Claim must be in draft state in order to validate it."))
+	    if to_open_invoices.filtered(lambda inv: inv.amount_total < 0):
+	        raise UserError(_("You cannot validate a Prize Claim with a negative total amount."))
+
+
+	    if self.jackpot_prize == True:
+	    	if self.env.ref('account_prize_claim_pcso.pcf_group_allow_submit_jackpot') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to submit the Claim. Prize Claim is a Jackpot Prize."))
+	    stats_his = ''
+	    if self.status_history:
+	    	stats_his = self.status_history
+	    state_dict ={'state': 'submit', 'submitted_uid': self._uid,
+	    	 'status_history': 'SUBMITTED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + stats_his or ''}
+	    if self.state == 'draft':
+	    	state_dict['status_history'] = 'SUBMITTED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + stats_his or ''
+	    elif self.state == 'return':
+	    	state_dict['status_history'] = 'RE-SUBMITTED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + stats_his or ''
+	    return self.write(state_dict)
+
+
+	@api.multi
+	def action_to_approve_for_review_prize_claim(self):	
+	    to_open_invoices = self.filtered(lambda inv: inv.state != 'submit')
+	    if to_open_invoices.filtered(lambda inv: inv.state != 'submit'):
+	        raise UserError(_("Prize Claim must be in Submitted state in order to validate it."))
+	    if to_open_invoices.filtered(lambda inv: inv.amount_total < 0):
+	        raise UserError(_("You cannot validate a Prize Claim with a negative total amount."))
+	    if self.jackpot_prize == True:
+	    	if self.env.ref('account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_rev') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to Approved the Claim. Prize Claim is a Jackpot Prize."))
+	    else:
+	    	if self.amount_total < 100000.00:
+	    		if self.env.ref('account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_below_100k_rev') not in self.env.user.groups_id:
+	    			raise UserError(_("User has no rights to Approved the Claim."))
+	    	elif self.amount_total >= 100000.00:
+	    		if self.env.ref('account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_above_100k_rev') not in self.env.user.groups_id:
+	    			raise UserError(_("User has no rights to Approved the Claim."))
+	    stats_his = ''
+	    if self.status_history:
+	    	stats_his = self.status_history
+
+	    return self.write({'state': 'under_review', 'certified_correct_uid': self._uid, 
+	    				   'status_history': 'ENDORSED FOR REVIEW : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + stats_his or ''})
+
+
+	@api.multi
+	def action_to_approve_for_approval_prize_claim(self):	
+	    to_open_invoices = self.filtered(lambda inv: inv.state != 'under_review')
+	    if to_open_invoices.filtered(lambda inv: inv.state != 'under_review'):
+	        raise UserError(_("Prize Claim must be in Under Review state in order to validate it."))
+	    if to_open_invoices.filtered(lambda inv: inv.amount_total < 0):
+	        raise UserError(_("You cannot validate a Prize Claim with a negative total amount."))
+	    if self.jackpot_prize == True:
+	    	if self.env.ref('account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_for_approv') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to Endorse the Claim. Prize Claim is a Jackpot Prize."))
+	    else:
+	    	if self.amount_total < 100000.00:
+	    		if self.env.ref('account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_below_100k_for_approv') not in self.env.user.groups_id:
+	    			raise UserError(_("User has no rights to Endorse the Claim."))
+	    	elif self.amount_total >= 100000.00:
+	    		if self.env.ref('account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_above_100k_for_approv') not in self.env.user.groups_id:
+	    			raise UserError(_("User has no rights to Endorse the Claim."))
+	    return self.write({'state': 'for_approval', 'for_approval_uid': self._uid,
+	    				  'status_history': 'ENDORSED FOR APPROVAL : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + self.status_history or ''})
+
+	@api.multi
+	def action_final_approve(self):	
+	    to_open_invoices = self.filtered(lambda inv: inv.state != 'for_approval')
+	    if to_open_invoices.filtered(lambda inv: inv.state != 'for_approval'):
+	        raise UserError(_("Prize Claim must be in For Approval state in order to validate it."))
+	    if to_open_invoices.filtered(lambda inv: inv.amount_total < 0):
+	        raise UserError(_("You cannot validate a Prize Claim with a negative total amount."))
+	    if self.jackpot_prize == True:
+	    	if self.env.ref('account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_approved') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to Endorse the Claim. Prize Claim is a Jackpot Prize."))
+	    else:
+	    	if self.amount_total < 100000.00:
+	    		if self.env.ref('account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_below_100k_approved') not in self.env.user.groups_id:
+	    			raise UserError(_("User has no rights to Endorse the Claim."))
+	    	elif self.amount_total >= 100000.00:
+	    		if self.env.ref('account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_above_100k_approved') not in self.env.user.groups_id:
+	    			raise UserError(_("User has no rights to Endorse the Claim."))
+	    return self.write({'state': 'approved', 'approve_uid': self._uid,
+	    				  'status_history': 'APPROVED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + self.status_history or ''})
+
+
+	@api.multi
+	def action_set_to_return(self, reason):
+	    return self.write({'state': 'return', 'denied_uid': self._uid,
+	    				  'status_history': 'RETURNED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n *****REASON \n' + reason  + '\n' + self.status_history})
+	@api.multi
+	def action_set_to_cancel(self, reason=''):
+	    return self.write({'state': 'cancel', 'cancelled_uid': self._uid,
+	    				  'status_history': 'CANCELLED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n *****REASON \n' + reason  + '\n' + self.status_history + reason + '\n'})	
+	    				  	
 	@api.onchange('amount_total')
 	def _onchange_amount_total(self):
 		if hasattr(super(account_invoice_prize_claim, self), '_onchange_amount'):
@@ -95,6 +224,16 @@ class account_invoice_prize_claim(models.Model):
 		else:
 			return self.approve_uid.name
 
+
+	@api.multi
+	def get_approver_acc_dig_sig(self):
+		self.ensure_one()
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.for_approval_uid.id or False)])
+		if obj_employee:
+			return obj_employee.image_signature
+		else:
+			return False
+
 	@api.multi
 	def get_approver_dig_sig(self):
 		self.ensure_one()
@@ -107,7 +246,7 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_submitter_dig_sig(self):
 		self.ensure_one()
-		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.submitted_uid.id or False)])
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.certified_correct_uid.id or False)])
 		if obj_employee:
 			return obj_employee.image_signature
 		else:
@@ -116,7 +255,7 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_submitter_name(self):
 		self.ensure_one()
-		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.submitted_uid.id or False)])
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.certified_correct_uid.id or False)])
 		if obj_employee:
 			return obj_employee.name
 		else:
@@ -125,7 +264,7 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_submitter_position(self):
 		self.ensure_one()
-		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.submitted_uid.id or False)])
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.certified_correct_uid.id or False)])
 		if obj_employee:
 			return obj_employee.job_id.name
 		else:
@@ -139,30 +278,42 @@ class account_invoice_prize_claim(models.Model):
 
 
 
-
-	@api.multi
-	def action_to_submit_prize_claim(self):
+	#OBSELETE
+	#@api.multi
+	#def action_to_submit_prize_claim(self):
 	    # lots of duplicate calls to action_invoice_open, so we remove those already open
-	    to_open_invoices = self.filtered(lambda inv: inv.state != 'open')
-	    if to_open_invoices.filtered(lambda inv: inv.state != 'draft'):
-	        raise UserError(_("Prize Claim must be in draft state in order to validate it."))
-	    if to_open_invoices.filtered(lambda inv: inv.amount_total < 0):
-	        raise UserError(_("You cannot validate a Prize Claim with a negative total amount. You should create a credit note instead."))
-	    if self.env.ref('account_prize_claim_pcso.pcf_group_allow_to_submit') in self.env.user.groups_id and self.amount_total >=1000000.00:
-	    	raise UserError(_("User has no rights to submit the Claim. Prize Claim is a Jackpot Prize."))
-	    return to_open_invoices.invoice_validate_submit()
+	#    to_open_invoices = self.filtered(lambda inv: inv.state != 'open')
+	#    if to_open_invoices.filtered(lambda inv: inv.state != 'draft'):
+	#        raise UserError(_("Prize Claim must be in draft state in order to validate it."))
+	#    if to_open_invoices.filtered(lambda inv: inv.amount_total < 0):
+	#        raise UserError(_("You cannot validate a Prize Claim with a negative total amount. You should create a credit note instead."))
+	#    if self.env.ref('account_prize_claim_pcso.pcf_group_allow_to_submit') in self.env.user.groups_id and self.jackpot_prize:
+	#    	raise UserError(_("User has no rights to submit the Claim. Prize Claim is a Jackpot Prize."))
+	#    return to_open_invoices.invoice_validate_submit()
 
-	@api.one
-	def action_to_submit_prize_claim_jackpot(self):
+	@api.model
+	def create(self, vals):
+		if vals.get('draft_number_sequence', _('New Voucher')) == _('New Voucher'):
+			vals['draft_number_sequence'] = self.env['ir.sequence'].next_by_code('account.invoice.voucher.seq') 
+		
+		if vals.get('jackpot_prize'):
+			if self.env.ref('account_prize_claim_pcso.pcf_group_allow_create_jackpot') not in self.env.user.groups_id:
+				raise UserError(_("User has no access to Create the Claim. Prize Claim is a Jackpot Prize."))
+		res = super(account_invoice_prize_claim, self).create(vals)
+
+		return res
+
+	#@api.one
+	#def action_to_submit_prize_claim_jackpot(self):
 	    # lots of duplicate calls to action_invoice_open, so we remove those already open
-	    to_open_invoices = self.filtered(lambda inv: inv.state != 'open')
-	    if to_open_invoices.filtered(lambda inv: inv.state != 'draft'):
-	        raise UserError(_("Prize Claim must be in draft state in order to validate it."))
-	    if to_open_invoices.filtered(lambda inv: inv.amount_total < 0):
-	        raise UserError(_("You cannot validate a Prize Claim with a negative total amount. You should create a credit note instead."))
-	    if self.env.ref('account_prize_claim_pcso.pcf_group_allow_to_submit') in self.env.user.groups_id and self.amount_total >=1000000.00:
-	    	raise UserError(_("User has no rights to submit the Claim. Prize Claim is a Jackpot Prize."))
-	    return to_open_invoices.invoice_validate_submit()
+	#    to_open_invoices = self.filtered(lambda inv: inv.state != 'open')
+	#    if to_open_invoices.filtered(lambda inv: inv.state != 'draft'):
+	#        raise UserError(_("Prize Claim must be in draft state in order to validate it."))
+	#    if to_open_invoices.filtered(lambda inv: inv.amount_total < 0):
+	#        raise UserError(_("You cannot validate a Prize Claim with a negative total amount. You should create a credit note instead."))
+	#    if self.env.ref('account_prize_claim_pcso.pcf_group_allow_to_submit') in self.env.user.groups_id and self.amount_total >=1000000.00:
+	 #   	raise UserError(_("User has no rights to submit the Claim. Prize Claim is a Jackpot Prize."))
+	#    return to_open_invoices.invoice_validate_submit()
 
 	@api.multi
 	def action_to_approved_prize_claim(self):
@@ -172,16 +323,14 @@ class account_invoice_prize_claim(models.Model):
 	        raise UserError(_("Invoice must be in submit state in order to validate it."))
 	    if to_open_invoices.filtered(lambda inv: inv.amount_total < 0):
 	        raise UserError(_("You cannot validate an invoice with a negative total amount. You should create a credit note instead."))
-	    if self.env.ref('account_prize_claim_pcso.pcf_group_allow_to_approve') in self.env.user.groups_id and self.amount_total >=1000000.00:
+	    if self.env.ref('account_prize_claim_pcso.pcf_group_allow_to_approve') in self.env.user.groups_id and self.jackpot_prize:
 	    	raise UserError(_("User has no rights to Approve the Claim. Prize Claim is a Jackpot Prize."))
-		#if  self.env.ref('primer_extend_security_access.pcf_group_allow_to_approve') in self.env.user.groups_id and self.amount_total >=1000000.00:
-		#	raise UserError(_("User has no rights to Approve the Claim. Prize Claim is a Jackpot Prize."))
 
-	    to_open_invoices.action_date_assign()
-	    to_open_invoices.action_move_create()
+	    #to_open_invoices.action_date_assign()
+	    #to_open_invoices.action_move_create()
 
-	    for invoice in self.filtered(lambda invoice: invoice.partner_id not in invoice.message_partner_ids):
-	        invoice.message_subscribe([invoice.partner_id.id])
+	    #for invoice in self.filtered(lambda invoice: invoice.partner_id not in invoice.message_partner_ids):
+	    #    invoice.message_subscribe([invoice.partner_id.id])
 	    #self._check_duplicate_supplier_reference()
 	    return self.write({'state': 'approved', 'approve_uid': self._uid})
 
@@ -189,6 +338,11 @@ class account_invoice_prize_claim(models.Model):
 	def action_to_appoved_prize_claim_jackpot(self):
 		for claim in self:
 			claim.action_to_appoved_prize_claim()
+
+	#@api.model
+	#def create(self, vals):
+#		_logger.info(vals)
+#		raise Warning(vals)
 
 	@api.multi
 	def action_to_denied_prize_claim(self):
@@ -200,7 +354,7 @@ class account_invoice_prize_claim(models.Model):
 	        raise UserError(_("You cannot validate an invoice with a negative total amount. You should create a credit note instead."))
 	    for invoice in self.filtered(lambda invoice: invoice.partner_id not in invoice.message_partner_ids):
 	        invoice.message_subscribe([invoice.partner_id.id])
-	    if self.env.ref('account_prize_claim_pcso.pcf_group_allow_to_approve') in self.env.user.groups_id and to_open_invoices.filtered(lambda inv: inv.transaction_type == 'prize_claim'):# and self.amount_total >=1000000.00:
+	    if self.env.ref('account_prize_claim_pcso.pcf_group_allow_to_approve') in self.env.user.groups_id and to_open_invoices.filtered(lambda inv: inv.transaction_type == 'prize_claim'):	    
 	    	raise UserError(_("User has no rights to Deny the Claim. Prize Claim is a Jackpot Prize."))
 	    #self._check_duplicate_supplier_reference()
 	    return self.write({'state': 'denied', 'denied_uid': self._uid})

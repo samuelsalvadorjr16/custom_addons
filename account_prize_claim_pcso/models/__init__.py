@@ -6,3 +6,6 @@ from . import account_invoice_line
 from . import account_payment
 from . import purchase_order
 from . import hr_employee
+from . import account_journal
+from . import mail_tracking_value
+#from . import account_journal_dashboard

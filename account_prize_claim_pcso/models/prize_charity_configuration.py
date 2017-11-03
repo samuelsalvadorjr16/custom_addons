@@ -23,6 +23,7 @@ class prize_config_transaction_type(models.Model):
 class prize_config_agency(models.Model):
 	_name = "config.prize.agency"
 
+	_rec_name = 'agency_id'
 	name = fields.Char('Name')
 	agency_id = fields.Char('ID')
 	owner_id = fields.Many2one('res.partner', 'Owner')
@@ -43,6 +44,14 @@ class prize_config_agency(models.Model):
 			res_agency_obj = self.env['config.prize.agency'].search([('id', '=', res_id)])
 			res_agency_obj.write({'owner_id': res_partner_id})			
 		return res_id
+
+	@api.multi
+	def name_get(self):
+		result=[]
+		context = self._context or {}
+		for record in self:
+			result.append((record.id, '[' + record.agency_id + '] ' + record.name))
+		return result
 
 
 class prize_config_gametype(models.Model):

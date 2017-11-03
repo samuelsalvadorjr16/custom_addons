@@ -17,5 +17,13 @@
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="can_be_expensed" eval="True"/>
         </record>
+
+        <record id="seq_number_voucher" model="ir.sequence">
+            <field name="name">Voucher Draft Sequence</field>
+            <field name="code">account.invoice.voucher.seq</field>
+            <field name="prefix">%(day)s%(month)s%(year)s</field>
+            <field name="padding">10</field>
+            <field name="company_id" eval="False"/>
+        </record>        
     </data>
 </odoo>

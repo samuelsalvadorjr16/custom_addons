@@ -2,9 +2,118 @@
 <odoo>
         <!-- Price Claim -->
         <record id="module_category_prize_claim" model="ir.module.category">
-            <field name="name">Prize Claim</field>
+            <field name="name">Prize Fund</field>
             <field name="sequence" eval="9" />
         </record>
+
+        <record id="pcf_group_processor" model="res.groups">
+            <field name="name">01. Processor</field>
+            <field name="category_id" ref="module_category_prize_claim"/>
+            <field name="comment">User, that will encode/prepare the Prize Claim.</field>
+        </record>
+
+        <!--
+        <record id="pcf_group_allow_to_submit_non_jack_below_100k" model="res.groups">
+            <field name="name">Allow to Submit  below 100,000.00 except Jackpot Prize</field>
+            <field name="category_id" ref="module_category_prize_claim"/>
+            <field name="implied_ids" eval="[(4, ref('pcf_group_processor'))]"/>
+            <field name="comment">User that can submit a Claim below 100,000 except Jackpot Prize.</field>
+        </record>
+
+        <record id="pcf_group_allow_to_submit_non_jack_above_100k" model="res.groups">
+            <field name="name">Allow to Submit  aboove 100,000.00 except Jackpot Prize</field>
+            <field name="category_id" ref="module_category_prize_claim"/>
+            <field name="implied_ids" eval="[(4, ref('pcf_group_processor'))]"/>
+            <field name="comment">User that can submit a Claim More than 100,000 except Jackpot Prize.</field>
+        </record>
+        -->
+
+        <!-- PFC Below 100k -->
+        <record id="pcf_group_allow_to_approve_non_jack_below_100k_rev" model="res.groups">
+             <field name="category_id" ref="module_category_prize_claim"/>
+             <field name="implied_ids" eval="[(4, ref('pcf_group_processor'))]"/>
+            <field name="name">02. Allow to Approve for Review, prize claim below 100,000.00 except Jackpot Prize</field>
+            <field name="comment">User that can Approve for Review a Claim for below than 100,000 except Jackpot Prize.</field>
+        </record>
+
+
+        <record id="pcf_group_allow_to_approve_non_jack_below_100k_for_approv" model="res.groups">
+             <field name="category_id" ref="module_category_prize_claim"/>
+             <field name="implied_ids" eval="[(4, ref('pcf_group_processor'))]"/>
+            <field name="name">03. Allow to Approve for Approval, for prize claim below 100,000.00 except Jackpot Prize</field>
+            <field name="comment">User that can Approve, for Approval a Claim for below than 100,000 except Jackpot Prize.</field>
+        </record>
+
+
+        <record id="pcf_group_allow_to_approve_non_jack_below_100k_approved" model="res.groups">
+             <field name="category_id" ref="module_category_prize_claim"/>
+             <field name="implied_ids" eval="[(4, ref('pcf_group_processor'))]"/>
+            <field name="name">04. Final Approval for prize claim below 100,000.00 except Jackpot Prize</field>
+            <field name="comment">User that can Approve as Final Approval to a Claim for below than 100,000 except Jackpot Prize.</field>
+        </record>
+
+
+        <!-- PFC Above 100k -->
+        <record id="pcf_group_allow_to_approve_non_jack_above_100k_rev" model="res.groups">
+             <field name="category_id" ref="module_category_prize_claim"/>
+             <field name="implied_ids" eval="[(4, ref('pcf_group_processor'))]"/>
+            <field name="name">05. Allow to Approve for Review, prize claim above 100,000.00 except Jackpot Prize</field>
+            <field name="comment">User that can Approve for Review a Claim for more than 100,000 except Jackpot Prize.</field>
+        </record>
+
+
+        <record id="pcf_group_allow_to_approve_non_jack_above_100k_for_approv" model="res.groups">
+             <field name="category_id" ref="module_category_prize_claim"/>
+             <field name="implied_ids" eval="[(4, ref('pcf_group_processor'))]"/>
+            <field name="name">06. Allow to Approve, for Approval for prize claim above 100,000.00 except Jackpot Prize</field>
+            <field name="comment">User that can Approve for Review a Claim for more than 100,000 except Jackpot Prize.</field>
+        </record>
+
+        <record id="pcf_group_allow_to_approve_non_jack_above_100k_approved" model="res.groups">
+             <field name="category_id" ref="module_category_prize_claim"/>
+             <field name="implied_ids" eval="[(4, ref('pcf_group_processor'))]"/>
+            <field name="name">07. Final Approval for prize claim above 100,000.00 except Jackpot Prize</field>
+            <field name="comment">User that can Approve as Final Approval for more than 100,000 except Jackpot Prize.</field>
+        </record>
+
+        <!-- JACKPOT -->
+         <record id="pcf_group_allow_create_jackpot" model="res.groups">
+             <field name="category_id" ref="module_category_prize_claim"/>
+             <field name="implied_ids" eval="[(4, ref('pcf_group_processor'))]"/>
+            <field name="name">08. User that can create a Jackpot claim</field>
+            <field name="comment">User that can create a Claim for Jackpot Prize.</field>
+        </record>       
+
+         <record id="pcf_group_allow_submit_jackpot" model="res.groups">
+             <field name="category_id" ref="module_category_prize_claim"/>
+             <field name="implied_ids" eval="[(4, ref('pcf_group_processor'))]"/>
+            <field name="name">09. User that can Submit a Jackpot Claim</field>
+            <field name="comment">User that can Submit a Claim for Jackpot Prize.</field>
+        </record>      
+
+         <record id="pcf_group_allow_to_approve_jackpot_rev" model="res.groups">
+             <field name="category_id" ref="module_category_prize_claim"/>
+             <field name="implied_ids" eval="[(4, ref('pcf_group_processor'))]"/>
+            <field name="name">10. Allow to Approve for Review a Jackpot Claim</field>
+            <field name="comment">User that can Approve for Review a Claim for Jackpot Prize.</field>
+        </record>             
+
+         <record id="pcf_group_allow_to_approve_jackpot_for_approv" model="res.groups">
+             <field name="category_id" ref="module_category_prize_claim"/>
+             <field name="implied_ids" eval="[(4, ref('pcf_group_processor'))]"/>
+            <field name="name">11. Allow to Approve, for Approval a Jackpot Claim</field>
+            <field name="comment">User that can Approve, for Approval a Claim for Jackpot Prize.</field>
+        </record>     
+
+         <record id="pcf_group_allow_to_approve_jackpot_approved" model="res.groups">
+             <field name="category_id" ref="module_category_prize_claim"/>
+             <field name="implied_ids" eval="[(4, ref('pcf_group_processor'))]"/>
+            <field name="name">12. Final Approval of Jackpot Claim</field>
+            <field name="comment">User that can Approve for Review a Claim for Jackpot Prize.</field>
+        </record>       
+
+
+<!--
 
         <record id="pcf_group_allow_to_submit" model="res.groups">
             <field name="name">Allow to Submit except Jackpot Prize</field>
@@ -27,6 +136,18 @@
              <field name="category_id" ref="module_category_prize_claim"/>
             <field name="name">Allow to Approve Jackpot</field>
             <field name="comment">User that can Approve a Claim for Jackpot Prize.</field>
+        </record>
+-->
+
+        <!-- Charity Fund -->
+        <record id="module_category_charity_claim" model="ir.module.category">
+            <field name="name">Charity Fund</field>
+            <field name="sequence" eval="10" />
+        </record>        
+        <record id="ccf_group_processor" model="res.groups">
+            <field name="name">01. Processor</field>
+            <field name="category_id" ref="module_category_charity_claim"/>
+            <field name="comment">User, that will encode/prepare the IMAP Claim.</field>
         </record>
 
         <!-- Operation Expenses -->

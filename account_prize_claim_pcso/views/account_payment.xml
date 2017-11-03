@@ -20,7 +20,7 @@
             </field>
         </record>
 
-
+        <!-- ACTION TRIGGERED IN PRIZE CLAIM -->
         <record id="act_acc_invo_paymt_prize" model="ir.actions.act_window">
             <field name="name">Prize Claim Register Payment</field>
             <field name="res_model">account.payment</field>
@@ -32,14 +32,25 @@
         </record>
 
 
-        <!-- MENU FOR PAYMENT CHARITY AND P.CLAIM -->
+        <!-- ACTION TRIGGERED IN CHARITY CLAIM -->
+        <record id="act_acc_invo_paymt_char" model="ir.actions.act_window">
+            <field name="name">Charity Claim Register Payment</field>
+            <field name="res_model">account.payment</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="account.view_account_payment_invoice_form"/>
+            <field name="context">{'default_invoice_ids': [(4, active_id, None)], 'default_pcso_transaction_type': 'charity'}</field>
+            <field name="target">new</field>
+        </record>
+
+        <!-- MENU FOR PAYMENT FOR P.CLAIM -->
         <record id="action_acct_pymt_char_prz_payable" model="ir.actions.act_window">
             <field name="name">Payments</field>
             <field name="res_model">account.payment</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,kanban,form,graph</field>
             <field name="context">{'default_payment_type': 'outbound', 'default_partner_type': 'supplier'}</field>
-            <field name="domain">[('partner_type', '=', 'supplier'), ('pcso_transaction_type', 'in', ['prize_claim', 'charity'])]</field>
+            <field name="domain">[('partner_type', '=', 'supplier'), ('pcso_transaction_type', '=', 'prize_claim')]</field>
             <field name="view_id" ref="account.view_account_supplier_payment_tree"/>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
@@ -51,11 +62,46 @@
             </field>
         </record>   
 
+        <!-- MENU FOR PAYMENT CHARITY -->
+        <record id="action_acct_pymt_paymen_char_payable" model="ir.actions.act_window">
+            <field name="name">Payments</field>
+            <field name="res_model">account.payment</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,kanban,form,graph</field>
+            <field name="context">{'default_payment_type': 'outbound', 'default_partner_type': 'supplier'}</field>
+            <field name="domain">[('partner_type', '=', 'supplier'), ('pcso_transaction_type', '=', 'charity')]</field>
+            <field name="view_id" ref="account.view_account_supplier_payment_tree"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                  Click to register a payment
+                </p><p>
+                  Payments are used to register liquidity movements (send, collect or transfer money).
+                  You can then process those payments by your own means or by using installed facilities.
+                </p>
+            </field>
+        </record>   
+
+
         <menuitem id="menu_pymnt_pcso" name="Payment" 
                   parent="res_claimant_pcso.menu_pcso_claimant_document"
                   action="action_acct_pymt_char_prz_payable"
                   sequence="5"
-                  groups="account.group_account_user,account.group_account_manager,account.group_account_invoice"
-                  />                 
+                  groups="account.group_account_user,account.group_account_manager"
+                  />           
+        <menuitem id="menu_pymnt_pcso_charity" name="Payment" 
+                  parent="menu_pcso_charity_document"
+                  action="action_acct_pymt_paymen_char_payable"
+                  sequence="3"
+                  groups="account.group_account_user,account.group_account_manager"
+                  />       
+
+
+        <record id= "menu_pymnt_pcso" model = 'ir.ui.menu'>
+          <field name="groups_id" eval="[(6,0, [ref('account.group_account_user'),ref('account.group_account_manager')])]"/>
+        </record>      
+
+        <record id= "menu_pymnt_pcso_charity" model = 'ir.ui.menu'>
+          <field name="groups_id" eval="[(6,0, [ref('account.group_account_user'),ref('account.group_account_manager')])]"/>
+        </record>                       
     </data>
 </odoo>
