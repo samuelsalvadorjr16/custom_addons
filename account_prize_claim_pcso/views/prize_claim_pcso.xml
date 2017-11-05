@@ -5,7 +5,7 @@
         <!-- OVERRIDE THE VENDOR BILL -->
 
         <record id="account.action_invoice_tree2" model="ir.actions.act_window">
-            <field name="name">Vendor Bills</field>
+            <field name="name">OpEx Voucher</field>
             <field name="res_model">account.invoice</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
@@ -15,7 +15,7 @@
             <field name="search_view_id" ref="account.view_account_invoice_filter"/>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
-                Click to record a new vendor bill.
+                Click to record a new Opex Voucher.
               </p><p>
                 You can control the invoice from your vendor according to
                 what you purchased or received.
@@ -310,9 +310,7 @@
                   />    
 
 
-        <record id= "menu_pcso_prize_claim_form" model = 'ir.ui.menu'>
-          <field name="groups_id" eval="[(6,0, [ref('account_prize_claim_pcso.pcf_group_processor')])]"/>
-        </record>      
+
 
     </data>
 </odoo>

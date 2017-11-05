@@ -1,0 +1,21 @@
+"id","name","model_id/id","group_id/id","perm_read","perm_write","perm_create","perm_unlink"
+"account_prize_claim_pcso.transtype_master","config.prize.transactiontype.group.master","account_prize_claim_pcso.model_config_prize_transactiontype","account_prize_claim_pcso.pcf_group_allow_to_maintain_master_files",1,1,1,1
+"account_prize_claim_pcso.gametype_master","config.prize.gametype.group.master","account_prize_claim_pcso.model_config_prize_gametype","account_prize_claim_pcso.pcf_group_allow_to_maintain_master_files",1,1,1,1
+"account_prize_claim_pcso.przedraw_master","config.prize.draws.group.master","account_prize_claim_pcso.model_config_prize_draws","account_prize_claim_pcso.pcf_group_allow_to_maintain_master_files",1,1,1,1
+"account_prize_claim_pcso.przbranch_master","config.prize.branch.group.master","account_prize_claim_pcso.model_config_prize_branch","account_prize_claim_pcso.pcf_group_allow_to_maintain_master_files",1,1,1,1
+"account_prize_claim_pcso.przbetype_master","config.prize.bettype.group.master","account_prize_claim_pcso.model_config_prize_bettype","account_prize_claim_pcso.pcf_group_allow_to_maintain_master_files",1,1,1,1
+"account_prize_claim_pcso.przagency_master","config.prize.agency.group.master","account_prize_claim_pcso.model_config_prize_agency","account_prize_claim_pcso.pcf_group_allow_to_maintain_master_files",1,1,1,1
+"account_prize_claim_pcso.transtype_processor","config.prize.transactiontype.group.master","account_prize_claim_pcso.model_config_prize_transactiontype","account_prize_claim_pcso.pcf_group_processor",1,0,0,0
+"account_prize_claim_pcso.gametype_processor","config.prize.gametype.group.master","account_prize_claim_pcso.model_config_prize_gametype","account_prize_claim_pcso.pcf_group_processor",1,0,0,0
+"account_prize_claim_pcso.przedraw_processor","config.prize.draws.group.master","account_prize_claim_pcso.model_config_prize_draws","account_prize_claim_pcso.pcf_group_processor",1,0,0,0
+"account_prize_claim_pcso.przbranch_processor","config.prize.branch.group.master","account_prize_claim_pcso.model_config_prize_branch","account_prize_claim_pcso.pcf_group_processor",1,0,0,0
+"account_prize_claim_pcso.przbetype","config.prize.bettype.group.master","account_prize_claim_pcso.model_config_prize_bettype","account_prize_claim_pcso.pcf_group_processor",1,0,0,0
+"account_prize_claim_pcso.przagency","config.prize.agency.group.master","account_prize_claim_pcso.model_config_prize_agency","account_prize_claim_pcso.pcf_group_processor",1,0,0,0
+"account_prize_claim_pcso.access_account_invoice_uinvoice","account.invoice","account.model_account_invoice","account_prize_claim_pcso.pcf_group_processor",1,1,1,1
+"account_prize_claim_pcso.access_account_invoice_line_uinvoice","account.invoice.line","account.model_account_invoice_line","account_prize_claim_pcso.pcf_group_processor",1,1,1,1
+"account_prize_claim_pcso.access_account_invoice_tax_uinvoice","account.invoice.tax","account.model_account_invoice_tax","account_prize_claim_pcso.pcf_group_processor",1,1,1,1
+"account_prize_claim_pcso.access_account_journal_invoice","account.journal invoice","account.model_account_journal","account_prize_claim_pcso.pcf_group_processor",1,0,0,0
+"account_prize_claim_pcso.access_account_invoice_uinvoice_ccf","account.invoice","account.model_account_invoice","account_prize_claim_pcso.ccf_group_processor",1,1,1,1
+"account_prize_claim_pcso.access_account_invoice_line_uinvoice_ccf","account.invoice.line","account.model_account_invoice_line","account_prize_claim_pcso.ccf_group_processor",1,1,1,1
+"account_prize_claim_pcso.access_account_invoice_tax_uinvoice_ccf","account.invoice.tax","account.model_account_invoice_tax","account_prize_claim_pcso.ccf_group_processor",1,1,1,1
+"account_prize_claim_pcso.access_account_journal_invoice_ccf","account.journal invoice","account.model_account_journal","account_prize_claim_pcso.ccf_group_processor",1,0,0,0

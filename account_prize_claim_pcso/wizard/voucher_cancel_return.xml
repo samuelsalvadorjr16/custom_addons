@@ -70,7 +70,7 @@
         </record>
 
 
-
+        <!-- CHARITY -->
         <record id="action_return_voucher_charity" model="ir.actions.act_window">
             <field name="name">Return Charity Claim</field>
             <field name="type">ir.actions.act_window</field>
@@ -103,6 +103,72 @@
             <field name="view_id" ref="view_cancel_voucher"/>
             <field name="act_window_id" ref="action_cancel_voucher_charity"/>
         </record>
+
+
+        <!-- RFP -->
+        <!--  Return RFP -->        
+        <record id="view_return_rfp" model="ir.ui.view">
+            <field name="name">Return</field>
+            <field name="model">account.voucher.cancel</field>
+            <field name="arch" type="xml">
+                <form string="Return RFP">
+                    <group string="This operation will returned to concerned processor for correction/adjustment.">
+                        <field name="reason" required="1" string="Reason"/>
+                    </group>                    
+                    <footer>
+                        <button name="action_return_rfp" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>         
+
+        <!--  Cancel RFP -->
+        <record id="view_cancel_rfp" model="ir.ui.view">
+            <field name="name">Cancel</field>
+            <field name="model">account.voucher.cancel</field>
+            <field name="arch" type="xml">
+                <form string="Cancel RFP">
+                    <group string="This operation will Deny the RFP.">
+                        <field name="reason" required="1" string="Reason"/>
+                    </group>                    
+                    <footer>
+                        <button name="action_cancel_rfp" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>   
+
+        <record id="action_return_rfp" model="ir.actions.act_window">
+            <field name="name">Return RFP</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.voucher.cancel</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record> 
+
+        <record id="action_return_rfp_form" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_return_rfp"/>
+            <field name="act_window_id" ref="action_return_rfp"/>
+        </record>
+
+        
+
+        <record id="action_cancel_rfp" model="ir.actions.act_window">
+            <field name="name">Dent RFP</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.voucher.cancel</field>
+            <field name="view_id" ref="view_cancel_rfp"/>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>         
+
+
 
     </data>
 </odoo>    

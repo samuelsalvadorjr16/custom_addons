@@ -7,24 +7,15 @@
                 <form string="Request for Payment">
                 <header>
 
-                	<button name="action_submit_rfp" states="draft" string="Submit" type="object"  groups="account_prize_claim_pcso.pcf_group_allow_to_submit_rfp" class="oe_highlight"/>
+                	<button name="action_submit_rfp" states="draft_rfq,return" string="Submit" type="object"  groups="account_prize_claim_pcso.pcf_group_allow_to_submit_rfp" class="oe_highlight"/>
                 	<button name="action_approved_rfp" states="submit" string="Approved" type="object" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_rfp"   class="oe_highlight"/>
+                    <!--
                 	<button name="action_deny_rfp" states="submit" string="Deny" type="object" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_rfp"  class="oe_highlight"/>
-                	<field name="state" widget="statusbar" statusbar_visible="draft,submit,approved,denied" readonly="1"/>
+                    -->
+                    <button name="%(action_return_rfp)d" type="action" states="submit,approved" string="Return" class="oe_highlight"  attrs="{'invisible': [('invoice_status', '=', 'invoiced')]}"/>
+                    <button name="%(action_cancel_rfp)d" type="action" states="submit,approved" string="Deny"  attrs="{'invisible': [('invoice_status', '=', 'invoiced')]}"/>
 
-<!--
-
-                    <button name="button_confirm" type="object" states="draft" string="Confirm Order" id="draft_confirm"/>
-                    <button name="button_confirm" type="object" states="sent" string="Confirm Order" class="oe_highlight" id="bid_confirm"/>
-                    <button name="button_approve" type="object" states='to approve' string="Approve Order" class="oe_highlight" groups="purchase.group_purchase_manager"/>
-                    <button name="action_rfq_send" states="purchase" string="Send PO by Email" type="object" context="{'send_rfq':False}"/>
-                    <button name="action_view_picking" string="Receive Products" class="oe_highlight" type="object" attrs="{'invisible': ['|', '|' , ('is_shipped', '=', True), ('state','not in', ('purchase','done')), ('picking_count', '=', 0)]}"/>
-                    <button name="button_draft" states="cancel" string="Set to Draft" type="object" />
-                    <button name="button_cancel" states="draft,to approve,sent,purchase" string="Cancel" type="object" />
-                    <button name="button_done" type="object" string="Lock" states="purchase"/>
-                    <button name="button_unlock" type="object" string="Unlock" states="done" groups="purchase.group_purchase_manager"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,submit,approved,denied,to_invoiced" readonly="1"/>
--->                    
+                	<field name="state" widget="statusbar" statusbar_visible="draft_rfq,submit,approved,denied" readonly="1"/>                  
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
@@ -39,14 +30,14 @@
                     	-->
                         <button type="object"  name="action_view_invoice"
                             class="oe_stat_button"
-                            icon="fa-pencil-square-o" attrs="{'invisible':[('state', 'in', ('draft','sent','to approve', 'submit', 'denied')),('invoice_ids','=',[])]}">
+                            icon="fa-pencil-square-o" attrs="{'invisible':[('state', 'in', ('draft_rfq','sent','to approve', 'submit', 'denied')),('invoice_ids','=',[])]}">
                             <field name="invoice_count" widget="statinfo" string="OpEx"/>
                             <field name='invoice_ids' invisible="1"/>
                         </button> 
                     </div>
                     <div class="oe_title">
-                        <label string="Request for Payment " attrs="{'invisible': [('state','not in',('draft','sent','bid'))]}"/>
-                        <label string="RFP " attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
+                        <label string="Request for Payment " attrs="{'invisible': [('state','not in',('draft_rfq','sent','bid'))]}"/>
+                        <label string="RFP " attrs="{'invisible': [('state','in',('draft_rfq','sent','bid'))]}"/>
                         <h1>
                             <field name="name" readonly="1"/>
                         </h1>
@@ -66,7 +57,7 @@
                     </group>
                     <notebook>
                         <page string="RFP Line/s">
-                            <field name="order_line" attrs="{'readonly': [('state', 'in', ('done', 'cancel'))]}">
+                            <field name="order_line" attrs="{'readonly': [('state', 'in', ('done', 'cancel', 'approved', 'submit'))]}">
                                  <tree string="Purchase Order Lines" editable="bottom">
                                     <field name="currency_id" invisible="1"/>
                                     <field name="state" invisible="1"/>
@@ -128,14 +119,17 @@
                             <field name="notes" class="oe_inline" placeholder="An administrator can set up default Terms and conditions in your Company settings."/>
                             <div class="oe_clear"/>
                         </page>
+                        <page string="Approval Log">
+                            <field name="status_history" readonly="1" />
+                        </page>                         
                         <page string="Deliveries &amp; Invoices">
                             <group>
                                 <group>
                                     <label for="date_planned"/>
                                     <div>
-                                        <field name="date_planned" required="1" attrs="{'readonly': [('state', 'not in', ('draft', 'sent'))]}"/>
+                                        <field name="date_planned" required="1" attrs="{'readonly': [('state', 'not in', ('draft_rfq', 'sent'))]}"/>
                                         <button name="action_set_date_planned" type="object"
-                                            states="draft,sent"
+                                            states="draft_rfq,sent"
                                             string="Set date to all order lines"
                                             help="This changes the scheduled date of all order lines to the given date"
                                             class="fa fa-calendar o_icon_button oe_edit_only"/>
@@ -150,6 +144,16 @@
                                     <field name="payment_term_id" options="{'no_open': True, 'no_create': True}" attrs="{'readonly': ['|', ('invoice_status','=', 'invoiced'), ('state', '=', 'done')]}"/>
                                     <field name="fiscal_position_id" attrs="{'readonly': ['|', ('invoice_status','=', 'invoiced'), ('state', '=', 'done')]}"/>
                                     <field name="date_approve" groups="base.group_no_one"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string= 'Other Information'>
+                            <group>
+                                <group>
+                                    <field name='create_uid_department_id' readonly="1" groups='account_prize_claim_pcso.pcso_rfp_sup_user_view'/>
+                                    <field name='create_uid_job_id' readonly="1" groups='account_prize_claim_pcso.pcso_rfp_sup_user_view'/>
+                                    <field name='department_id' readonly="1" groups='account_prize_claim_pcso.pcso_rfp_sup_user_view'/>
+                                    <field name='job_id' readonly="1" groups='account_prize_claim_pcso.pcso_rfp_sup_user_view'/>                                    
                                 </group>
                             </group>
                         </page>
@@ -172,7 +176,7 @@
                     <field name="partner_id" operator="child_of"/>
                     <field name="product_id" string ="Payee"/>
                     <field name="create_uid"/>
-                    <filter name="draft" string="Draft" domain="[('state','in',('draft','sent','to approve'))]"/>
+                    <filter name="draft_rfq" string="Draft" domain="[('state','in',('draft_rfq','sent','to approve'))]"/>
                     <filter name="approved" string="Approve" domain="[('state','in',('approved','done'))]"/>
                     <filter name="submit" string="Submitted" domain="[('state', '=', 'submitted')]"/>
                     <separator/>
@@ -217,7 +221,7 @@
                                     </div>
                                     <div class="col-xs-6">
                                         <span class="pull-right text-right">
-                                            <field name="state" widget="kanban_label_selection" options="{'classes': {'draft': 'default', 'cancel': 'default', 'done': 'success', 'approved': 'warning'}}"/>
+                                            <field name="state" widget="kanban_label_selection" options="{'classes': {'draft_rfq': 'default', 'cancel': 'default', 'done': 'success', 'approved': 'warning'}}"/>
                                         </span>
                                     </div>
                                 </div>
@@ -244,7 +248,7 @@
                     <field name="amount_total" sum="Total amount" widget="monetary"/>
                     <field name="currency_id" invisible="1"/>
                     <field name="state"/>
-                    <!--<field name="invoice_status" invisible="not context.get('show_purchase', False)"/>-->
+                    <field name="invoice_status" invisible="not context.get('show_purchase', False)"/>
                 </tree>
             </field>
         </record>	
@@ -256,7 +260,7 @@
             <field name="res_model">purchase.order</field>
             <field name="view_mode">tree,kanban,form,pivot,graph,calendar</field>
             <field name="context">{'search_default_todo':1, 'show_purchase': True, 'default_is_from_rfp':True}</field>
-            <field name="domain">[('state','not in',('draft','sent','bid', 'confirmed')),('is_from_rfp','=',True)]</field>
+            <field name="domain">[('state','not in',('sent','bid', 'confirmed')),('is_from_rfp','=',True)]</field>
             <field name="search_view_id" ref="view_rfp_order_filter"/>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
@@ -292,8 +296,13 @@
             <field name="view_mode">tree</field>
             <field name="view_id" ref="rfp_tree"/>
             <field name="act_window_id" ref="rfp_form_action"/>
-        </record>           
-        <menuitem action="rfp_form_action" id="menu_rfp_action" parent="account.menu_finance_payables" sequence="1"/>        
+        </record>       
+
+        <menuitem action="rfp_form_action" 
+                          id="menu_rfp_action" 
+                          parent="account.menu_finance_payables" 
+                          sequence="1"
+                          groups='account_prize_claim_pcso.rfp_group_processor,account.group_account_invoice,account.group_account_user,account.group_account_manager'/>        
 
 		<!-- Override -->
         <record id="purchase.purchase_form_action" model="ir.actions.act_window">
@@ -315,4 +324,26 @@
               </p>
             </field>
         </record>		
+
+        <record id="purchase.purchase_rfq" model="ir.actions.act_window">
+            <field name="name">Requests for Quotation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order</field>
+            <field name="context">{'search_default_todo':1}</field>
+            <field name="domain">[('state','in',('draft','sent','bid','cancel', 'confirmed')),('is_from_rfp','=',False)]</field>
+            <field name="view_mode">tree,kanban,form,pivot,graph,calendar</field>
+            <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a request for quotation.
+              </p><p>
+                The quotation contains the history of the discussion/negotiation
+                you had with your vendor. Once confirmed, a request for
+                quotation is converted into a purchase order.
+              </p><p>
+                Most propositions of purchase orders are created automatically
+                by Odoo based on inventory needs.
+              </p>
+            </field>
+        </record>        
 </odoo>

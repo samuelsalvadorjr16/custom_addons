@@ -8,4 +8,5 @@ from . import purchase_order
 from . import hr_employee
 from . import account_journal
 from . import mail_tracking_value
+from . import res_users
 #from . import account_journal_dashboard

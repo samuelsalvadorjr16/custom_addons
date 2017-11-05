@@ -24,6 +24,7 @@
         'data/prize_charity_fund_data.xml',
         'data/res_groups.xml',
         'security/voucher_security.xml',
+        'security/ir.model.access.csv',
         'wizard/voucher_cancel_return.xml',
         'reports/disbursement_voucher.xml',
         'views/hr_employee.xml',
@@ -33,5 +34,6 @@
         'views/prize_claim_pcso.xml',        
         'views/account_invoice.xml',
         'views/charity_claim_pcso.xml',
+        'views/menu_access_rights_override.xml',
     ],
 }

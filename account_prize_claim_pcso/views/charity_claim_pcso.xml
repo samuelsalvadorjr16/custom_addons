@@ -253,16 +253,6 @@
                   groups="account.group_account_user,account.group_account_manager"
                   />                       
 
-        <record id= "menu_pcso_charity_claim_form" model = 'ir.ui.menu'>
-          <field name="groups_id" eval="[(6,0, [ref('account_prize_claim_pcso.ccf_group_processor')])]"/>
-        </record>      
-
-        <record id= "menu_pcso_charity_document" model = 'ir.ui.menu'>
-          <field name="groups_id" eval="[(6,0, [ref('account_prize_claim_pcso.ccf_group_processor')])]"/>
-        </record>    
-
-        <record id= "menu_pymnt_pcso_charity" model = 'ir.ui.menu'>
-          <field name="groups_id" eval="[(6,0, [ref('account.group_account_user'),ref('account.group_account_manager')])]"/>
-        </record>                            
+                         
     </data>
 </odoo>

@@ -80,7 +80,7 @@ class account_invoice_prize_claim(models.Model):
 	#				track_visibility='onchange', string= 'Review Status')
 
 
-	status_history = fields.Text('History')
+	status_history = fields.Text('History', copy=False)
 
 
 	progress_state = fields.Integer('Progress', default=1)

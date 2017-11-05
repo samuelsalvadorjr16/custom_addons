@@ -16,5 +16,7 @@ _logger = logging.getLogger(__name__)
 class res_user(models.Model):
 	_inherit = 'res.users'
 
-
+	employee_ids = fields.One2many('hr.employee', 'user_id', string='Employee')
+	department_id = fields.Many2one('hr.department', related='employee_ids.department_id', string="Department")
+	job_id = fields.Many2one('hr.job', related='employee_ids.job_id', string="Department")
 #class 

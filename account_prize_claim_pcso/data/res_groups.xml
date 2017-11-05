@@ -1,5 +1,18 @@
 <?xml version="1.0"?>
 <odoo>
+        <!-- MASTER FILES -->
+        <record id="pcf_group_allow_to_maintain_master_files" model="res.groups">
+             <field name="category_id" ref="base.module_category_extra"/>
+            <field name="name">Allow to Maintain Prize Fund Master Files</field>
+            <field name="comment">User that can Maintain the Prize Fund Master Files.</field>
+        </record>
+
+        <record id="ccf_group_allow_to_maintain_master_files" model="res.groups">
+             <field name="category_id" ref="base.module_category_extra"/>
+            <field name="name">Allow to Maintain Charity Fund Master Files</field>
+            <field name="comment">User that can Maintain the Charity Fund Master Files.</field>
+        </record>
+
         <!-- Price Claim -->
         <record id="module_category_prize_claim" model="ir.module.category">
             <field name="name">Prize Fund</field>
@@ -11,22 +24,6 @@
             <field name="category_id" ref="module_category_prize_claim"/>
             <field name="comment">User, that will encode/prepare the Prize Claim.</field>
         </record>
-
-        <!--
-        <record id="pcf_group_allow_to_submit_non_jack_below_100k" model="res.groups">
-            <field name="name">Allow to Submit  below 100,000.00 except Jackpot Prize</field>
-            <field name="category_id" ref="module_category_prize_claim"/>
-            <field name="implied_ids" eval="[(4, ref('pcf_group_processor'))]"/>
-            <field name="comment">User that can submit a Claim below 100,000 except Jackpot Prize.</field>
-        </record>
-
-        <record id="pcf_group_allow_to_submit_non_jack_above_100k" model="res.groups">
-            <field name="name">Allow to Submit  aboove 100,000.00 except Jackpot Prize</field>
-            <field name="category_id" ref="module_category_prize_claim"/>
-            <field name="implied_ids" eval="[(4, ref('pcf_group_processor'))]"/>
-            <field name="comment">User that can submit a Claim More than 100,000 except Jackpot Prize.</field>
-        </record>
-        -->
 
         <!-- PFC Below 100k -->
         <record id="pcf_group_allow_to_approve_non_jack_below_100k_rev" model="res.groups">
@@ -111,33 +108,6 @@
             <field name="name">12. Final Approval of Jackpot Claim</field>
             <field name="comment">User that can Approve for Review a Claim for Jackpot Prize.</field>
         </record>       
-
-
-<!--
-
-        <record id="pcf_group_allow_to_submit" model="res.groups">
-            <field name="name">Allow to Submit except Jackpot Prize</field>
-            <field name="category_id" ref="module_category_prize_claim"/>
-            <field name="comment">User that can submit a Claim More than 10,000 except Jackpot Prize.</field>
-        </record>
-
-        <record id="pcf_group_allow_to_submit_jackpot" model="res.groups">
-             <field name="category_id" ref="module_category_prize_claim"/>
-            <field name="name">Allow to Submit Jackpot</field>
-            <field name="comment">User that can submit a Claim for Jackpot Prize.</field>
-        </record>
-
-        <record id="pcf_group_allow_to_approve" model="res.groups">
-             <field name="category_id" ref="module_category_prize_claim"/>
-            <field name="name">Allow to Approve except Jackpot Prize</field>
-            <field name="comment">User that can Approve a Claim for more than 10,000 except Jackpot Prize.</field>
-        </record>
-        <record id="pcf_group_allow_to_approve_jackpot" model="res.groups">
-             <field name="category_id" ref="module_category_prize_claim"/>
-            <field name="name">Allow to Approve Jackpot</field>
-            <field name="comment">User that can Approve a Claim for Jackpot Prize.</field>
-        </record>
--->
 
         <!-- Charity Fund -->
         <record id="module_category_charity_claim" model="ir.module.category">
@@ -247,54 +217,60 @@
             <field name="sequence" eval="11" />
         </record>
 
-        <record id="pcf_group_allow_to_submit_opex" model="res.groups">
-            <field name="name">Allow to Submit Opex</field>
+        <record id="opex_group_processor" model="res.groups">
+            <field name="name">01. Processor</field>
             <field name="category_id" ref="module_category_operation_expenses"/>
+            <field name="comment">User, that will encode/prepare the Prize Claim.</field>
+        </record>
+
+
+        <record id="pcf_group_allow_to_submit_opex" model="res.groups">
+            <field name="name">02. Allow to Submit Opex</field>
+            <field name="category_id" ref="module_category_operation_expenses"/>
+            <field name="implied_ids" eval="[(4, ref('opex_group_processor'))]"/>
             <field name="comment">User can Submit a Operation Expense.</field>
         </record>
-<!--
-        <record id="pcf_group_allow_to_submit_jackpot" model="res.groups">
-             <field name="category_id" ref="module_category_prize_claim"/>
-            <field name="name">Allow to Submit Jackpot</field>
-            <field name="comment">User that can submit a Claim for Jackpot Prize.</field>
-        </record>
--->
+
         <record id="pcf_group_allow_to_approve_opex" model="res.groups">
              <field name="category_id" ref="module_category_operation_expenses"/>
-            <field name="name">Allow to Approve Opex</field>
+             <field name="implied_ids" eval="[(4, ref('opex_group_processor'))]"/>
+            <field name="name">03. Allow to Approve Opex</field>
             <field name="comment">User can Approve a Operation Expense</field>
         </record>
-<!--        
-        <record id="pcf_group_allow_to_approve_jackpot" model="res.groups">
-             <field name="category_id" ref="module_category_prize_claim"/>
-            <field name="name">Allow to Approve Jackpot</field>
-            <field name="comment">User that can Approve a Claim for Jackpot Prize.</field>
-        </record>
--->
 
-        <!-- Operation Expenses -->
+
+        <!-- RFP Operation Expenses -->
         <record id="module_category_request_for_payment" model="ir.module.category">
             <field name="name">RFP</field>
             <field name="sequence" eval="12" />
         </record>
 
-        <record id="pcf_group_allow_to_submit_rfp" model="res.groups">
-            <field name="name">Allow to Submit RFP</field>
+        <record id="rfp_group_processor" model="res.groups">
+            <field name="name">01. Processor</field>
             <field name="category_id" ref="module_category_request_for_payment"/>
+            <field name="comment">User, that will encode/prepare Prize Claim.</field>
+        </record>
+
+
+        <record id="pcf_group_allow_to_submit_rfp" model="res.groups">
+            <field name="name">02. Allow to Submit RFP</field>
+            <field name="category_id" ref="module_category_request_for_payment"/>
+             <field name="implied_ids" eval="[(4, ref('rfp_group_processor'))]"/>
             <field name="comment">User can Submit a Request for Payment.</field>
         </record>
-<!--
-        <record id="pcf_group_allow_to_submit_jackpot" model="res.groups">
-             <field name="category_id" ref="module_category_prize_claim"/>
-            <field name="name">Allow to Submit Jackpot</field>
-            <field name="comment">User that can submit a Claim for Jackpot Prize.</field>
-        </record>
--->
+
         <record id="pcf_group_allow_to_approve_rfp" model="res.groups">
              <field name="category_id" ref="module_category_request_for_payment"/>
-            <field name="name">Allow to Approve RFP</field>
+              <field name="implied_ids" eval="[(4, ref('rfp_group_processor'))]"/>
+            <field name="name">03. Allow to Approve RFP</field>
             <field name="comment">User can Approve a Request for Payment.</field>
         </record>
 
+        <!-- TECHNICAL SETTING -->
+        <record id="pcso_rfp_sup_user_view" model="res.groups">
+             <field name="category_id" ref="base.module_category_hidden"/>
+            <field name="name">Allow PCSO Other Settings View</field>
+            <field name="comment">User to View some of the Technical Setting for PCSO.</field>
+        </record>
 </odoo>
 
