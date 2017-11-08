@@ -12,8 +12,14 @@
                     <!--
                 	<button name="action_deny_rfp" states="submit" string="Deny" type="object" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_rfp"  class="oe_highlight"/>
                     -->
-                    <button name="%(action_return_rfp)d" type="action" states="submit,approved" string="Return" class="oe_highlight"  attrs="{'invisible': [('invoice_status', '=', 'invoiced')]}"/>
-                    <button name="%(action_cancel_rfp)d" type="action" states="submit,approved" string="Deny"  attrs="{'invisible': [('invoice_status', '=', 'invoiced')]}"/>
+                    <button name="%(action_return_rfp)d" type="action" states="submit" string="Return" class="oe_highlight"
+                                groups="account_prize_claim_pcso.pcf_group_allow_to_approve_rfp"/>
+                     <button name="%(action_return_rfp)d" type="action" states="approved" string="Return" class="oe_highlight"
+                             groups="account_prize_claim_pcso.pcf_group_allow_to_approve_rfp"/>
+
+                    <button name="%(action_cancel_rfp)d" type="action" states="submit" string="Deny"  groups="account_prize_claim_pcso.pcf_group_allow_to_approve_rfp"/>
+
+                    <button name="%(action_cancel_rfp)d" type="action" states="approved" string="Deny" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_rfp"/>
 
                 	<field name="state" widget="statusbar" statusbar_visible="draft_rfq,submit,approved,denied" readonly="1"/>                  
                 </header>
@@ -30,7 +36,7 @@
                     	-->
                         <button type="object"  name="action_view_invoice"
                             class="oe_stat_button"
-                            icon="fa-pencil-square-o" attrs="{'invisible':[('state', 'in', ('draft_rfq','sent','to approve', 'submit', 'denied')),('invoice_ids','=',[])]}">
+                            icon="fa-pencil-square-o" attrs="{'invisible':[('state', 'in', ('draft_rfq','return','sent','to approve', 'submit', 'denied')),('invoice_ids','=',[])]}">
                             <field name="invoice_count" widget="statinfo" string="OpEx"/>
                             <field name='invoice_ids' invisible="1"/>
                         </button> 
@@ -147,7 +153,7 @@
                                 </group>
                             </group>
                         </page>
-                        <page string= 'Other Information'>
+                        <page string= 'Other Information' groups='account_prize_claim_pcso.pcso_rfp_sup_user_view'>
                             <group>
                                 <group>
                                     <field name='create_uid_department_id' readonly="1" groups='account_prize_claim_pcso.pcso_rfp_sup_user_view'/>
@@ -204,6 +210,8 @@
                     <field name="state"/>
                     <field name="date_order"/>
                     <field name="currency_id"/>
+                    <field name="department_id"/>
+                    <field name="job_id"/>
                     <templates>
                         <t t-name="kanban-box">
                             <div t-attf-class="oe_kanban_card oe_kanban_global_click">
@@ -211,20 +219,35 @@
                                     <div class="col-xs-6">
                                         <strong><span><t t-esc="record.partner_id.value"/></span></strong>
                                     </div>
-                                    <div class="col-xs-6 pull-right text-right">
-                                        <strong><field name="amount_total" widget="monetary"/></strong>
-                                    </div>
+
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-6">
                                         <span><t t-esc="record.name.value"/> <t t-esc="record.date_order.value and record.date_order.value.split(' ')[0] or False"/></span>
+                                    </div>
+                                    <div class="col-xs-6 pull-right text-right">
+                                        <strong><field name="amount_total" widget="monetary"/></strong>
+                                    </div>                                    
+                                    <!--
+                                    <div class="col-xs-6">
+                                        <span class="pull-right text-right">
+                                            <field name="state" widget="kanban_label_selection" options="{'classes': {'draft_rfq': 'default', 'cancel': 'default', 'done': 'success', 'approved': 'warning'}}"/>
+                                        </span>
+                                    </div>
+                                    -->
+                                </div>
+                                
+                                <div class="row" groups="account_prize_claim_pcso.pcf_group_allow_to_submit_rfp,account_prize_claim_pcso.pcf_group_allow_to_approve_rfp">
+                                    <div class="col-xs-6">
+                                        <span><t t-esc="record.department_id.value"/> <t t-esc="record.department_id and record.department_id.value or False"/></span>
                                     </div>
                                     <div class="col-xs-6">
                                         <span class="pull-right text-right">
                                             <field name="state" widget="kanban_label_selection" options="{'classes': {'draft_rfq': 'default', 'cancel': 'default', 'done': 'success', 'approved': 'warning'}}"/>
                                         </span>
                                     </div>
-                                </div>
+                                </div>   
+                                                  
                             </div>
                         </t>
                     </templates>

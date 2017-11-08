@@ -9,32 +9,37 @@
             <field name="arch" type="xml">
                 <form string="IMAP Claim">
                 <header>
-                    <!--
-                    <button name="action_to_submit_prize_claim" type="object" states="draft" string="Submit" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_allow_to_submit,account_prize_claim_pcso.pcf_group_allow_to_submit_jackpot"/>
-
-
-                    <button name="action_to_approved_prize_claim" type="object" states="submit" string="Approve" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_allow_to_approve,account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot"/>
-                   
-                    <button name="action_to_denied_prize_claim" type="object" states="submit" string="Deny" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_allow_to_approve,account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot"/>
-
-                    <button name="action_invoice_open" type="object" states="approved" string="Validate" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_allow_to_approve,account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot"/>
-
-                    <button name="%(act_acc_invo_paymt_char)d" type="action" states="open" string="Register Payment" groups="account_prize_claim_pcso.pcf_group_allow_to_approve,account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot" class="oe_highlight"/>
-                    -->
                     <button name="action_to_submit_charity_claim" type="object" states="draft,return" string="Submit" class="oe_highlight" groups="account_prize_claim_pcso.ccf_group_processor"/>
 
                     <button name="action_to_approve_for_1st_review_charity_claim" type="object" states="submit" string="1st Approve" class="oe_highlight" groups="account_prize_claim_pcso.ccf_group_allow_to_approve_below_100k_for_rev1,account_prize_claim_pcso.ccf_group_allow_to_approve_above_100k_bel_200k_for_rev1,account_prize_claim_pcso.ccf_group_allow_to_approve_above_200k_for_rev1"/>
 
+                    <button name="%(action_return_voucher_charity)d" type="action" states="submit" string="Return" class="oe_highlight" groups="account_prize_claim_pcso.ccf_group_allow_to_approve_below_100k_for_rev1,account_prize_claim_pcso.ccf_group_allow_to_approve_above_100k_bel_200k_for_rev1,account_prize_claim_pcso.ccf_group_allow_to_approve_above_200k_for_rev1"/>
+                    <button name="%(action_cancel_voucher_charity)d" type="action" states="submit" string="Cancel" groups="account_prize_claim_pcso.ccf_group_allow_to_approve_below_100k_for_rev1,account_prize_claim_pcso.ccf_group_allow_to_approve_above_100k_bel_200k_for_rev1,account_prize_claim_pcso.ccf_group_allow_to_approve_above_200k_for_rev1"/>
+
+
                     <button name="action_to_approve_for_2nd_review_charity_claim" type="object" states="under_review" string="2nd Approve" class="oe_highlight" groups="account_prize_claim_pcso.ccf_group_allow_to_approve_below_100k_for_rev2,account_prize_claim_pcso.ccf_group_allow_to_approve_above_100k_bel_200k_for_rev2,account_prize_claim_pcso.ccf_group_allow_to_approve_above_200k_for_rev2"/>
 
+                    <button name="%(action_return_voucher_charity)d" type="action" states="under_review" string="Return" class="oe_highlight" groups="account_prize_claim_pcso.ccf_group_allow_to_approve_below_100k_for_rev2,account_prize_claim_pcso.ccf_group_allow_to_approve_above_100k_bel_200k_for_rev2,account_prize_claim_pcso.ccf_group_allow_to_approve_above_200k_for_rev2"/>
+                    <button name="%(action_cancel_voucher_charity)d" type="action" states="under_review" string="Cancel" groups="account_prize_claim_pcso.ccf_group_allow_to_approve_below_100k_for_rev2,account_prize_claim_pcso.ccf_group_allow_to_approve_above_100k_bel_200k_for_rev2,account_prize_claim_pcso.ccf_group_allow_to_approve_above_200k_for_rev2"/>
+
+
                     <button name="action_to_approve_for_approval_charity_claim" type="object" states="under_2nd_review" string="Approve" class="oe_highlight" groups="account_prize_claim_pcso.ccf_group_allow_to_approve_below_100k_for_approval,account_prize_claim_pcso.ccf_group_allow_to_approve_above_100k_bel_200k_for_approval,account_prize_claim_pcso.ccf_group_allow_to_approve_above_200k_for_approval"/>
+
+                    <button name="%(action_return_voucher_charity)d" type="action" states="under_2nd_review" string="Return" class="oe_highlight" groups="account_prize_claim_pcso.ccf_group_allow_to_approve_below_100k_for_approval,account_prize_claim_pcso.ccf_group_allow_to_approve_above_100k_bel_200k_for_approval,account_prize_claim_pcso.ccf_group_allow_to_approve_above_200k_for_approval"/>
+                    <button name="%(action_cancel_voucher_charity)d" type="action" states="under_2nd_review" string="Cancel" groups="account_prize_claim_pcso.ccf_group_allow_to_approve_below_100k_for_approval,account_prize_claim_pcso.ccf_group_allow_to_approve_above_100k_bel_200k_for_approval,account_prize_claim_pcso.ccf_group_allow_to_approve_above_200k_for_approval"/>
+
+
 
                     <button name="action_final_approve_charity_claim" type="object" states="for_approval" string="Approve" class="oe_highlight" groups="account_prize_claim_pcso.ccf_group_allow_to_approve_below_100k_approved,account_prize_claim_pcso.ccf_group_allow_to_approve_above_100k_bel_200k_approved,account_prize_claim_pcso.ccf_group_allow_to_approve_above_200k_approved"/>  
 
 
+                    <button name="%(action_return_voucher_charity)d" type="action" states="for_approval" string="Return" class="oe_highlight" groups="account_prize_claim_pcso.ccf_group_allow_to_approve_below_100k_approved,account_prize_claim_pcso.ccf_group_allow_to_approve_above_100k_bel_200k_approved,account_prize_claim_pcso.ccf_group_allow_to_approve_above_200k_approved"/>
+                    <button name="%(action_cancel_voucher_charity)d" type="action" states="for_approval" string="Cancel" groups="account_prize_claim_pcso.ccf_group_allow_to_approve_below_100k_approved,account_prize_claim_pcso.ccf_group_allow_to_approve_above_100k_bel_200k_approved,account_prize_claim_pcso.ccf_group_allow_to_approve_above_200k_approved"/>
+
+<!--
                     <button name="%(action_return_voucher_charity)d" type="action" states="submit,under_review,under_2nd_review,for_approval" string="Return" class="oe_highlight"/>
                     <button name="%(action_cancel_voucher_charity)d" type="action" states="submit,under_review,under_2nd_review,for_approval" string="Cancel"/>
-
+-->
 
                     <button name="action_invoice_open" type="object" states="approved" string="Validate" class="oe_highlight" groups="account.group_account_user,account.group_account_manager"/>
                     <button name="%(act_acc_invo_paymt_prize)d" type="action" states="open" string="Register Payment" groups="account.group_account_user,account.group_account_manager" class="oe_highlight"/>

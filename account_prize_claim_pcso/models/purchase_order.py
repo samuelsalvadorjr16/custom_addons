@@ -87,7 +87,9 @@ class purchase_order(models.Model):
 				order.button_approve()
 			else:
 				order.write({'state': 'to approve'})
-		return True					
+		return True
+
+
 
 	@api.multi
 	def action_submit_rfp(self):

@@ -24,8 +24,9 @@
         </record>        
         -->
         <!-- OVERRIDE MENU -->
+        <!--
         <menuitem id="account.menu_finance_payables" name="Operational Expenses"  parent="account.menu_finance"/>    
-
+        -->
 
         <!-- OVERRIDE THE SUPPLIER FORM -->
        <record model="ir.ui.view" id="pcso_invoice_supplier_form">
@@ -37,24 +38,50 @@
 
                 <xpath expr="//header[1]" position="replace">
                     <header>
-                            <button name="action_to_submit_prize_claim" type="object" states="draft" string="Submit" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_allow_to_submit_opex"/>
+
+                            <button name="action_approve_for_1st_review_opex" type="object" states="draft,return" string="Approve" help ="Set to Approve for 1st Review" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_for_rev1,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_for_rev1,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_for_rev1"/>
+
+                             <button name="%(action_return_opex)d" type="action" states="draft,return" string="Return" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_for_rev1,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_for_rev1,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_for_rev1"/>                            
+                             <button name="%(action_cancel_opex)d" type="action" states="draft,return" string="Deny" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_for_rev1,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_for_rev1,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_for_rev1"/>
 
 
-                            <button name="action_invoice_open" type="object" states="submit" string="Approved" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_opex"/>
+                            <button name="action_approve_for_2nd_review_opex" type="object" states="under_review" string="Approve" help ="Set to Approve for 2nd Review" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_for_rev2,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_for_rev2,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_for_rev2"/>
 
-                            <button name="action_to_denied_prize_claim" type="object" states="submit" string="Deny" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_opex"/>
 
+
+                             <button name="%(action_return_opex)d" type="action" states="under_review" string="Return" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_for_rev2,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_for_rev2,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_for_rev2"/>                            
+                             <button name="%(action_cancel_opex)d" type="action" states="under_review" string="Deny" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_for_rev2,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_for_rev2,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_for_rev2"/>
+
+
+
+                            <button name="action_final_approve_opex" type="object" states="under_2nd_review" string="Approve" help ="Set for Final Approval" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_approved,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_approved,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_approved"/>                            
+
+
+                             <button name="%(action_return_opex)d" type="action" states="under_2nd_review" string="Return" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_approved,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_approved,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_approved"/>                            
+                             <button name="%(action_cancel_opex)d" type="action" states="under_2nd_review" string="Deny" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_approved,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_approved,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_approved"/>
+
+
+                            <button name="action_invoice_open" type="object" states="approved" string="Validate" class="oe_highlight" groups="account.group_account_user,account.group_account_manager"/>
 
                             <button name="124" type="action" states="open" string="Register Payment" groups="account.group_account_invoice" class="oe_highlight"/>
+
+                            <!--
                             <button name="187" type="action" string="Ask Refund" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_opex" attrs="{'invisible': ['|',('type', 'in', ['in_refund','out_refund']),('state','not in',('open','paid'))]}"/>
 
-                            <button name="action_invoice_cancel" type="object" states="draft,submit,apporoved,proforma2" string="Cancel Bill" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_opex"/>
+                            <button name="action_invoice_cancel" type="object" states="draft,return,under_review,under_2nd_review,approved,proforma2" string="Cancel Bill" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_opex"/>
                             <button name="action_invoice_draft" states="cancel" string="Set to Draft" type="object" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_opex"/>
+                            -->
+                        <field name="state" widget="statusbar" statusbar_visible="draft,under_review,under_2nd_review,approved"/>
+                    </header>
+                </xpath>
 
-                        <field name="state" widget="statusbar" statusbar_visible="draft,submit,approved,denied,open,paid"/>
-                    </header>                    
+                <xpath expr="//notebook/page[1]" position="after">                    
+                    <page string="Approval Log">
+                        <field name="status_history" readonly="1" />
+                    </page>    
+                </xpath>
 
-                </xpath>                
+                         
 
 
 

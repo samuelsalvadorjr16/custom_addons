@@ -96,6 +96,132 @@ class account_invoice_prize_claim(models.Model):
 	denied_uid = fields.Many2one('res.users', 'Denied By')
 	cancelled_uid = fields.Many2one('res.users', 'Cancelled By')
 
+	#New Signatory Workflow for OpEx
+	@api.multi
+	def action_approve_for_1st_review_opex(self):
+	    to_open_invoices = self.filtered(lambda inv: inv.state not in ['draft', 'return'])
+	    #To Capture the UI Limitation when Changing State
+	    rfp_obj = self.env['purchase.order'].search([('name', '=', self.origin)])
+	    if to_open_invoices.filtered(lambda inv: inv.state not in ['draft', 'return']):
+	    	
+	    	raise Warning(rfp_obj)
+	    	if to_open_invoices.filtered(lambda inv: inv.purchase_id):
+	    		if to_open_invoices.filtered(lambda inv: inv.purchase_id.state not in ['approved', 'purchase']):
+	    			raise UserError(_("Vouchers, Source Document must be approved first in order to validate it."))
+	    	elif rfp_obj and rfp_obj.state not in ['approved', 'purchase']:
+	    		raise UserError(_("Vouchers Source Document must be approved first in order to validate it."))
+	    	else:
+	        	raise UserError(_("Voucher must be in draft or return state in order to validate it."))
+
+	    if rfp_obj and rfp_obj.state not in ['approved', 'purchase']:
+	    	raise UserError(_("Vouchers Source Document must be approved first in order to validate it."))
+
+	    if to_open_invoices.filtered(lambda inv: inv.amount_total < 0):
+	        raise UserError(_("You cannot validate an Voucher with a negative total amount."))
+
+	    if self.amount_total < 100000.00:
+	    	if self.env.ref('account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_for_rev1') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to Approved the Voucher."))
+	    elif self.amount_total < 200000.00:
+	    	if self.env.ref('account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_for_rev1') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to Approved the Voucher."))
+	    elif self.amount_total >= 200000.00:
+	    	if self.env.ref('account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_for_rev1') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to Approved the Voucher."))
+	    stats_his = ''
+	    stat_rfp_his = ''
+	    cert_correct_uid = 0
+	    #raise Warning(self.origin)
+	    if self.status_history:
+	    	stats_his = self.status_history
+	    if self.purchase_id:
+	    	stat_rfp_his = 'APPROVED RFP :' + '['+ self.purchase_id.write_date +'] ' + self.purchase_id.approve_uid.name + '\n'
+	    elif self.origin:
+	    	rfp_obj = self.env['purchase.order'].search([('name', '=', self.origin)])
+	    	#raise Warning(rfp_obj)
+	    	approver_uid_name = ''
+	    	if rfp_obj:
+	    		if rfp_obj.is_from_rfp:
+	    			cert_correct_uid_2 = rfp_obj.approve_uid.id
+	    			approver_uid_name = rfp_obj.approve_uid.name
+	    		else:
+	    			cert_correct_uid_2 = rfp_obj.write_uid.id
+	    			approver_uid_name =  rfp_obj.write_uid.name
+
+	    		stat_rfp_his = 'APPROVED RFP :' + '['+ rfp_obj.write_date +'] ' + approver_uid_name + '\n'
+
+	    return self.write({'state': 'under_review', 'certified_correct_uid': cert_correct_uid,  'certified_correct_2_uid': self._uid, 
+						   'status_history': 'ENDORSED FOR REVIEW : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + stat_rfp_his + stats_his or ''})
+
+	@api.multi
+	def action_approve_for_2nd_review_opex(self):
+	    to_open_invoices = self.filtered(lambda inv: inv.state != 'under_review')
+	    rfp_obj = self.env['purchase.order'].search([('name', '=', self.origin)])
+	    if to_open_invoices.filtered(lambda inv: inv.state != 'under_review'):
+	    	if to_open_invoices.filtered(lambda inv: inv.purchase_id):
+	    		if to_open_invoices.filtered(lambda inv: inv.purchase_id.state not in ['approved', 'purchase']):
+	    			raise UserError(_("Vouchers, Source Document must be approved first in order to validate it."))
+	    	else:
+	        	raise UserError(_("Voucher must be in Under Review state in order to validate it."))
+
+	    if rfp_obj and rfp_obj.state not in ['approved', 'purchase']:
+	    	raise UserError(_("Vouchers Source Document must be approved first in order to validate it."))
+
+	    if to_open_invoices.filtered(lambda inv: inv.amount_total < 0):
+	        raise UserError(_("You cannot validate an Voucher with a negative total amount."))
+
+	    if self.amount_total < 100000.00:
+	    	if self.env.ref('account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_for_rev2') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to Approved the Voucher."))
+	    elif self.amount_total < 200000.00:
+	    	if self.env.ref('account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_for_rev2') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to Approved the Voucher."))
+	    elif self.amount_total >= 200000.00:
+	    	if self.env.ref('account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_for_rev2') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to Approved the Voucher."))
+	    stats_his = ''
+
+	    #raise Warning(self.origin)
+	    if self.status_history:
+	    	stats_his = self.status_history
+
+	    return self.write({'state': 'under_2nd_review', 'under_review_uid': self._uid, 
+						   'status_history': 'ENDORSED FOR 2ND REVIEW : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + stats_his or ''})
+
+	@api.multi
+	def action_final_approve_opex(self):
+	    to_open_invoices = self.filtered(lambda inv: inv.state != 'under_2nd_review')
+	    rfp_obj = self.env['purchase.order'].search([('name', '=', self.origin)])
+	    if to_open_invoices.filtered(lambda inv: inv.state != 'under_2nd_review'):
+	    	if to_open_invoices.filtered(lambda inv: inv.purchase_id):
+	    		if to_open_invoices.filtered(lambda inv: inv.purchase_id.state not in ['approved', 'purchase']):
+	    			raise UserError(_("Vouchers, Source Document must be approved first in order to validate it."))
+	    	else:
+	        	raise UserError(_("Voucher must be in Under Final Review state in order to validate it."))
+
+	    if rfp_obj and rfp_obj.state not in ['approved', 'purchase']:
+	    	raise UserError(_("Vouchers Source Document must be approved first in order to validate it."))
+
+	    if to_open_invoices.filtered(lambda inv: inv.amount_total < 0):
+	        raise UserError(_("You cannot validate an Voucher with a negative total amount."))
+
+	    if self.amount_total < 100000.00:
+	    	if self.env.ref('account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_approved') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to Approved the Voucher."))
+	    elif self.amount_total < 200000.00:
+	    	if self.env.ref('account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_approved') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to Approved the Voucher."))
+	    elif self.amount_total >= 200000.00:
+	    	if self.env.ref('account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_approved') not in self.env.user.groups_id:
+	    		raise UserError(_("User has no rights to Approved the Voucher."))
+	    stats_his = ''
+
+	    #raise Warning(self.origin)
+	    if self.status_history:
+	    	stats_his = self.status_history
+
+	    return self.write({'state': 'approved', 'approved_uid': self._uid, 
+						   'status_history': 'APPROVED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + stats_his or ''})
 
 	#New Signatory Workflow for Charity
 	@api.multi
@@ -300,12 +426,19 @@ class account_invoice_prize_claim(models.Model):
 
 	@api.multi
 	def action_set_to_return(self, reason):
+
+	    stats_his =''
+	    if self.status_history:
+	    	stats_his = self.status_history
 	    return self.write({'state': 'return', 'denied_uid': self._uid,
-	    				  'status_history': 'RETURNED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n *****REASON \n' + reason  + '\n' + self.status_history})
+	    				  'status_history': 'RETURNED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n *****REASON \n' + reason  + '\n' + stats_his})
 	@api.multi
 	def action_set_to_cancel(self, reason=''):
+	    stats_his =''
+	    if self.status_history:
+	    	stats_his = self.status_history
 	    return self.write({'state': 'cancel', 'cancelled_uid': self._uid,
-	    				  'status_history': 'CANCELLED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n *****REASON \n' + reason  + '\n' + self.status_history + reason + '\n'})	
+	    				  'status_history': 'CANCELLED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n *****REASON \n' + reason  + '\n' + stats_his + reason + '\n'})	
 	    				  	
 	@api.onchange('amount_total')
 	def _onchange_amount_total(self):
@@ -442,11 +575,6 @@ class account_invoice_prize_claim(models.Model):
 		for claim in self:
 			claim.action_to_appoved_prize_claim()
 
-	#@api.model
-	#def create(self, vals):
-#		_logger.info(vals)
-#		raise Warning(vals)
-
 	@api.multi
 	def action_to_denied_prize_claim(self):
 	    # lots of duplicate calls to action_invoice_open, so we remove those already open
@@ -477,7 +605,7 @@ class account_invoice_prize_claim(models.Model):
 	def action_invoice_open(self):
 	    # lots of duplicate calls to action_invoice_open, so we remove those already open
 	    to_open_invoices = self.filtered(lambda inv: inv.state != 'open')
-	    if to_open_invoices.filtered(lambda inv: inv.state != 'submit') and to_open_invoices.filtered(lambda inv: inv.transaction_type == False):
+	    if to_open_invoices.filtered(lambda inv: inv.state != 'approved') and to_open_invoices.filtered(lambda inv: inv.transaction_type == False):
 	    	#if to_open_invoices.filtered(lambda inv: inv.state != 'draft')
 	        raise UserError(_("Invoice must be in submit state in order to validate it."))
 	    #if to_open_invoices.filtered(lambda inv: inv.state != 'approved') and to_open_invoices.filtered(lambda inv: inv.transaction_type != False):

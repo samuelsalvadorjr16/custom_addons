@@ -11,11 +11,27 @@
 "account_prize_claim_pcso.przbranch_processor","config.prize.branch.group.master","account_prize_claim_pcso.model_config_prize_branch","account_prize_claim_pcso.pcf_group_processor",1,0,0,0
 "account_prize_claim_pcso.przbetype","config.prize.bettype.group.master","account_prize_claim_pcso.model_config_prize_bettype","account_prize_claim_pcso.pcf_group_processor",1,0,0,0
 "account_prize_claim_pcso.przagency","config.prize.agency.group.master","account_prize_claim_pcso.model_config_prize_agency","account_prize_claim_pcso.pcf_group_processor",1,0,0,0
-"account_prize_claim_pcso.access_account_invoice_uinvoice","account.invoice","account.model_account_invoice","account_prize_claim_pcso.pcf_group_processor",1,1,1,1
-"account_prize_claim_pcso.access_account_invoice_line_uinvoice","account.invoice.line","account.model_account_invoice_line","account_prize_claim_pcso.pcf_group_processor",1,1,1,1
-"account_prize_claim_pcso.access_account_invoice_tax_uinvoice","account.invoice.tax","account.model_account_invoice_tax","account_prize_claim_pcso.pcf_group_processor",1,1,1,1
+"account_prize_claim_pcso.access_account_invoice_uinvoice","account.invoice","account.model_account_invoice","account_prize_claim_pcso.pcf_group_processor",1,1,1,0
+"account_prize_claim_pcso.access_account_invoice_line_uinvoice","account.invoice.line","account.model_account_invoice_line","account_prize_claim_pcso.pcf_group_processor",1,1,1,0
+"account_prize_claim_pcso.access_account_invoice_tax_uinvoice","account.invoice.tax","account.model_account_invoice_tax","account_prize_claim_pcso.pcf_group_processor",1,1,1,0
 "account_prize_claim_pcso.access_account_journal_invoice","account.journal invoice","account.model_account_journal","account_prize_claim_pcso.pcf_group_processor",1,0,0,0
-"account_prize_claim_pcso.access_account_invoice_uinvoice_ccf","account.invoice","account.model_account_invoice","account_prize_claim_pcso.ccf_group_processor",1,1,1,1
-"account_prize_claim_pcso.access_account_invoice_line_uinvoice_ccf","account.invoice.line","account.model_account_invoice_line","account_prize_claim_pcso.ccf_group_processor",1,1,1,1
-"account_prize_claim_pcso.access_account_invoice_tax_uinvoice_ccf","account.invoice.tax","account.model_account_invoice_tax","account_prize_claim_pcso.ccf_group_processor",1,1,1,1
+"account_prize_claim_pcso.access_account_invoice_uinvoice_ccf","account.invoice","account.model_account_invoice","account_prize_claim_pcso.ccf_group_processor",1,1,1,0
+"account_prize_claim_pcso.access_account_invoice_line_uinvoice_ccf","account.invoice.line","account.model_account_invoice_line","account_prize_claim_pcso.ccf_group_processor",1,1,1,0
+"account_prize_claim_pcso.access_account_invoice_tax_uinvoice_ccf","account.invoice.tax","account.model_account_invoice_tax","account_prize_claim_pcso.ccf_group_processor",1,1,1,0
 "account_prize_claim_pcso.access_account_journal_invoice_ccf","account.journal invoice","account.model_account_journal","account_prize_claim_pcso.ccf_group_processor",1,0,0,0
+"account_prize_claim_pcso.access_account_invoice_uinvoice_opex","account.invoice","account.model_account_invoice","account_prize_claim_pcso.opex_group_processor",1,1,1,0
+"account_prize_claim_pcso.access_account_invoice_line_uinvoice_opex","account.invoice.line","account.model_account_invoice_line","account_prize_claim_pcso.opex_group_processor",1,1,1,0
+"account_prize_claim_pcso.access_account_invoice_tax_uinvoice_opex","account.invoice.tax","account.model_account_invoice_tax","account_prize_claim_pcso.opex_group_processor",1,1,1,0
+"account_prize_claim_pcso.access_account_journal_invoice_opex","account.journal invoice","account.model_account_journal","account_prize_claim_pcso.opex_group_processor",1,0,0,0
+"account_prize_claim_pcso.access_purchase_order_invoicing_payments","purchase.order.rfp_processor","purchase.model_purchase_order","account_prize_claim_pcso.rfp_group_processor",1,1,1,0
+"account_prize_claim_pcso.access_purchase_order_line_invoicing_payments","purchase.order.line.rfp_processor","purchase.model_purchase_order_line","account_prize_claim_pcso.rfp_group_processor",1,1,1,0
+"account_prize_claim_pcso.access_stock_move_invoicing_payments","stock.move.rfp_processor","purchase.model_stock_move","account_prize_claim_pcso.rfp_group_processor",1,1,1,0
+"account_prize_claim_pcso.access_stock_picking_invoicing_payments","stock.picking.rfp_processor","purchase.model_stock_picking","account_prize_claim_pcso.rfp_group_processor",1,1,1,0
+"account_prize_claim_pcso.access_stock_move_invoicing_payments_opex","stock.move.opex_processor","purchase.model_stock_move","account_prize_claim_pcso.opex_group_processor",1,1,1,0
+"account_prize_claim_pcso.access_purchase_order_invoicing_payments_opex","purchase.order.opex_processor","purchase.model_purchase_order","account_prize_claim_pcso.opex_group_processor",1,0,0,0
+"account_prize_claim_pcso.access_purchase_order_line_invoicing_payments_opex","purchase.order.line.opex_processor","purchase.model_purchase_order_line","account_prize_claim_pcso.opex_group_processor",1,0,0,0
+"account_prize_claim_pcso.access_stock_move_invoicing_payments_opex","stock.move.opex_processor","purchase.model_stock_move","account_prize_claim_pcso.opex_group_processor",1,0,0,0
+"account_prize_claim_pcso.access_stock_picking_invoicing_payments_opex","stock.picking.opex_processor","purchase.model_stock_picking","account_prize_claim_pcso.opex_group_processor",1,0,0,0
+"account.access_account_partial_reconcile_opex","account.partial.reconcile.group_opex","account.model_account_partial_reconcile","account_prize_claim_pcso.opex_group_processor",1,0,0,0
+"account.access_account_partial_reconcile_opex","account.partial.reconcile.group_pcf","account.model_account_partial_reconcile","account_prize_claim_pcso.pcf_group_processor",1,0,0,0
+"account.access_account_partial_reconcile_opex","account.partial.reconcile.group_ccf","account.model_account_partial_reconcile","account_prize_claim_pcso.ccf_group_processor",1,0,0,0

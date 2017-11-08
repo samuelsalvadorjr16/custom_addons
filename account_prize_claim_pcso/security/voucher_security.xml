@@ -94,20 +94,87 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
-        <!-- RFP
+        <!-- RFP -->
         <record id="account_prize_claim_pcso.rfp_viewing" model="ir.rule">
-            <field name="name">Charity Claim Approver Rule</field>
-            <field name="model_id" ref="account.model_account_invoice"/>
+            <field name="name">Request for Payment Processor Rule</field>
+            <field name="model_id" ref="purchase.model_purchase_order"/>
             <field name="global" eval="False"/>
             <field name="groups" eval="[(4, [ref('rfp_group_processor')])]"/>
-            <field name="domain_force">[('create_uid','=',[user.id])]</field>
+            <field name="domain_force">[('create_uid','=',[user.id]), ('department_id', '=', [user.department_id.id])]</field>
+            <field name="active" eval="True"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>        
+
+
+        <record id="account_prize_claim_pcso.rfp_auth_viewing" model="ir.rule">
+            <field name="name">Request for Payment Approver, Submitter Rule</field>
+            <field name="model_id" ref="purchase.model_purchase_order"/>
+            <field name="global" eval="False"/>
+            <field name="groups" eval="[(4, [ref('pcf_group_allow_to_submit_rfp'),
+                                             ref('pcf_group_allow_to_approve_rfp')])]"/>
+            <field name="domain_force">[('department_id', '=', [user.department_id.id])]</field>
+            <field name="active" eval="True"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>   
+
+        <!-- OPEX -->
+        <record id="account_prize_claim_pcso.opex_processor_viewing" model="ir.rule">
+            <field name="name">Request for Payment Processor Rule</field>
+            <field name="model_id" ref="account.model_account_invoice"/>
+            <field name="global" eval="False"/>
+            <field name="groups" eval="[(4, [ref('opex_group_processor')])]"/>
+            <field name="domain_force">[('create_uid','=',[user.id]),('transaction_type','=',False)]</field>
             <field name="active" eval="True"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="False"/>
             <field name="perm_create" eval="False"/>
             <field name="perm_unlink" eval="False"/>
-        </record>        
-         -->
+        </record>    
+                                           
+                                           
+                                           
+                                          
+                                           
+
+        <record id="account_prize_claim_pcso.opex_reviewer_viewing" model="ir.rule">
+            <field name="name">OpEx Reviewer Rule</field>
+            <field name="model_id" ref="account.model_account_invoice"/>
+            <field name="global" eval="False"/>
+            <field name="groups" eval="[(4,[ref('opex_group_allow_to_approve_below_100k_for_rev1'),
+                                            ref('opex_group_allow_to_approve_bel_200k_for_rev1'),
+                                            ref('opex_group_allow_to_approve_above_200k_for_rev1'),
+                                            ref('opex_group_allow_to_approve_below_100k_for_rev2'),
+                                            ref('opex_group_allow_to_approve_bel_200k_for_rev2'),
+                                            ref('opex_group_allow_to_approve_above_200k_for_rev2')])]"/>
+            <field name="domain_force">[('transaction_type','=',False)]</field>
+            <field name="active" eval="True"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>   
+
+        <record id="account_prize_claim_pcso.opex_approver_viewing" model="ir.rule">
+            <field name="name">OpEx Approver Rule</field>
+            <field name="model_id" ref="account.model_account_invoice"/>
+            <field name="global" eval="False"/>
+            <field name="groups" eval="[(4, [ref('opex_group_allow_to_approve_below_100k_approved'),
+                ref('opex_group_allow_to_approve_bel_200k_approved'),
+                ref('opex_group_allow_to_approve_above_200k_approved')])]"/>
+            <field name="domain_force">[('transaction_type','=',False)]</field>
+            <field name="active" eval="True"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>   
+
     </data>
 
 </odoo>

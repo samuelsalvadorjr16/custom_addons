@@ -32,28 +32,23 @@
             <field name="arch" type="xml">
                 <form string="Prize Claim">
                 <header>
-                    <!--
-                    <button name="action_to_submit_prize_claim" type="object" states="draft" string="Submit" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_allow_to_submit,account_prize_claim_pcso.pcf_group_allow_to_submit_jackpot"/>
-                    
-                    <button name="action_to_approved_prize_claim" type="object" states="submit" string="Approve" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_allow_to_approve,account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot"/>              
-                    <button name="action_to_denied_prize_claim" type="object" states="submit" string="Deny" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_allow_to_approve,account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot"/>
-                    <button name="action_invoice_open" type="object" states="approved" string="Validate" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_allow_to_approve,account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot"/>
-
-                    <button name="%(act_acc_invo_paymt_prize)d" type="action" states="open" string="Register Payment" groups="account.group_account_user,account.group_account_manager" class="oe_highlight"/>
-                        -->
-                    <!--<field name="state" widget="statusbar" statusbar_visible="draft,submit,approved,denied,open,paid" />-->
-                    
-                    <!--<field name="progress_state" widget="progressbar"  max_value = '10' title = 'Review Progress'/>-->
                     <button name="action_to_submit_prize_claim" type="object" states="draft,return" string="Submit" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_processor"/>  
 
                     <button name="action_to_approve_for_review_prize_claim" type="object" states="submit" string="Approve" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_rev,account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_above_100k_rev,account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_below_100k_rev"/>  
+
+                    <button name="%(action_return_voucher_prize)d" type="action" states="submit" string="Return" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_rev,account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_above_100k_rev,account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_below_100k_rev"/>
+                    <button name="%(action_cancel_voucher)d" type="action" states="submit" string="Cancel" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_rev,account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_above_100k_rev,account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_below_100k_rev"/>
+
                                     
                     <button name="action_to_approve_for_approval_prize_claim" type="object" states="under_review" string="Approve" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_for_approv,account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_above_100k_for_approv,account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_below_100k_for_approv"/>  
+
+                    <button name="%(action_return_voucher_prize)d" type="action" states="under_review" string="Return" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_for_approv,account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_above_100k_for_approv,account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_below_100k_for_approv"/>
+                    <button name="%(action_cancel_voucher)d" type="action" states="under_review" string="Cancel" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_for_approv,account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_above_100k_for_approv,account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_below_100k_for_approv"/>
+
                     <button name="action_final_approve" type="object" states="for_approval" string="Approve" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_approved,account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_above_100k_approved,account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_below_100k_approved"/>  
 
-                    <button name="%(action_return_voucher_prize)d" type="action" states="submit,under_review,for_approval" string="Return" class="oe_highlight"/>
-                    <button name="%(action_cancel_voucher)d" type="action" states="submit,under_review,for_approval" string="Cancel"/>
-
+                    <button name="%(action_return_voucher_prize)d" type="action" states="for_approval" string="Return" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_approved,account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_above_100k_approved,account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_below_100k_approved"/>
+                    <button name="%(action_cancel_voucher)d" type="action" states="for_approval" string="Cancel" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_approved,account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_above_100k_approved,account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_below_100k_approved"/>
 
 
                     <button name="action_invoice_open" type="object" states="approved" string="Validate" class="oe_highlight" groups="account.group_account_user,account.group_account_manager"/>

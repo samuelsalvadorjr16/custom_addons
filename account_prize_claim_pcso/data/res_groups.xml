@@ -29,7 +29,7 @@
         <record id="pcf_group_allow_to_approve_non_jack_below_100k_rev" model="res.groups">
              <field name="category_id" ref="module_category_prize_claim"/>
              <field name="implied_ids" eval="[(4, ref('pcf_group_processor'))]"/>
-            <field name="name">02. Allow to Approve for Review, prize claim below 100,000.00 except Jackpot Prize</field>
+            <field name="name">02. Allow to Approve for Review, for &lt; 100k except Jackpot Prize</field>
             <field name="comment">User that can Approve for Review a Claim for below than 100,000 except Jackpot Prize.</field>
         </record>
 
@@ -37,7 +37,7 @@
         <record id="pcf_group_allow_to_approve_non_jack_below_100k_for_approv" model="res.groups">
              <field name="category_id" ref="module_category_prize_claim"/>
              <field name="implied_ids" eval="[(4, ref('pcf_group_processor'))]"/>
-            <field name="name">03. Allow to Approve for Approval, for prize claim below 100,000.00 except Jackpot Prize</field>
+            <field name="name">03. Allow to Approve, For Approval for &lt; 100k except Jackpot Prize</field>
             <field name="comment">User that can Approve, for Approval a Claim for below than 100,000 except Jackpot Prize.</field>
         </record>
 
@@ -45,7 +45,7 @@
         <record id="pcf_group_allow_to_approve_non_jack_below_100k_approved" model="res.groups">
              <field name="category_id" ref="module_category_prize_claim"/>
              <field name="implied_ids" eval="[(4, ref('pcf_group_processor'))]"/>
-            <field name="name">04. Final Approval for prize claim below 100,000.00 except Jackpot Prize</field>
+            <field name="name">04. Final Approval for &lt; 100k except Jackpot Prize</field>
             <field name="comment">User that can Approve as Final Approval to a Claim for below than 100,000 except Jackpot Prize.</field>
         </record>
 
@@ -54,7 +54,7 @@
         <record id="pcf_group_allow_to_approve_non_jack_above_100k_rev" model="res.groups">
              <field name="category_id" ref="module_category_prize_claim"/>
              <field name="implied_ids" eval="[(4, ref('pcf_group_processor'))]"/>
-            <field name="name">05. Allow to Approve for Review, prize claim above 100,000.00 except Jackpot Prize</field>
+            <field name="name">05. Allow to Approve for Review, for &gt; 100k except Jackpot Prize</field>
             <field name="comment">User that can Approve for Review a Claim for more than 100,000 except Jackpot Prize.</field>
         </record>
 
@@ -62,14 +62,14 @@
         <record id="pcf_group_allow_to_approve_non_jack_above_100k_for_approv" model="res.groups">
              <field name="category_id" ref="module_category_prize_claim"/>
              <field name="implied_ids" eval="[(4, ref('pcf_group_processor'))]"/>
-            <field name="name">06. Allow to Approve, for Approval for prize claim above 100,000.00 except Jackpot Prize</field>
+            <field name="name">06. Allow to Approve, for Approval for &gt; 100k except Jackpot Prize</field>
             <field name="comment">User that can Approve for Review a Claim for more than 100,000 except Jackpot Prize.</field>
         </record>
 
         <record id="pcf_group_allow_to_approve_non_jack_above_100k_approved" model="res.groups">
              <field name="category_id" ref="module_category_prize_claim"/>
              <field name="implied_ids" eval="[(4, ref('pcf_group_processor'))]"/>
-            <field name="name">07. Final Approval for prize claim above 100,000.00 except Jackpot Prize</field>
+            <field name="name">07. Final Approval for &gt; 100k except Jackpot Prize</field>
             <field name="comment">User that can Approve as Final Approval for more than 100,000 except Jackpot Prize.</field>
         </record>
 
@@ -111,7 +111,7 @@
 
         <!-- Charity Fund -->
         <record id="module_category_charity_claim" model="ir.module.category">
-            <field name="name">Charity Fund</field>
+            <field name="name">IMAP</field>
             <field name="sequence" eval="10" />
         </record>        
         <record id="ccf_group_processor" model="res.groups">
@@ -124,28 +124,28 @@
         <record id="ccf_group_allow_to_approve_below_100k_for_rev1" model="res.groups">
              <field name="category_id" ref="module_category_charity_claim"/>
              <field name="implied_ids" eval="[(4, ref('ccf_group_processor'))]"/>
-            <field name="name">02. Allow to Approve for 1st Review a Claim below 100,000.00.</field>
+            <field name="name">02. Allow to Approve for 1st Review for &lt; 100k.</field>
             <field name="comment">User that can Approve for Review a Claim for below than 100,000.00.</field>
         </record>
 
         <record id="ccf_group_allow_to_approve_below_100k_for_rev2" model="res.groups">
              <field name="category_id" ref="module_category_charity_claim"/>
              <field name="implied_ids" eval="[(4, ref('ccf_group_processor'))]"/>
-            <field name="name">03. Allow to Approve for 2nd Review a Claim below 100,000.00.</field>
+            <field name="name">03. Allow to Approve for 2nd Review for &lt; 100k.</field>
             <field name="comment">User that can Approve for Review a Claim for below than 100,000.00.</field>
         </record>       
 
         <record id="ccf_group_allow_to_approve_below_100k_for_approval" model="res.groups">
              <field name="category_id" ref="module_category_charity_claim"/>
              <field name="implied_ids" eval="[(4, ref('ccf_group_processor'))]"/>
-            <field name="name">04. Allow to Approve, For Approval a Claim below 100,000.00.</field>
+            <field name="name">04. Allow to Approve, For Approval for &lt; 100k.</field>
             <field name="comment">User that  can Approve, For Approval a Charity claim below 100,000.00.</field>
         </record>      
 
         <record id="ccf_group_allow_to_approve_below_100k_approved" model="res.groups">
              <field name="category_id" ref="module_category_charity_claim"/>
              <field name="implied_ids" eval="[(4, ref('ccf_group_processor'))]"/>
-            <field name="name">05. Final Approval for the Claim below 100,000.00.</field>
+            <field name="name">05. Final Approval for &lt; 100k.</field>
             <field name="comment">User that  can Approve, For  Final Approval a Charity claim below 100,000.00.</field>
         </record>     
 
@@ -153,29 +153,29 @@
         <record id="ccf_group_allow_to_approve_above_100k_bel_200k_for_rev1" model="res.groups">
              <field name="category_id" ref="module_category_charity_claim"/>
              <field name="implied_ids" eval="[(4, ref('ccf_group_processor'))]"/>
-            <field name="name">06. Allow to Approve for 1st Review a Claim &gt;= 100k and &lt;=  200k.</field>
+            <field name="name">06. Allow to Approve for 1st Review for &gt;= 100k and &lt;=  200k.</field>
             <field name="comment">User that can Approve for Review a Claim for greater than 100,000.00 and Less than 200,000.00.</field>
         </record>
 
         <record id="ccf_group_allow_to_approve_above_100k_bel_200k_for_rev2" model="res.groups">
              <field name="category_id" ref="module_category_charity_claim"/>
              <field name="implied_ids" eval="[(4, ref('ccf_group_processor'))]"/>
-            <field name="name">07. Allow to Approve for 2nd Review a Claim &gt;= 100k and &lt;=  200k.</field>
+            <field name="name">07. Allow to Approve for 2nd Review for &gt;= 100k and &lt;=  200k.</field>
             <field name="comment">User that can Approve for Review a Claim for greater than 100,000.00 and Less than 200,000.00.</field>
         </record>       
 
         <record id="ccf_group_allow_to_approve_above_100k_bel_200k_for_approval" model="res.groups">
              <field name="category_id" ref="module_category_charity_claim"/>
              <field name="implied_ids" eval="[(4, ref('ccf_group_processor'))]"/>
-            <field name="name">08. Allow to Approve, For Approval a Claim &gt;= 100k and &lt;=  200k.</field>
+            <field name="name">08. Allow to Approve, For Approval for &gt;= 100k and &lt;=  200k.</field>
             <field name="comment">User that  can Approve, For Approval a Charity Claim for greater than 100,000.00 and Less than 200,000.00.</field>
         </record>      
 
         <record id="ccf_group_allow_to_approve_above_100k_bel_200k_approved" model="res.groups">
              <field name="category_id" ref="module_category_charity_claim"/>
              <field name="implied_ids" eval="[(4, ref('ccf_group_processor'))]"/>
-            <field name="name">09. Final Approval for the Claim &gt;= 100k and &lt;=  200k.</field>
-            <field name="comment">User that  can Approve, For  Final Approval a CharityClaim for greater than 100,000.00 and Less than 200k.</field>
+            <field name="name">09. Final Approval for &gt;= 100k and &lt;=  200k.</field>
+            <field name="comment">User that  can Approve, For  Final Approval a CharityClaim for greater than 100,000.00 and Less than 200,000.00.</field>
         </record>                
 
 
@@ -183,28 +183,28 @@
         <record id="ccf_group_allow_to_approve_above_200k_for_rev1" model="res.groups">
              <field name="category_id" ref="module_category_charity_claim"/>
              <field name="implied_ids" eval="[(4, ref('ccf_group_processor'))]"/>
-            <field name="name">10. Allow to Approve for 1st Review a Claim &gt; 200k.</field>
+            <field name="name">10. Allow to Approve for 1st Review for &gt; 200k.</field>
             <field name="comment">User that can Approve for Review a Claim for greater than 200,000.00.</field>
         </record>
 
         <record id="ccf_group_allow_to_approve_above_200k_for_rev2" model="res.groups">
              <field name="category_id" ref="module_category_charity_claim"/>
              <field name="implied_ids" eval="[(4, ref('ccf_group_processor'))]"/>
-            <field name="name">11. Allow to Approve for 2nd Review a Claim &gt; 200k.</field>
+            <field name="name">11. Allow to Approve for 2nd Review for &gt; 200k.</field>
             <field name="comment">User that can Approve for Review a Claim for greater than 200,000.00.</field>
         </record>       
 
         <record id="ccf_group_allow_to_approve_above_200k_for_approval" model="res.groups">
              <field name="category_id" ref="module_category_charity_claim"/>
              <field name="implied_ids" eval="[(4, ref('ccf_group_processor'))]"/>
-            <field name="name">12. Allow to Approve, For Approval a Claim &gt; 200k.</field>
+            <field name="name">12. Allow to Approve, For Approval for &gt; 200k.</field>
             <field name="comment">User that  can Approve, For Approval a Charity Claim for greater than 200,000.00.</field>
         </record>      
 
         <record id="ccf_group_allow_to_approve_above_200k_approved" model="res.groups">
              <field name="category_id" ref="module_category_charity_claim"/>
              <field name="implied_ids" eval="[(4, ref('ccf_group_processor'))]"/>
-            <field name="name">13. Final Approval for the Claim &gt; 200k.</field>
+            <field name="name">13. Final Approval for &gt; 200k.</field>
             <field name="comment">User that  can Approve, For  Final Approval a Charity Claim for greater than 200,000.00.</field>
         </record>             
 
@@ -213,17 +213,88 @@
 
         <!-- Operation Expenses -->
         <record id="module_category_operation_expenses" model="ir.module.category">
-            <field name="name">Operation Expense</field>
+            <field name="name">Operation Fund</field>
             <field name="sequence" eval="11" />
         </record>
 
         <record id="opex_group_processor" model="res.groups">
             <field name="name">01. Processor</field>
             <field name="category_id" ref="module_category_operation_expenses"/>
-            <field name="comment">User, that will encode/prepare the Prize Claim.</field>
+            <field name="comment">User, that will encode/prepare the OpeX.</field>
         </record>
 
 
+        <!-- OpEx Below 100k -->
+        <record id="opex_group_allow_to_approve_below_100k_for_rev1" model="res.groups">
+             <field name="category_id" ref="module_category_operation_expenses"/>
+             <field name="implied_ids" eval="[(4, ref('opex_group_processor'))]"/>
+            <field name="name">02. Allow to Approve for 1st Review, OpEx &lt; 100k.</field>
+            <field name="comment">User that can Approve for Review, OpEx below than 100,000.00.</field>
+        </record>
+
+        <record id="opex_group_allow_to_approve_below_100k_for_rev2" model="res.groups">
+             <field name="category_id" ref="module_category_operation_expenses"/>
+             <field name="implied_ids" eval="[(4, ref('opex_group_processor'))]"/>
+            <field name="name">03. Allow to Approve for 2nd Review, OpEx &lt; 100k.</field>
+            <field name="comment">User that can Approve for Review, OpEx below than 100,000.00.</field>
+        </record>          
+
+        <record id="opex_group_allow_to_approve_below_100k_approved" model="res.groups">
+             <field name="category_id" ref="module_category_operation_expenses"/>
+             <field name="implied_ids" eval="[(4, ref('opex_group_processor'))]"/>
+            <field name="name">04. Final Approval for the OpEx &lt; 100k.</field>
+            <field name="comment">User that  can Approve, For  Final Approval a OpEx below 100,000.00.</field>
+        </record>     
+
+
+        <!-- OpEx Below 200k -->
+        <record id="opex_group_allow_to_approve_bel_200k_for_rev1" model="res.groups">
+             <field name="category_id" ref="module_category_operation_expenses"/>
+             <field name="implied_ids" eval="[(4, ref('opex_group_processor'))]"/>
+            <field name="name">05. Allow to Approve for 1st Review, OpEx &lt;  200k.</field>
+            <field name="comment">User that can Approve for Review OpEx Less than 200,000.00.</field>
+        </record>
+
+        <record id="opex_group_allow_to_approve_bel_200k_for_rev2" model="res.groups">
+             <field name="category_id" ref="module_category_operation_expenses"/>
+             <field name="implied_ids" eval="[(4, ref('opex_group_processor'))]"/>
+            <field name="name">06. Allow to Approve for 2nd Review, OpEx &lt;  200k.</field>
+            <field name="comment">User that can Approve for Review, OpEx Less than 200,000.00.</field>
+        </record>       
+
+        <record id="opex_group_allow_to_approve_bel_200k_approved" model="res.groups">
+             <field name="category_id" ref="module_category_operation_expenses"/>
+             <field name="implied_ids" eval="[(4, ref('opex_group_processor'))]"/>
+            <field name="name">07. Final Approval, OpEx &lt;  200k.</field>
+            <field name="comment">User that  can Approve, For  Final Approval for OpEx Less than 200,000.00.</field>
+        </record>     
+
+
+         <!-- Opex Above 200k -->
+        <record id="opex_group_allow_to_approve_above_200k_for_rev1" model="res.groups">
+             <field name="category_id" ref="module_category_operation_expenses"/>
+             <field name="implied_ids" eval="[(4, ref('opex_group_processor'))]"/>
+            <field name="name">08. Allow to Approve for 1st Review, Opex &gt; 200k.</field>
+            <field name="comment">User that can Approve for Review, Opex for greater than 200,000.00.</field>
+        </record>
+
+        <record id="opex_group_allow_to_approve_above_200k_for_rev2" model="res.groups">
+             <field name="category_id" ref="module_category_operation_expenses"/>
+             <field name="implied_ids" eval="[(4, ref('opex_group_processor'))]"/>
+            <field name="name">09. Allow to Approve for 2nd Review, Opex &gt; 200k.</field>
+            <field name="comment">User that can Approve for Review, Opex for greater than 200,000.00.</field>
+        </record>       
+
+  
+        <record id="opex_group_allow_to_approve_above_200k_approved" model="res.groups">
+             <field name="category_id" ref="module_category_operation_expenses"/>
+             <field name="implied_ids" eval="[(4, ref('opex_group_processor'))]"/>
+            <field name="name">10. Final Approval for the Claim &gt; 200k.</field>
+            <field name="comment">User that  can Approve, For  Final Approval, Opex for greater than 200,000.00.</field>
+        </record>             
+
+
+<!--
         <record id="pcf_group_allow_to_submit_opex" model="res.groups">
             <field name="name">02. Allow to Submit Opex</field>
             <field name="category_id" ref="module_category_operation_expenses"/>
@@ -237,7 +308,7 @@
             <field name="name">03. Allow to Approve Opex</field>
             <field name="comment">User can Approve a Operation Expense</field>
         </record>
-
+-->
 
         <!-- RFP Operation Expenses -->
         <record id="module_category_request_for_payment" model="ir.module.category">
