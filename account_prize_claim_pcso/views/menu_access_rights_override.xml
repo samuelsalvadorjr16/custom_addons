@@ -74,6 +74,10 @@
           <field name="groups_id" eval="[(4, [ref('account_prize_claim_pcso.pcf_group_processor'),ref('account_prize_claim_pcso.ccf_group_allow_to_maintain_master_files')])]"/>
         </record>  
 
+        <record id= "menu_pcso_charity" model = 'ir.ui.menu'>
+          <field name="groups_id" eval="[(4, [ref('account_prize_claim_pcso.ccf_group_processor')])]"/>
+        </record>      
+
 
         <record id= "menu_pcso_charity_claim_form" model = 'ir.ui.menu'>
           <field name="groups_id" eval="[(4, [ref('account_prize_claim_pcso.ccf_group_processor')])]"/>
