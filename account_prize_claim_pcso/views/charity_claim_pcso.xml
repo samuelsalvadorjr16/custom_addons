@@ -9,7 +9,7 @@
             <field name="arch" type="xml">
                 <form string="IMAP Claim">
                 <header>
-                    <button name="action_to_submit_charity_claim" type="object" states="draft,return" string="Submit" class="oe_highlight" groups="account_prize_claim_pcso.ccf_group_processor"/>
+                    <button name="action_to_submit_charity_claim" type="object" states="draft,return" string="Submit" class="oe_highlight" groups="account_prize_claim_pcso.ccf_group_allow_to_submit_pcf_claim"/>
 
                     <button name="action_to_approve_for_1st_review_charity_claim" type="object" states="submit" string="1st Approve" class="oe_highlight" groups="account_prize_claim_pcso.ccf_group_allow_to_approve_below_100k_for_rev1,account_prize_claim_pcso.ccf_group_allow_to_approve_above_100k_bel_200k_for_rev1,account_prize_claim_pcso.ccf_group_allow_to_approve_above_200k_for_rev1"/>
 
@@ -63,7 +63,7 @@
                     <field name="type" invisible="1"/>
                     <group>
                         <group>
-                            <field name="branch_id" required="1"/>
+                            <field name="branch_id" invisible="1"/>
                             <field name="transaction_type" invisible="1"/>                        
                             <field name="transaction_date" readonly="1"/>  
                             <!--  

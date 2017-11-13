@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+       <record model="ir.ui.view" id="pcso_hr_department_form_extend">
+            <field name="name">pcso.hr.department.form.extend</field>
+            <field name="model">hr.department</field>
+            <field name="inherit_id" ref="hr.view_department_form"/>
+            <field name="arch" type="xml">
+                <field name="parent_id" position="after">
+                    <field name="account_analytic_id" groups='analytic.group_analytic_accounting'/>
+                </field>
+            </field>
+        </record>
+
+       <record model="ir.ui.view" id="pcso_hr_department_kanban_extend">
+            <field name="name">pcso.hr.department.kanban.extend</field>
+            <field name="model">hr.department</field>
+            <field name="inherit_id" ref="hr.hr_department_view_kanban"/>
+            <field name="arch" type="xml">
+                <field name="color" position="after">
+                    <field name="account_analytic_id" groups='analytic.group_analytic_accounting'/>
+                </field>
+
+                <xpath expr="//div[@class='o_kanban_card_header_title']/div[@class='o_secondary']" position="after">
+                    <div class="o_secondary"><field name="account_analytic_id"/></div>
+                    <!--
+                    <t t-if="account_analytic_id">
+                        <div class="o_secondary"><field name="account_analytic_id"/></div>
+                    </t>
+                    <t t-if="not account_analytic_id">                        
+                        <div class="o_secondary">No Cost Center</div>
+                    </t>
+                    -->   
+                </xpath>                                 
+            </field>
+        </record>
+
+       <record model="ir.ui.view" id="pcso_hr_department_tree_extend">
+            <field name="name">pcso.hr.department.tree.extend</field>
+            <field name="model">hr.department</field>
+            <field name="inherit_id" ref="hr.view_department_tree"/>
+            <field name="arch" type="xml">
+                <field name="company_id" position="after">
+                    <field name="account_analytic_id" groups='analytic.group_analytic_accounting'/>
+                </field>               
+            </field>
+        </record>        
+    </data>    
+</odoo>

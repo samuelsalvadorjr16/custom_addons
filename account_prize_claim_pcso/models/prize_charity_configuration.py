@@ -14,6 +14,7 @@ class prize_config_branch(models.Model):
 	_name = 'config.prize.branch'
 	
 	name = fields.Char('Name')
+	analytic_account_id = fields.Many2one('account.analytic.account', 'Analytic Account')
 
 class prize_config_transaction_type(models.Model):
 	_name = 'config.prize.transactiontype'
@@ -41,8 +42,8 @@ class prize_config_agency(models.Model):
 				'company_type': 'individual',
 				'customer': True,
 				'supplier': True,})
-			res_agency_obj = self.env['config.prize.agency'].search([('id', '=', res_id)])
-			res_agency_obj.write({'owner_id': res_partner_id})			
+			res_agency_obj = self.env['config.prize.agency'].search([('id', '=', res_id.id)])
+			res_agency_obj.write({'owner_id': res_partner_id.id})			
 		return res_id
 
 	@api.multi
@@ -60,6 +61,14 @@ class prize_config_gametype(models.Model):
 	name = fields.Char('Name')
 	id_char = fields.Char('ID')
 
+	jackpot_product_id = fields.Many2one('product.product', string="Jackpot")
+	high_tier_product_id = fields.Many2one('product.product', string="High Tier")
+	low_tier_product_id = fields.Many2one('product.product', string="Low Tier")
+
+	default_jackpot_account_id = fields.Many2one('account.account', string="Account Jackpot")
+	default_high_tier_account_id = fields.Many2one('account.account', string="Account High Tier")
+	default_low_tier_account_id = fields.Many2one('account.account', string="Account Low Tier")
+
 class prize_config_bettype(models.Model):
 	_name = 'config.prize.bettype'
 
@@ -74,6 +83,7 @@ class prize_config_draws(models.Model):
 	draw_date = fields.Datetime('Draw Date')
 	draw_result = fields.Char('Draw Result')
 	gametype_id = fields.Many2one('config.prize.gametype', 'Game Type')
+	jackpot_prize = fields.Many2one(string='Jackpot Prize', digits=dp.get_precision('Price Claim First Prize'))
 	first_prize = fields.Float(string='First Prize', digits=dp.get_precision('Price Claim First Prize'))
 	second_prize = fields.Float(string='Second Prize', digits=dp.get_precision('Price Claim Second Prize'))
 	third_prize = fields.Float(string='Third Prize', digits=dp.get_precision('Price Claim Third Prize'))

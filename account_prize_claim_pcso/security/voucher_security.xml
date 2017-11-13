@@ -24,7 +24,10 @@
             <field name="model_id" ref="account.model_account_invoice"/>
             <field name="global" eval="False"/>
             <!--<field name="groups" eval="[(4, ref('stock.group_stock_multi_warehouses'))]"/>-->
-            <field name="groups" eval="[(4, [ref('pcf_group_allow_to_approve_non_jack_below_100k_rev'), ref('pcf_group_allow_to_approve_non_jack_above_100k_rev'),ref('pcf_group_allow_to_approve_jackpot_rev')])]"/>
+            <field name="groups" eval="[(4, [ref('pcf_group_allow_to_approve_non_jack_below_100k_rev'),
+                                             ref('pcf_group_allow_to_submit_pcf_claim'),
+                                             ref('pcf_group_allow_to_approve_non_jack_above_100k_rev'),
+                                             ref('pcf_group_allow_to_approve_jackpot_rev')])]"/>
             <field name="domain_force">[('transaction_type','=','prize_claim')]</field>
             <field name="active" eval="True"/>
             <field name="perm_read" eval="True"/>
@@ -39,7 +42,12 @@
             <field name="model_id" ref="account.model_account_invoice"/>
             <field name="global" eval="False"/>
             <!--<field name="groups" eval="[(4, ref('stock.group_stock_multi_warehouses'))]"/>-->
-            <field name="groups" eval="[(4, [ref('pcf_group_allow_to_approve_non_jack_below_100k_for_approv'), ref('pcf_group_allow_to_approve_non_jack_above_100k_for_approv'),ref('pcf_group_allow_to_approve_jackpot_for_approv'),ref('pcf_group_allow_to_approve_non_jack_below_100k_approved'), ref('pcf_group_allow_to_approve_non_jack_above_100k_approved'),ref('pcf_group_allow_to_approve_jackpot_approved')])]"/>
+            <field name="groups" eval="[(4, [ref('pcf_group_allow_to_approve_non_jack_below_100k_for_approv'),
+                                             ref('pcf_group_allow_to_approve_non_jack_above_100k_for_approv'),
+                                             ref('pcf_group_allow_to_approve_jackpot_for_approv'),
+                                             ref('pcf_group_allow_to_approve_non_jack_below_100k_approved'),
+                                             ref('pcf_group_allow_to_approve_non_jack_above_100k_approved'),
+                                             ref('pcf_group_allow_to_approve_jackpot_approved')])]"/>
             <field name="domain_force">[('transaction_type','=','prize_claim')]</field>
             <field name="active" eval="True"/>
             <field name="perm_read" eval="True"/>
@@ -71,7 +79,8 @@
                                              ref('ccf_group_allow_to_approve_above_100k_bel_200k_for_rev1'),
                                              ref('ccf_group_allow_to_approve_above_100k_bel_200k_for_rev2'), 
                                              ref('ccf_group_allow_to_approve_above_200k_for_rev1'),
-                                             ref('ccf_group_allow_to_approve_above_200k_for_rev2')])]"/>
+                                             ref('ccf_group_allow_to_approve_above_200k_for_rev2'),
+                                             ref('ccf_group_allow_to_submit_pcf_claim')])]"/>
             <field name="domain_force">[('transaction_type','=','charity')]</field>
             <field name="active" eval="True"/>
             <field name="perm_read" eval="True"/>
@@ -85,8 +94,13 @@
             <field name="name">Charity Claim Approver Rule</field>
             <field name="model_id" ref="account.model_account_invoice"/>
             <field name="global" eval="False"/>
-            <field name="groups" eval="[(4, [ref('ccf_group_allow_to_approve_below_100k_for_approval'), ref('ccf_group_allow_to_approve_below_100k_approved'),ref('ccf_group_allow_to_approve_above_100k_bel_200k_for_approval'),ref('ccf_group_allow_to_approve_above_100k_bel_200k_approved'), ref('ccf_group_allow_to_approve_above_200k_for_approval'),ref('ccf_group_allow_to_approve_above_200k_approved')])]"/>
-            <field name="domain_force">[('create_uid','=',[user.id])]</field>
+            <field name="groups" eval="[(4, [ref('ccf_group_allow_to_approve_below_100k_for_approval'),
+                                             ref('ccf_group_allow_to_approve_below_100k_approved'),
+                                             ref('ccf_group_allow_to_approve_above_100k_bel_200k_for_approval'),
+                                             ref('ccf_group_allow_to_approve_above_100k_bel_200k_approved'),
+                                             ref('ccf_group_allow_to_approve_above_200k_for_approval'),
+                                             ref('ccf_group_allow_to_approve_above_200k_approved')])]"/>
+            <field name="domain_force">[('transaction_type','=','charity')]</field>
             <field name="active" eval="True"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="False"/>
@@ -124,6 +138,21 @@
         </record>   
 
         <!-- OPEX -->
+
+        <record id="account_prize_claim_pcso.opex_auth_viewing" model="ir.rule">
+            <field name="name">Request For Payment Opex Rule</field>
+            <field name="model_id" ref="purchase.model_purchase_order"/>
+            <field name="global" eval="False"/>
+            <field name="groups" eval="[(4, [ref('opex_group_processor')])]"/>
+            <field name="domain_force">[]</field>
+            <field name="active" eval="True"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>   
+
+
         <record id="account_prize_claim_pcso.opex_processor_viewing" model="ir.rule">
             <field name="name">Request for Payment Processor Rule</field>
             <field name="model_id" ref="account.model_account_invoice"/>

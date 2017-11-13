@@ -32,7 +32,7 @@
             <field name="arch" type="xml">
                 <form string="Prize Claim">
                 <header>
-                    <button name="action_to_submit_prize_claim" type="object" states="draft,return" string="Submit" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_processor"/>  
+                    <button name="action_to_submit_prize_claim" type="object" states="draft,return" string="Submit" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_allow_submit_jackpot,account_prize_claim_pcso.pcf_group_allow_to_submit_pcf_claim"/>  
 
                     <button name="action_to_approve_for_review_prize_claim" type="object" states="submit" string="Approve" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_rev,account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_above_100k_rev,account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_below_100k_rev"/>  
 
@@ -96,7 +96,7 @@
                         <group>
                             <field name="branch_id" required="1"/>
                             <field name="transaction_type" readonly="1"/>
-                            <field name="jackpot_prize"/>                        
+                            <field name="jackpot_prize" groups="account_prize_claim_pcso.pcf_group_allow_create_jackpot,account_prize_claim_pcso.pcf_group_allow_submit_jackpot,account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_rev,account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_for_approv,account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_approved"/>                        
                             <field name="transaction_date" readonly="1"/>    
                             <field string="Claimant" name="partner_id"
                               context="{'default_partner_claimant': 1, 'search_default_partner_claimant_filter': 1}"
@@ -126,7 +126,7 @@
                     </group>
                     <notebook>
                         <page string="Prize Claims">
-                            <field context="{'type': type, 'journal_id': journal_id, 'transaction_type':transaction_type}" name="invoice_line_ids">
+                            <field context="{'type': type, 'journal_id': journal_id, 'transaction_type':transaction_type, 'jackpot_prize':jackpot_prize, 'branch_id': branch_id}" name="invoice_line_ids">
                                 <tree string="Prize Claim lines" editable="bottom">
                                     <field name="sequence" widget="handle" />
                                     <!--
@@ -171,6 +171,7 @@
                                     <field name="bettype_id" required="1"/>
                                     <field name="agency_id" required="1"/>
                                     <field name="ticket_serial" required="1"/>
+                                    <field name="jackpot_prize" groups="account_prize_claim_pcso.pcf_group_allow_create_jackpot,account_prize_claim_pcso.pcf_group_allow_submit_jackpot,account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_rev,account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_for_approv,account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_approved"/>                                    
                                     <field name="first_prize"/>
                                     <field name="second_prize"/>
                                     <field name="third_prize"/>
@@ -217,11 +218,17 @@
                                     <field name="move_id" groups="account.group_account_user" attrs="{'invisible': [('move_id', '=', False)]}"/>
                                     <field name="date" domain="[('state', '=', 'draft'), ('company_id', '=', company_id)]" groups="account.group_account_user"/>
                                     <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
-                                    <field name="amount_in_words" invisible="0"/>
-                                    
+                                    <field name="amount_in_words" invisible="0"/>                                    
                                 </group>
                             </group>
+                            <group string="PCSO INFO" groups='account_prize_claim_pcso.pcso_rfp_sup_user_view'>
+                                <field name="submitted_uid" string="Submitted By" readonly="1"/>
+                                <field name="certified_correct_uid" string="Approved for Review By" readonly="1"/>
+                                <field name="for_approval_uid"  string="Approved for Approval By" readonly="1"/>
+                                <field name="approve_uid" string="Approved for Final Approval By" readonly="1"/>
+                            </group>
                         </page>
+
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">

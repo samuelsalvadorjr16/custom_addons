@@ -49,9 +49,24 @@ class purchase_order(models.Model):
 	def _get_department(self):
 		return self.env.user.department_id.id
 
+	@api.model
+	def _get_costcenter(self):
+		if self.department_id:
+			return self.department_id.account_analytic_id.id
+		else:
+			return self.env.user.department_id.account_analytic_id.id
+
+	@api.onchange('analytic_account_id')
+	def _onchange_ann_acc(self):
+		#raise Warning(self.order_line.product_id)
+		for inv in self.order_line:
+			inv.account_analytic_id = self.analytic_account_id.id
+			#_logger.info(inv.product_id)
+
 	create_uid_department_id = fields.Many2one('hr.department', related='create_uid.department_id', string="Created User Department")
 	create_uid_job_id = fields.Many2one('hr.job', related='create_uid.job_id', string="Created User Job")
 	department_id = fields.Many2one('hr.department', string="Default Department", default=_get_department)
+	analytic_account_id = fields.Many2one('account.analytic.account', string="Cost Center/Department", default=_get_costcenter) #, default=_get_costcenter
 	job_id = fields.Many2one('hr.job', string="Default Job", default=_get_job)
 	approve_uid = fields.Many2one('res.users', 'Approved By')
 	submitted_uid = fields.Many2one('res.users', 'Submitted By')
@@ -130,3 +145,14 @@ class purchase_order(models.Model):
 				vals['name'] = self.env['ir.sequence'].next_by_code('purchase.order') or '/'
 		#raise Warning(vals['name'])
 		return super(purchase_order, self).create(vals)
+
+class purchase_order_line(models.Model):
+	_inherit='purchase.order.line'
+
+	@api.model
+	def _get_def_ann_acc(self):
+		if self._context.get('analytic_account_id'):
+			branch_obj = self.env['account.analytic.account'].search([('id', '=', self._context.get('analytic_account_id'))])
+			return branch_obj.id
+
+	account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account', default=_get_def_ann_acc)

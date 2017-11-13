@@ -40,25 +40,26 @@
                     <header>
 
                             <button name="action_approve_for_1st_review_opex" type="object" states="draft,return" string="Approve" help ="Set to Approve for 1st Review" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_for_rev1,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_for_rev1,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_for_rev1"/>
-
-                             <button name="%(action_return_opex)d" type="action" states="draft,return" string="Return" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_for_rev1,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_for_rev1,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_for_rev1"/>                            
-                             <button name="%(action_cancel_opex)d" type="action" states="draft,return" string="Deny" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_for_rev1,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_for_rev1,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_for_rev1"/>
+<!--
+                             <button name="%(action_return_opex)d" type="action" states="draft,return" string="Return" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_for_rev1,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_for_rev1,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_for_rev1"/>      
+-->              
+                             <button name="%(action_cancel_opex)d" type="action" states="draft,return" string="Return" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_for_rev1,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_for_rev1,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_for_rev1"/>
 
 
                             <button name="action_approve_for_2nd_review_opex" type="object" states="under_review" string="Approve" help ="Set to Approve for 2nd Review" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_for_rev2,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_for_rev2,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_for_rev2"/>
 
 
-
-                             <button name="%(action_return_opex)d" type="action" states="under_review" string="Return" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_for_rev2,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_for_rev2,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_for_rev2"/>                            
-                             <button name="%(action_cancel_opex)d" type="action" states="under_review" string="Deny" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_for_rev2,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_for_rev2,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_for_rev2"/>
+<!--
+                             <button name="%(action_return_opex)d" type="action" states="under_review" string="Return" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_for_rev2,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_for_rev2,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_for_rev2"/>              -->              
+                             <button name="%(action_cancel_opex)d" type="action" states="under_review" string="Return" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_for_rev2,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_for_rev2,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_for_rev2"/>
 
 
 
                             <button name="action_final_approve_opex" type="object" states="under_2nd_review" string="Approve" help ="Set for Final Approval" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_approved,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_approved,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_approved"/>                            
 
-
-                             <button name="%(action_return_opex)d" type="action" states="under_2nd_review" string="Return" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_approved,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_approved,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_approved"/>                            
-                             <button name="%(action_cancel_opex)d" type="action" states="under_2nd_review" string="Deny" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_approved,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_approved,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_approved"/>
+<!--
+                             <button name="%(action_return_opex)d" type="action" states="under_2nd_review" string="Return" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_approved,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_approved,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_approved"/>            -->                
+                             <button name="%(action_cancel_opex)d" type="action" states="under_2nd_review" string="Return" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_approved,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_approved,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_approved"/>
 
 
                             <button name="action_invoice_open" type="object" states="approved" string="Validate" class="oe_highlight" groups="account.group_account_user,account.group_account_manager"/>
@@ -74,16 +75,27 @@
                         <field name="state" widget="statusbar" statusbar_visible="draft,under_review,under_2nd_review,approved"/>
                     </header>
                 </xpath>
+                <field name="reference" position="before">
+                    <field name="analytic_account_id" required="1"  attrs="{'readonly': [('state', 'not in', ['draft', 'return'])]}"/>
+                </field>
 
+                <xpath expr="//notebook/page[1]/field[@name='invoice_line_ids']/tree/field[@name='analytic_tag_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>                    
+                </xpath>                
                 <xpath expr="//notebook/page[1]" position="after">                    
                     <page string="Approval Log">
                         <field name="status_history" readonly="1" />
                     </page>    
                 </xpath>
 
-                         
-
-
+                <xpath expr="//notebook/page[3]/group" position="after">                    
+                    <group string="PCSO INFO" groups='account_prize_claim_pcso.pcso_rfp_sup_user_view'>
+                        <field name="certified_correct_uid" string="APPROVER RFP (A)" readonly="1"/>
+                        <field name="certified_correct_2_uid" string="APPROVER JL BY" readonly="1"/>
+                        <field name="under_review_uid"  string="APPROVER (B)" readonly="1"/>
+                        <field name="approve_uid" string="APPROVER (C)" readonly="1"/>
+                    </group>
+                </xpath>                    
 
             </field>
        </record>

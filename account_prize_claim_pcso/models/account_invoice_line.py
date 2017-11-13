@@ -16,20 +16,43 @@ class account_invoice_line_prize_claim(models.Model):
 
 	@api.one
 	@api.depends('first_prize', 'second_prize', 'third_prize', 'third_prize',
-				 'fourth_prize', 'fifth_prize')
+				 'fourth_prize', 'fifth_prize', 'jackpot_prize')
 	def _compute_prize(self):
-		self.price_unit = self.first_prize+ self.second_prize  + self.third_prize  + self.fourth_prize  + self.fifth_prize 
+		self.price_unit = self.first_prize+ self.second_prize  + self.third_prize  + self.fourth_prize  + self.fifth_prize + self.jackpot_prize
 
 
 	@api.onchange('first_prize', 'second_prize', 'third_prize', 'third_prize',
-				 'fourth_prize', 'fifth_prize')
-	def onchange_amount(self):		
-		self.price_unit = self.first_prize+ self.second_prize  + self.third_prize  + self.fourth_prize  + self.fifth_prize 
+				 'fourth_prize', 'fifth_prize', 'jackpot_prize')
+	def onchange_amount(self):
+	#	if 	self.draw_gametype:
+	#		if not self._context.get('jackpot_prize'):
+				#if self.draw_gametype.low_tier_product_id:
+	#			self.product_id == self.draw_gametype.low_tier_product_id.id
+	#		else:
+				#if self.draw_gametype.high_tier_product_id:
+	#			self.product_id == self.draw_gametype.high_tier_product_id.id
+		self.price_unit = self.first_prize+ self.second_prize  + self.third_prize  + self.fourth_prize  + self.fifth_prize + self.jackpot_prize
+
+	@api.onchange('draw_id')
+	def onchange_draws(self):
+		if not self._context.get('jackpot_prize'):
+			if self.draw_id.gametype_id.low_tier_product_id:
+				self.product_id = self.draw_id.gametype_id.low_tier_product_id.id
+		else:
+			if self.draw_id.gametype_id.high_tier_product_id:
+				self.product_id = self.draw_id.gametype_id.high_tier_product_id.id
+
+		if self._context.get('branch_id'):
+			#raise Warning(self._context.get('branch_id'))
+			if self._context.get('transaction_type') == 'prize_claim':
+				branch_obj = self.env['config.prize.branch'].search([('id', '=', self._context.get('branch_id'))])
+				self.account_analytic_id = branch_obj and branch_obj.analytic_account_id and branch_obj.analytic_account_id.id or False 	
 
 
 	@api.model
 	def _default_product_id(self):
 		if self._context.get('transaction_type'):
+			#raise Warning(self._context.get('transaction_type'))
 			if self._context.get('transaction_type') == 'prize_claim':
 				#raise Warning(self.env.ref('account_prize_claim_pcso.product_product_prize_claim_cost'))
 				return  self.env.ref('account_prize_claim_pcso.product_product_prize_claim_cost') #2189 #self.env.ref('account_prize_claim_pcso.product_product_prize_claim_cost_product_template')
@@ -49,6 +72,7 @@ class account_invoice_line_prize_claim(models.Model):
 	bettype_id = fields.Many2one('config.prize.bettype', 'Bet Type')
 	agency_id = fields.Many2one('config.prize.agency', 'Agency')
 	ticket_serial = fields.Char('Ticket Serial')
+	jackpot_prize = fields.Float(string='Jackpot Prize', digits=dp.get_precision('Price Claim First Prize'))
 	first_prize = fields.Float(string='First Prize', digits=dp.get_precision('Price Claim First Prize'))
 	second_prize = fields.Float(string='Second Prize', digits=dp.get_precision('Price Claim Second Prize'))
 	third_prize = fields.Float(string='Third Prize', digits=dp.get_precision('Price Claim Third Prize'))

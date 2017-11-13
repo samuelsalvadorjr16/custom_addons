@@ -50,20 +50,21 @@
                     </div>
                     <group>
                         <group>
-                            <field name="partner_id" context="{'search_default_supplier':1, 'default_supplier':1, 'default_customer':0}" domain="[('supplier','=',True)]" string ="Payee"/>
-                            <field name="partner_ref" string ="Payee Reference Number"/>
-                            <field name="currency_id" groups="base.group_multi_currency"/>
-                            <field name="is_shipped" invisible="1"/>
+                            <field name="partner_id" context="{'search_default_supplier':1, 'default_supplier':1, 'default_customer':0}" domain="[('supplier','=',True)]" string ="Payee" attrs="{'readonly': [('state', 'in', ('done', 'cancel', 'approved', 'submit'))]}"/>
+                            <field name="analytic_account_id" required="1" attrs="{'readonly': [('state', 'in', ('done', 'cancel', 'approved', 'submit'))]}"/>
+                            <field name="partner_ref" string ="Payee Reference Number" attrs="{'readonly': [('state', 'in', ('done', 'cancel', 'approved', 'submit'))]}"/>
+                            <field name="currency_id" groups="base.group_multi_currency" attrs="{'readonly': [('state', 'in', ('done', 'cancel', 'approved', 'submit'))]}"/>
+                            <field name="is_shipped" invisible="1"/>                                                    
                         </group>
                         <group>
-                            <field name="date_order"/>
+                            <field name="date_order" attrs="{'readonly': [('state', 'in', ('done', 'cancel', 'approved', 'submit'))]}"/>
                             <field name="origin" attrs="{'invisible': [('origin','=',False)]}"/>
                             <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                         </group>
                     </group>
                     <notebook>
                         <page string="RFP Line/s">
-                            <field name="order_line" attrs="{'readonly': [('state', 'in', ('done', 'cancel', 'approved', 'submit'))]}">
+                            <field name="order_line" attrs="{'readonly': [('state', 'in', ('done', 'cancel', 'approved', 'submit'))]}" context="{'analytic_account_id': analytic_account_id}">
                                  <tree string="Purchase Order Lines" editable="bottom">
                                     <field name="currency_id" invisible="1"/>
                                     <field name="state" invisible="1"/>
@@ -72,12 +73,12 @@
                                     <field name="name"/>
                                     <field name="date_planned"/>
                                     <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
-                                    <field name="account_analytic_id" context="{'default_partner_id':parent.partner_id}" groups="purchase.group_analytic_accounting"/>
-                                    <field name="analytic_tag_ids" groups="purchase.group_analytic_accounting" widget="many2many_tags"/>
-                                    <field name="product_qty"/>
-                                    <field name="qty_received" invisible="not context.get('show_purchase', False)"/>
-                                    <field name="qty_invoiced" invisible="not context.get('show_purchase', False)"/>
-                                    <field name="product_uom" groups="product.group_uom" attrs="{'readonly': [('state', 'in', ('purchase', 'done', 'cancel'))]}"/>
+                                    <field name="account_analytic_id" context="{'default_partner_id':parent.partner_id}"/>
+                                    <field name="analytic_tag_ids" groups="purchase.group_analytic_accounting" widget="many2many_tags" invisible="1"/>
+                                    <field name="product_qty" invisible="1"/>
+                                    <field name="qty_received"  invisible="1"/> <!-- invisible="not context.get('show_purchase', False)" -->
+                                    <field name="qty_invoiced" invisible="1" /> <!-- invisible="not context.get('show_purchase', False)" -->
+                                    <field name="product_uom" groups="product.group_uom" attrs="{'readonly': [('state', 'in', ('purchase', 'done', 'cancel'))]}" invisible="1"/>
                                     <field name="price_unit"/>
                                     <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use','=','purchase')]" context="{'default_type_tax_use': 'purchase'}"/>
                                     <field name="price_subtotal" widget="monetary"/>
@@ -237,7 +238,7 @@
                                     -->
                                 </div>
                                 
-                                <div class="row" groups="account_prize_claim_pcso.pcf_group_allow_to_submit_rfp,account_prize_claim_pcso.pcf_group_allow_to_approve_rfp">
+                                <div class="row" groups="account_prize_claim_pcso.pcf_group_allow_to_submit_rfp,account_prize_claim_pcso.pcf_group_allow_to_approve_rfp,account_prize_claim_pcso.opex_group_processor">
                                     <div class="col-xs-6">
                                         <span><t t-esc="record.department_id.value"/> <t t-esc="record.department_id and record.department_id.value or False"/></span>
                                     </div>
@@ -325,7 +326,7 @@
                           id="menu_rfp_action" 
                           parent="account.menu_finance_payables" 
                           sequence="1"
-                          groups='account_prize_claim_pcso.rfp_group_processor,account.group_account_invoice,account.group_account_user,account.group_account_manager'/>        
+                          groups='account_prize_claim_pcso.rfp_group_processor,account.group_account_invoice,account.group_account_user,account.group_account_manager,account_prize_claim_pcso.opex_group_processor'/>        
 
 		<!-- Override -->
         <record id="purchase.purchase_form_action" model="ir.actions.act_window">

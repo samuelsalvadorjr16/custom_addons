@@ -24,3 +24,7 @@ class hr_employee(models.Model):
 	#								    help="Small-sized Digitized Signature photo of the employee. It is automatically "
 	#								         "resized as a 64x64px image, with aspect ratio preserved. "
 	#								         "Use this field anywhere a small image is required.")
+
+class hr_department(models.Model):
+	_inherit = 'hr.department'
+	account_analytic_id = fields.Many2one('account.analytic.account', string='Cost Center/Anaytic Account')

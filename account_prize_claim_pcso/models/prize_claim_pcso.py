@@ -33,6 +33,7 @@ class account_invoice_prize_claim(models.Model):
 	remarks = fields.Text('Remarks')
 	transaction_date = fields.Date('Transaction Date', default=fields.Date.context_today)
 	jackpot_prize = fields.Boolean('Jackpot Winner', readonly=True, states={'draft': [('readonly', False)]})
+	analytic_account_id = fields.Many2one('account.analytic.account', string="Cost Center/Department")
 
 	write_date = fields.Datetime('Write Date', track_visibility='always', copy=True)
 	transaction_type = fields.Selection([
@@ -86,6 +87,7 @@ class account_invoice_prize_claim(models.Model):
 	progress_state = fields.Integer('Progress', default=1)
 	amount_in_words = fields.Char('Amount in Words')
 
+	prepared_by_uid = fields.Many2one('res.users', 'Prepared By')
 	certified_correct_uid = fields.Many2one('res.users', 'Certified Correct By')
 	certified_correct_2_uid = fields.Many2one('res.users', 'Endorsed By')
 	under_review_uid = fields.Many2one('res.users', 'Endorsed By')
@@ -95,6 +97,13 @@ class account_invoice_prize_claim(models.Model):
 	submitted_uid = fields.Many2one('res.users', 'Submitted By')
 	denied_uid = fields.Many2one('res.users', 'Denied By')
 	cancelled_uid = fields.Many2one('res.users', 'Cancelled By')
+
+	@api.onchange('purchase_id')
+	def purchase_order_change(self):
+		#raise Warning(self.purchase_id.analytic_account_id)
+		self.analytic_account_id = self.purchase_id.analytic_account_id.id
+		res = super(account_invoice_prize_claim,self).purchase_order_change()
+		return res
 
 	#New Signatory Workflow for OpEx
 	@api.multi
@@ -142,10 +151,10 @@ class account_invoice_prize_claim(models.Model):
 	    	approver_uid_name = ''
 	    	if rfp_obj:
 	    		if rfp_obj.is_from_rfp:
-	    			cert_correct_uid_2 = rfp_obj.approve_uid.id
+	    			cert_correct_uid = rfp_obj.approve_uid.id
 	    			approver_uid_name = rfp_obj.approve_uid.name
 	    		else:
-	    			cert_correct_uid_2 = rfp_obj.write_uid.id
+	    			cert_correct_uid = rfp_obj.write_uid.id
 	    			approver_uid_name =  rfp_obj.write_uid.name
 
 	    		stat_rfp_his = 'APPROVED RFP :' + '['+ rfp_obj.write_date +'] ' + approver_uid_name + '\n'
@@ -220,8 +229,11 @@ class account_invoice_prize_claim(models.Model):
 	    if self.status_history:
 	    	stats_his = self.status_history
 
-	    return self.write({'state': 'approved', 'approved_uid': self._uid, 
+	    res = self.write({'state': 'approved', 'approved_uid': self._uid, 
 						   'status_history': 'APPROVED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + stats_his or ''})
+
+	    if res:
+	    	self.action_invoice_open()
 
 	#New Signatory Workflow for Charity
 	@api.multi
@@ -329,8 +341,13 @@ class account_invoice_prize_claim(models.Model):
 	    stats_his = ''
 	    if self.status_history:
 	    	stats_his = self.status_history
-	    return self.write({'state': 'approved', 'approve_uid': self._uid, 
+	    res = self.write({'state': 'approved', 'approve_uid': self._uid, 
 						   'status_history': 'APPROVED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + stats_his or ''})
+
+	    if res:
+	    	self.action_invoice_open()
+
+
 
 
 	#New Signatory Workflow for Prize Claim
@@ -420,9 +437,10 @@ class account_invoice_prize_claim(models.Model):
 	    	elif self.amount_total >= 100000.00:
 	    		if self.env.ref('account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_above_100k_approved') not in self.env.user.groups_id:
 	    			raise UserError(_("User has no rights to Endorse the Claim."))
-	    return self.write({'state': 'approved', 'approve_uid': self._uid,
+	    res = self.write({'state': 'approved', 'approve_uid': self._uid,
 	    				  'status_history': 'APPROVED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + self.status_history or ''})
-
+	    if res:
+	    	self.action_invoice_open()
 
 	@api.multi
 	def action_set_to_return(self, reason):
@@ -451,6 +469,174 @@ class account_invoice_prize_claim(models.Model):
 		self.ensure_one()
 		return  self.env['account.payment']._get_check_amount_in_words(self.amount_total).upper() + ' ONLY'  #self.currency_id.amount_to_text(self.amount_total).upper() + ' ONLY'
 
+
+	@api.multi
+	def get_prepared_by_rfp(self):
+		self.ensure_one
+		if self.origin:
+			rfp_obj = self.env['purchase.order'].search([('name', '=', self.origin)])
+			return rfp_obj.create_uid.name
+		return False
+
+	@api.multi
+	def get_certified_by_rfp(self):
+		self.ensure_one
+		if self.origin:
+			rfp_obj = self.env['purchase.order'].search([('name', '=', self.origin)])
+			return rfp_obj.submitted_uid.name
+		return False
+
+
+	@api.multi
+	def get_certified_by_sig_rfp(self):
+		self.ensure_one
+		if self.origin:
+			rfp_obj = self.env['purchase.order'].search([('name', '=', self.origin)])
+			obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', rfp_obj.submitted_uid.id)])
+			if obj_employee:
+				return obj_employee.image_signature
+		return False
+
+	@api.multi
+	def get_prepared_by_sig_rfp(self):
+		self.ensure_one
+		if self.origin:
+			rfp_obj = self.env['purchase.order'].search([('name', '=', self.origin)])
+			obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', rfp_obj.create_uid.id)])
+			if obj_employee:
+				return obj_employee.image_signature
+		return False
+
+	@api.multi
+	def get_prepared_by(self):
+		self.ensure_one
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.prepared_by_uid.id or False)])
+
+		if obj_employee:
+			return obj_employee.name
+		else:
+			return self.prepared_by_uid.name
+
+	@api.multi
+	def get_certified_by(self):
+		self.ensure_one
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.submitted_uid.id or False)])
+
+		if obj_employee:
+			return obj_employee.name
+		else:
+			return self.submitted_uid.name
+
+	@api.multi
+	def get_certified_under_box_A_by(self):
+		self.ensure_one
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.certified_correct_uid.id or False)])
+
+		if obj_employee:
+			return obj_employee.name
+		else:
+			return self.submitted_uid.name
+
+	@api.multi
+	def get_certified_under_box_B_by(self):
+		self.ensure_one
+		ret_id = False
+		if self.transaction_type  == 'prize_claim':
+			ret_id = self.for_approval_uid.id
+		elif self.transaction_type  == 'charity':
+			ret_id = self.for_approval_uid.id
+		else:
+			ret_id = self.under_review_uid.id
+
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', ret_id)])
+
+		if obj_employee:
+			return obj_employee.name
+		else:
+			return self.submitted_uid.name
+
+
+	@api.multi
+	def get_certified_under_box_B_jl_by(self):
+		self.ensure_one
+		ret_id=False
+		if self.transaction_type  == 'prize_claim':
+			ret_id = self.submitted_uid.id
+		elif self.transaction_type  == 'charity':
+			ret_id = self.certified_correct_2_uid.id
+		else:
+			ret_id = self.certified_correct_2_uid.id
+
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', ret_id)])
+
+		if obj_employee:
+			return obj_employee.name
+		else:
+			return False			
+
+	@api.multi
+	def get_certified_under_box_C_by(self):
+		self.ensure_one
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.approve_uid.id or False)])
+
+		if obj_employee:
+			return obj_employee.name
+		else:
+			return self.approve_uid.name
+
+
+	@api.multi
+	def get_approver_signatory_under_box_A(self):
+		self.ensure_one()
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.certified_correct_uid.id or False)])
+		if obj_employee:
+			return obj_employee.image_signature
+		else:
+			return False
+
+	@api.multi
+	def get_approver_signatory_under_box_B(self):
+		self.ensure_one()
+		ret_id = False
+		if self.transaction_type  == 'prize_claim':
+			ret_id = self.for_approval_uid.id
+		elif self.transaction_type  == 'charity':
+			ret_id = self.for_approval_uid.id
+		else:
+			ret_id = self.under_review_uid.id		
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', ret_id)])
+		if obj_employee:
+			return obj_employee.image_signature
+		else:
+			return False
+
+	@api.multi
+	def get_approver_signatory_under_box_B_jl_by(self):
+		self.ensure_one()
+		ret_id = False
+		if self.transaction_type  == 'prize_claim':
+			ret_id = self.for_approval_uid.id
+		elif self.transaction_type  == 'charity':
+			ret_id = self.for_approval_uid.id
+		else:
+			ret_id = self.under_review_uid.id		
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', ret_id)])
+		if obj_employee:
+			return obj_employee.image_signature
+		else:
+			return False
+
+
+	@api.multi
+	def get_approver_signatory_under_box_C(self):
+		self.ensure_one()
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.approve_uid.id or False)])
+		if obj_employee:
+			return obj_employee.image_signature
+		else:
+			return False
+
+
 	@api.multi
 	def get_approver_name(self):
 		self.ensure_one()
@@ -459,6 +645,7 @@ class account_invoice_prize_claim(models.Model):
 			return obj_employee.name
 		else:
 			return self.approve_uid.name
+
 
 
 	@api.multi
@@ -530,7 +717,15 @@ class account_invoice_prize_claim(models.Model):
 	@api.model
 	def create(self, vals):
 		if vals.get('draft_number_sequence', _('New Voucher')) == _('New Voucher'):
-			vals['draft_number_sequence'] = self.env['ir.sequence'].next_by_code('account.invoice.voucher.seq') 
+			seq_str = ''
+			if self._context.get('transaction_type') == 'prize_claim':
+				seq_str = 'PRF' + self.env['ir.sequence'].next_by_code('account.invoice.voucher.seq') 
+			elif self._context.get('transaction_type')== 'charity':
+				seq_str = 'CHF' + self.env['ir.sequence'].next_by_code('account.invoice.voucher.seq') 
+			else:
+				seq_str = 'OPX' + self.env['ir.sequence'].next_by_code('account.invoice.voucher.seq') 
+
+			vals['draft_number_sequence'] = seq_str
 		
 		if vals.get('jackpot_prize'):
 			if self.env.ref('account_prize_claim_pcso.pcf_group_allow_create_jackpot') not in self.env.user.groups_id:

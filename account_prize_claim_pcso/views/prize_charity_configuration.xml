@@ -14,7 +14,8 @@
             <field name="model">config.prize.branch</field>
             <field name="arch" type="xml">
                 <tree string="Branch" editable="top">
-                    <field name="name"/>
+                    <field name="name" required="1"/>
+                    <field name="analytic_account_id" required="1"/>
                 </tree>
             </field>
         </record>
@@ -114,6 +115,12 @@
                 <tree string="Game Type" editable="top">
                     <field name="name"/>
                     <field name="id_char"/>
+                    <field name="jackpot_product_id" invisible="1"/>
+                    <field name="high_tier_product_id"/>
+                    <field name="low_tier_product_id"/>
+                    <field name="default_jackpot_account_id" invisible="1"/>
+                    <field name="default_high_tier_account_id"/>
+                    <field name="default_low_tier_account_id"/>
                 </tree>
             </field>
         </record>
@@ -186,7 +193,8 @@
                                 <field name="draw_result"/>
                                 <field name="gametype_id"/>                             
                             </group>
-                            <group  string="Prize">
+                            <group  string="Prize">                              
+                                <field name="jackpot_prize"/>
                                 <field name="first_prize"/>
                                 <field name="second_prize"/>
                                 <field name="third_prize"/>
@@ -208,7 +216,8 @@
                     <field name="drawid"/>
                     <field name="draw_date"/>
                     <field name="draw_result"/>
-                    <field name="gametype_id"/>
+                    <field name="gametype_id"/>                    
+                    <field name="jackpot_prize"/>
                     <field name="first_prize"/>
                     <field name="second_prize"/>
                     <field name="third_prize"/>
