@@ -72,7 +72,7 @@
                               context="{'default_partner_claimant': 1, 'search_default_partner_claimant_filter': 1}"
                               domain="[('partner_claimant', '=', True)]"/>
                             -->    
-                            <field string="Payee" name="partner_id" attrs="{'readonly': [('state', 'not in', ['draft', 'return'])]}"/>                                 
+                            <field string="Payee" name="partner_id" attrs="{'readonly': [('state', 'not in', ['draft', 'return'])]}" options="{'no_create': True, 'no_open': True}"/>                                 
                         </group>
 
                         <group>

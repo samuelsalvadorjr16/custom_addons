@@ -100,7 +100,7 @@
                             <field name="transaction_date" readonly="1"/>    
                             <field string="Claimant" name="partner_id"
                               context="{'default_partner_claimant': 1, 'search_default_partner_claimant_filter': 1}"
-                              domain="[('partner_claimant', '=', True)]"/>         
+                              domain="[('partner_claimant', '=', True)]" options="{'no_create': True, 'no_open': True}"/>         
 
 
                             <label string="ID Number" class="oe_inline"/>
@@ -146,7 +146,7 @@
                                     <field name="product_id"
                                         context="{'partner_id': parent.partner_id}" domain="[('purchase_ok','=',True)]" invisible='1'/>
                                     
-                                    <field name="name" invisible='1'    />
+                                    <field name="name" invisible='1'/>
                                     <field name="company_id" invisible="1"/>
                                     <field name="quantity" invisible="1"/>
                                     <field name="uom_id" groups="product.group_uom" invisible="1"/>
@@ -159,19 +159,22 @@
 
                                     <field name="currency_id" invisible="1"/>
 
-                                    <field name="draw_id" required="1"/>
+                                    <field name="draw_id" required="1" options="{'no_create': True, 'no_open': True}"/>
                                     <field name="draw_date" readonly="1"/>
                                     <field name="draw_result" readonly="1"/>
-                                    <field name="draw_gametype" readonly="1"/>
+                                    <field name="draw_gametype" readonly="1" options="{'no_create': True, 'no_open': True}"/>
                                     <field name="account_id" groups="account.group_account_user"
-                                        domain="[('company_id', '=', parent.company_id), ('internal_type', '=', 'other'), ('deprecated', '=', False)]"/>
+                                        domain="[('company_id', '=', parent.company_id), ('internal_type', '=', 'other'), ('deprecated', '=', False)]"
+                                        options="{'no_create': True, 'no_open': True}" />
                                     <field name="account_analytic_id" groups="analytic.group_analytic_accounting"
                                         domain="[('company_id', '=', parent.company_id)]"
                                         context="{'default_partner_id': parent.partner_id}" string="Cost Center/Department"
-                                        options="{'no_create': True, 'no_open': True}"/>
+                                        options="{'no_create': True, 'no_open': True}" />
                                     <field name="analytic_tag_ids" groups="analytic.group_analytic_accounting" widget="many2many_tags" options="{'color_field': 'color'}" invisible="1"/>                                    
-                                    <field name="bettype_id" required="1"/>
-                                    <field name="agency_id" required="1"/>
+                                    <field name="bettype_id" required="1"
+                                           options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="agency_id" required="1"
+                                           options="{'no_create': True, 'no_open': True}"/>
                                     <field name="ticket_serial" required="1"/>
                                     <field name="jackpot_prize" groups="account_prize_claim_pcso.pcf_group_allow_create_jackpot,account_prize_claim_pcso.pcf_group_allow_submit_jackpot,account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_rev,account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_for_approv,account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_approved"/>                                    
                                     <field name="first_prize"/>
