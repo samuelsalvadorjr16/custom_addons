@@ -15,8 +15,12 @@ class hr_employee(models.Model):
 	_inherit = ["hr.employee"]
 
 	# image: all image fields are base64 encoded and PIL-supported
-	image_signature = fields.Binary("Digitized Signed", attachment=True,
-	    									help="This field holds the image used as Digitized Signature, limited to 1024x1024px.")
+	image_signature = fields.Binary("Dig. Sig. Full", attachment=True,
+	    									help="This field holds the image used as Full Digitized Signature, limited to 1024x1024px.")
+	image_signature_for = fields.Binary("Dig. Sig. For.", attachment=True,
+	    									help="This field holds the image used as For Digitized Signature, limited to 1024x1024px.")
+	image_signature_initial = fields.Binary("Dig. Sig. Initial.", attachment=True,
+	    									help="This field holds the image used as Initial Digitized Signature, limited to 1024x1024px.")
 	#image_signature_medium = fields.Binary("Medium-sized photo", attachment=True,
 	#									    help="Medium-sized Digitized Signature photo of the employee. It is automatically "
 	#									         "resized as a 128x128px image, with aspect ratio preserved. ")

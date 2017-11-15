@@ -8,6 +8,8 @@
             <field name="arch" type="xml">
                 <field name="bank_account_id" position="after">
                     <field name="image_signature"/>
+                    <field name="image_signature_for"/>
+                    <field name="image_signature_initial"/>
                 </field>
             </field>
         </record>

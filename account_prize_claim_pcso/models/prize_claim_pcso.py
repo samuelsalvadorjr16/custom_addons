@@ -542,12 +542,17 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_certified_under_box_A_by(self):
 		self.ensure_one
-		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.certified_correct_uid.id or 0)])
 
+		#GET THE DEPARTMENT MANAGER
+		if self.certified_correct_uid:
+			obj_jobs =self.env['hr.job'].sudo().search([('name', '=', 'DEPARTMENT MANAGER')])
+			user_department_id =  self.certified_correct_uid.department_id and self.certified_correct_uid.department_id and self.certified_correct_uid.department_id.id or 0
+			obj_employee = self.env['hr.employee'].sudo().search([('department_id', '=', user_department_id), ('job_id', '=', obj_jobs and obj_jobs.id or 0)])
+		#obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.certified_correct_uid.id or 0)])
 		if obj_employee:
-			return obj_employee.name
-		else:
-			return self.submitted_uid.name
+			return obj_employee.name.upper()
+		
+		return False
 
 	@api.multi
 	def get_certified_under_box_B_by(self):
@@ -602,7 +607,7 @@ class account_invoice_prize_claim(models.Model):
 		self.ensure_one()
 		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.certified_correct_uid.id or 0)])
 		if obj_employee:
-			return obj_employee.image_signature
+			return obj_employee.image_signature_for
 		else:
 			return False
 
@@ -699,11 +704,13 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_submitter_position(self):
 		self.ensure_one()
-		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.certified_correct_uid.id or 0)])
-		if obj_employee:
-			return obj_employee.job_id.name
-		else:
-			return False
+		return "DEPARTMENT MANAGER"
+
+		#obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.certified_correct_uid.id or 0)])
+		#if obj_employee:
+		#	return obj_employee.job_id.name
+		#else:
+		#	return False
 
 	@api.multi
 	def get_date_in_words(self):
