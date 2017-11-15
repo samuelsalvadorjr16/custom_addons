@@ -51,6 +51,11 @@
         <record id= "menu_config_prize_gametype" model = 'ir.ui.menu'>
           <field name="groups_id" eval="[(6,0, [ref('account_prize_claim_pcso.pcf_group_allow_to_maintain_master_files')])]"/>
         </record>  
+        
+        <record id= "menu_config_prize_bettype" model = 'ir.ui.menu'>
+          <field name="groups_id" eval="[(6,0, [ref('account_prize_claim_pcso.pcf_group_allow_to_maintain_master_files')])]"/>
+        </record>  
+
 
         <record id= "menu_config_prize_draws" model = 'ir.ui.menu'>
           <field name="groups_id" eval="[(6,0, [ref('account_prize_claim_pcso.pcf_group_allow_to_maintain_master_files')])]"/>

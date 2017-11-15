@@ -50,9 +50,9 @@
                     <button name="%(action_return_voucher_prize)d" type="action" states="for_approval" string="Return" class="oe_highlight" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_approved,account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_above_100k_approved,account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_below_100k_approved"/>
                     <button name="%(action_cancel_voucher)d" type="action" states="for_approval" string="Cancel" groups="account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_approved,account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_above_100k_approved,account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_below_100k_approved"/>
 
-
+<!--
                     <button name="action_invoice_open" type="object" states="approved" string="Validate" class="oe_highlight" groups="account.group_account_user,account.group_account_manager"/>
-
+-->
                     <button name="%(act_acc_invo_paymt_prize)d" type="action" states="open" string="Register Payment" groups="account.group_account_user,account.group_account_manager" class="oe_highlight"/>
                                     
                     <field name="state" widget="statusbar" statusbar_visible="draft,submit,under_review,for_approval,approved" />                    
@@ -85,7 +85,7 @@
                     <div>
                         <label string="Draft Claim" attrs="{'invisible': ['|',('state','&lt;&gt;','draft'), ('type','&lt;&gt;','in_invoice')]}"/>
                         <h1 class="mt0">
-                            <field name="draft_number_sequence" class="oe_inline" attrs="{'invisible': [('state', 'in', ['open', 'paid'])]}" readonly="1"/>
+                            <field name="draft_number_sequence" class="oe_inline" attrs="{'invisible': [('state', 'in', ['under_2nd_review', 'for_approval', 'open', 'paid', 'approved'])]}" readonly="1"/>
                         </h1>                          
                         <h1 class="mt0">
                             <field name="number" class="oe_inline" attrs="{'invisible': [('state', '=', 'draft')]}"/>

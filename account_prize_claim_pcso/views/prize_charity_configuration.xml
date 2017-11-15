@@ -164,7 +164,7 @@
             <field name="res_model">config.prize.bettype</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="view_id" ref="view_config_prize_gametype_tree"/>
+            <field name="view_id" ref="view_config_prize_bettype_tree"/>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
                 Click to add a new Bet Type

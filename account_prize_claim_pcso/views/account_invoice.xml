@@ -83,10 +83,10 @@
 <!--
                              <button name="%(action_return_opex)d" type="action" states="under_2nd_review" string="Return" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_approved,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_approved,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_approved"/>            -->                
                              <button name="%(action_cancel_opex)d" type="action" states="under_2nd_review" string="Return" class="oe_highlight" groups="account_prize_claim_pcso.opex_group_allow_to_approve_below_100k_approved,account_prize_claim_pcso.opex_group_allow_to_approve_bel_200k_approved,account_prize_claim_pcso.opex_group_allow_to_approve_above_200k_approved"/>
-
+<!--
 
                             <button name="action_invoice_open" type="object" states="approved" string="Validate" class="oe_highlight" groups="account.group_account_user,account.group_account_manager"/>
-
+-->
                             <button name="124" type="action" states="open" string="Register Payment" groups="account.group_account_invoice" class="oe_highlight"/>
 
                             <!--

@@ -59,10 +59,10 @@ class account_invoice_prize_claim(models.Model):
 	        ('submit', 'Submitted'),
 	        ('under_review', 'Under Review'),
 	        ('under_2nd_review', '2nd Review'),
-	        ('for_approval', 'For Approval'),
+	        ('for_approval', 'For Approval'),	       	
 	        ('approved', 'Approved'),
-	        ('denied', 'Denied'),	        
 	        ('open', 'Open'),
+	        ('denied', 'Denied'),	        
 	        ('paid', 'Paid'),
 	        ('cancel', 'Cancelled'),
 	    ], string='Status', index=True, readonly=True, default='draft',
@@ -195,14 +195,16 @@ class account_invoice_prize_claim(models.Model):
 	    if self.status_history:
 	    	stats_his = self.status_history
 
-	    return self.write({'state': 'under_2nd_review', 'under_review_uid': self._uid, 
+	    res= self.write({'state': 'under_2nd_review', 'under_review_uid': self._uid, 
 						   'status_history': 'ENDORSED FOR 2ND REVIEW : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + stats_his or ''})
+	    if res:
+	    	self.action_invoice_open()
 
 	@api.multi
 	def action_final_approve_opex(self):
 	    to_open_invoices = self.filtered(lambda inv: inv.state != 'under_2nd_review')
 	    rfp_obj = self.env['purchase.order'].search([('name', '=', self.origin)])
-	    if to_open_invoices.filtered(lambda inv: inv.state != 'under_2nd_review'):
+	    if to_open_invoices.filtered(lambda inv: inv.state != 'open'):
 	    	if to_open_invoices.filtered(lambda inv: inv.purchase_id):
 	    		if to_open_invoices.filtered(lambda inv: inv.purchase_id.state not in ['approved', 'purchase']):
 	    			raise UserError(_("Vouchers, Source Document must be approved first in order to validate it."))
@@ -234,7 +236,8 @@ class account_invoice_prize_claim(models.Model):
 						   'status_history': 'APPROVED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + stats_his or ''})
 
 	    if res:
-	    	self.action_invoice_open()
+	    	self.invoice_validate()
+	    #return res
 
 	#New Signatory Workflow for Charity
 	@api.multi
@@ -320,13 +323,15 @@ class account_invoice_prize_claim(models.Model):
 	    stats_his = ''
 	    if self.status_history:
 	    	stats_his = self.status_history
-	    return self.write({'state': 'for_approval', 'for_approval_uid': self._uid, 
+	    res= self.write({'state': 'for_approval', 'for_approval_uid': self._uid, 
 						   'status_history': 'ENDORSED FOR APPROVAL : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + stats_his or ''})
+	    if res:
+	    	self.action_invoice_open()
 
 	@api.multi
 	def action_final_approve_charity_claim(self):
 	    to_open_invoices = self.filtered(lambda inv: inv.state != 'for_approval')
-	    if to_open_invoices.filtered(lambda inv: inv.state != 'for_approval'):
+	    if to_open_invoices.filtered(lambda inv: inv.state != 'open'):
 	        raise UserError(_("Prize Claim must be in For Approval state in order to validate it."))
 	    if to_open_invoices.filtered(lambda inv: inv.amount_total < 0):
 	        raise UserError(_("You cannot validate a Prize Claim with a negative total amount."))
@@ -344,9 +349,11 @@ class account_invoice_prize_claim(models.Model):
 	    	stats_his = self.status_history
 	    res = self.write({'state': 'approved', 'approve_uid': self._uid, 
 						   'status_history': 'APPROVED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + stats_his or ''})
+	    #return res
 
 	    if res:
-	    	self.action_invoice_open()
+	    	self.invoice_validate()
+	    #	self.action_invoice_open()
 
 
 
@@ -418,13 +425,15 @@ class account_invoice_prize_claim(models.Model):
 	    	elif self.amount_total >= 100000.00:
 	    		if self.env.ref('account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_above_100k_for_approv') not in self.env.user.groups_id:
 	    			raise UserError(_("User has no rights to Endorse the Claim."))
-	    return self.write({'state': 'for_approval', 'for_approval_uid': self._uid,
+	    res= self.write({'state': 'for_approval', 'for_approval_uid': self._uid,
 	    				  'status_history': 'ENDORSED FOR APPROVAL : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + self.status_history or ''})
+	    if res:
+	    	self.action_invoice_open()
 
 	@api.multi
 	def action_final_approve(self):	
 	    to_open_invoices = self.filtered(lambda inv: inv.state != 'for_approval')
-	    if to_open_invoices.filtered(lambda inv: inv.state != 'for_approval'):
+	    if to_open_invoices.filtered(lambda inv: inv.state != 'open'):
 	        raise UserError(_("Prize Claim must be in For Approval state in order to validate it."))
 	    if to_open_invoices.filtered(lambda inv: inv.amount_total < 0):
 	        raise UserError(_("You cannot validate a Prize Claim with a negative total amount."))
@@ -440,8 +449,10 @@ class account_invoice_prize_claim(models.Model):
 	    			raise UserError(_("User has no rights to Endorse the Claim."))
 	    res = self.write({'state': 'approved', 'approve_uid': self._uid,
 	    				  'status_history': 'APPROVED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + self.status_history or ''})
+	    #return res
 	    if res:
-	    	self.action_invoice_open()
+	    	self.invoice_validate()
+	    #	self.action_invoice_open()
 
 	@api.multi
 	def action_set_to_return(self, reason):
@@ -511,7 +522,7 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_prepared_by(self):
 		self.ensure_one
-		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.prepared_by_uid.id or False)])
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.prepared_by_uid.id or 0)])
 
 		if obj_employee:
 			return obj_employee.name
@@ -521,7 +532,7 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_certified_by(self):
 		self.ensure_one
-		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.submitted_uid.id or False)])
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.submitted_uid.id or 0)])
 
 		if obj_employee:
 			return obj_employee.name
@@ -531,7 +542,7 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_certified_under_box_A_by(self):
 		self.ensure_one
-		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.certified_correct_uid.id or False)])
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.certified_correct_uid.id or 0)])
 
 		if obj_employee:
 			return obj_employee.name
@@ -578,7 +589,7 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_certified_under_box_C_by(self):
 		self.ensure_one
-		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.approve_uid.id or False)])
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.approve_uid.id or 0)])
 
 		if obj_employee:
 			return obj_employee.name
@@ -589,7 +600,7 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_approver_signatory_under_box_A(self):
 		self.ensure_one()
-		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.certified_correct_uid.id or False)])
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.certified_correct_uid.id or 0)])
 		if obj_employee:
 			return obj_employee.image_signature
 		else:
@@ -631,7 +642,7 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_approver_signatory_under_box_C(self):
 		self.ensure_one()
-		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.approve_uid.id or False)])
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.approve_uid.id or 0)])
 		if obj_employee:
 			return obj_employee.image_signature
 		else:
@@ -641,7 +652,7 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_approver_name(self):
 		self.ensure_one()
-		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.approve_uid.id or False)])
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.approve_uid.id or 0)])
 		if obj_employee:
 			return obj_employee.name
 		else:
@@ -652,7 +663,7 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_approver_acc_dig_sig(self):
 		self.ensure_one()
-		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.for_approval_uid.id or False)])
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.for_approval_uid.id or 0)])
 		if obj_employee:
 			return obj_employee.image_signature
 		else:
@@ -661,7 +672,7 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_approver_dig_sig(self):
 		self.ensure_one()
-		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.approve_uid.id or False)])
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.approve_uid.id or 0)])
 		if obj_employee:
 			return obj_employee.image_signature
 		else:
@@ -670,7 +681,7 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_submitter_dig_sig(self):
 		self.ensure_one()
-		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.certified_correct_uid.id or False)])
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.certified_correct_uid.id or 0)])
 		if obj_employee:
 			return obj_employee.image_signature
 		else:
@@ -679,7 +690,7 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_submitter_name(self):
 		self.ensure_one()
-		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.certified_correct_uid.id or False)])
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.certified_correct_uid.id or 0)])
 		if obj_employee:
 			return obj_employee.name
 		else:
@@ -688,7 +699,7 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_submitter_position(self):
 		self.ensure_one()
-		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.certified_correct_uid.id or False)])
+		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.certified_correct_uid.id or 0)])
 		if obj_employee:
 			return obj_employee.job_id.name
 		else:
@@ -818,16 +829,17 @@ class account_invoice_prize_claim(models.Model):
 	def action_invoice_open(self):
 	    # lots of duplicate calls to action_invoice_open, so we remove those already open
 	    to_open_invoices = self.filtered(lambda inv: inv.state != 'open')
-	    if to_open_invoices.filtered(lambda inv: inv.state != 'approved') and to_open_invoices.filtered(lambda inv: inv.transaction_type == False):
+	    if to_open_invoices.filtered(lambda inv: inv.state not in ['under_review', 'under_2nd_review']) and to_open_invoices.filtered(lambda inv: inv.transaction_type == False):
 	    	#if to_open_invoices.filtered(lambda inv: inv.state != 'draft')
-	        raise UserError(_("Invoice must be in submit state in order to validate it."))
+	    	#if to_open_invoices.filtered(lambda inv: inv.transaction_type  == 'charity')
+	        raise UserError(_("Voucher must be in For Approval/Under Review state in order to validate it."))
 	    #if to_open_invoices.filtered(lambda inv: inv.state != 'approved') and to_open_invoices.filtered(lambda inv: inv.transaction_type != False):
 	    #    raise UserError(_("Price Claim must be in approved state in order to validate it."))	       
 	    if to_open_invoices.filtered(lambda inv: inv.amount_total < 0):
 	        raise UserError(_("You cannot validate an invoice with a negative total amount. You should create a credit note instead."))
 	    to_open_invoices.action_date_assign()
-	    to_open_invoices.action_move_create()
-	    return to_open_invoices.invoice_validate()
+	    
+	    return to_open_invoices.action_move_create() #to_open_invoices.invoice_validate()
 
 	@api.multi
 	def action_invoce_open_jackpot(self):
@@ -835,8 +847,8 @@ class account_invoice_prize_claim(models.Model):
 
 	@api.multi
 	def invoice_validate(self):
-		res = super(account_invoice_prize_claim, self).invoice_validate()
-		return self.write({'approve_uid': self._uid})
+		return super(account_invoice_prize_claim, self).invoice_validate()
+		#return self.write({'approve_uid': self._uid})
 
 	def _prepare_invoice_line_from_po_line(self, line):
 	    if line.product_id.purchase_method == 'purchase':
