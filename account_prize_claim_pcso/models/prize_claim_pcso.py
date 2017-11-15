@@ -552,13 +552,13 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_certified_under_box_B_by(self):
 		self.ensure_one
-		ret_id = False
+		ret_id = 0
 		if self.transaction_type  == 'prize_claim':
-			ret_id = self.for_approval_uid.id
+			ret_id = self.for_approval_uid and self.for_approval_uid.id or 0
 		elif self.transaction_type  == 'charity':
-			ret_id = self.for_approval_uid.id
+			ret_id = self.for_approval_uid and self.for_approval_uid.id or 0
 		else:
-			ret_id = self.under_review_uid.id
+			ret_id = self.under_review_uid and self.under_review_uid.id or 0
 
 		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', ret_id)])
 
@@ -571,13 +571,13 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_certified_under_box_B_jl_by(self):
 		self.ensure_one
-		ret_id=False
+		ret_id=0
 		if self.transaction_type  == 'prize_claim':
-			ret_id = self.submitted_uid.id
+			ret_id = self.submitted_uid and self.submitted_uid.id or 0
 		elif self.transaction_type  == 'charity':
-			ret_id = self.certified_correct_2_uid.id
+			ret_id = self.certified_correct_2_uid and self.certified_correct_2_uid.id or 0
 		else:
-			ret_id = self.certified_correct_2_uid.id
+			ret_id = self.certified_correct_2_uid and self.certified_correct_2_uid.id or 0
 
 		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', ret_id)])
 
@@ -609,13 +609,13 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_approver_signatory_under_box_B(self):
 		self.ensure_one()
-		ret_id = False
+		ret_id = 0
 		if self.transaction_type  == 'prize_claim':
-			ret_id = self.for_approval_uid.id
+			ret_id = self.for_approval_uid.id or 0
 		elif self.transaction_type  == 'charity':
-			ret_id = self.for_approval_uid.id
+			ret_id = self.for_approval_uid.id or 0
 		else:
-			ret_id = self.under_review_uid.id		
+			ret_id = self.under_review_uid.id or 0	
 		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', ret_id)])
 		if obj_employee:
 			return obj_employee.image_signature
@@ -625,13 +625,13 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_approver_signatory_under_box_B_jl_by(self):
 		self.ensure_one()
-		ret_id = False
+		ret_id = 0
 		if self.transaction_type  == 'prize_claim':
-			ret_id = self.for_approval_uid.id
+			ret_id = self.for_approval_uid.id or 0
 		elif self.transaction_type  == 'charity':
-			ret_id = self.for_approval_uid.id
+			ret_id = self.for_approval_uid.id or 0
 		else:
-			ret_id = self.under_review_uid.id		
+			ret_id = self.under_review_uid.id or 0	
 		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', ret_id)])
 		if obj_employee:
 			return obj_employee.image_signature
