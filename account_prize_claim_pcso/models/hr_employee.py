@@ -21,6 +21,11 @@ class hr_employee(models.Model):
 	    									help="This field holds the image used as For Digitized Signature, limited to 1024x1024px.")
 	image_signature_initial = fields.Binary("Dig. Sig. Initial.", attachment=True,
 	    									help="This field holds the image used as Initial Digitized Signature, limited to 1024x1024px.")
+
+
+	#@api.model
+	#def get_signature(self, employee_id, signature_type):
+	#	employee = self.env['hr.employee'].search()
 	#image_signature_medium = fields.Binary("Medium-sized photo", attachment=True,
 	#									    help="Medium-sized Digitized Signature photo of the employee. It is automatically "
 	#									         "resized as a 128x128px image, with aspect ratio preserved. ")

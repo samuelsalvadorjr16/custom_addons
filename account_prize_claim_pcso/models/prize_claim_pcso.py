@@ -549,8 +549,8 @@ class account_invoice_prize_claim(models.Model):
 			user_department_id =  self.certified_correct_uid.department_id and self.certified_correct_uid.department_id and self.certified_correct_uid.department_id.id or 0
 			obj_employee = self.env['hr.employee'].sudo().search([('department_id', '=', user_department_id), ('job_id', '=', obj_jobs and obj_jobs.id or 0)])
 		#obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.certified_correct_uid.id or 0)])
-		if obj_employee:
-			return obj_employee.name.upper()
+			if obj_employee:
+				return obj_employee.name.upper()
 		
 		return False
 
@@ -559,6 +559,7 @@ class account_invoice_prize_claim(models.Model):
 		self.ensure_one
 		ret_id = 0
 		if self.transaction_type  == 'prize_claim':
+
 			ret_id = self.for_approval_uid and self.for_approval_uid.id or 0
 		elif self.transaction_type  == 'charity':
 			ret_id = self.for_approval_uid and self.for_approval_uid.id or 0
@@ -623,7 +624,11 @@ class account_invoice_prize_claim(models.Model):
 			ret_id = self.under_review_uid.id or 0	
 		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', ret_id)])
 		if obj_employee:
-			return obj_employee.image_signature
+			if self.transaction_type == 'prize_claim':
+				if self.jackpot_prize == True:
+					return obj_employee.image_signature
+				else:				
+					return obj_employee.image_signature_for
 		else:
 			return False
 

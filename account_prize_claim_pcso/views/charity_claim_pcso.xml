@@ -104,8 +104,8 @@
                                     
                                     <field name="quantity" invisible="1"/>
                                     <field name="uom_id" groups="product.group_uom" invisible="1"/>
-                                    <field name="guarantee_approve_amt_rel" string="Approved Amount(CIS)" readonly="1"/>
-                                    <field name="approved_amount" string="Approved Amount(CIS)" invisible="1"/>
+                                    <field name="guarantee_approve_amt_rel" string="Approved Amount(CSIS)" readonly="1"/>
+                                    <field name="approved_amount" string="Approved Amount(CSIS)" invisible="1"/>
                                     <field name="price_unit" string="Allowed Amount"/>
                                     <field name="discount" groups="base.group_no_one" invisible="1"/>
                                     <field name="invoice_line_tax_ids" widget="many2many_tags" options="{'no_create': True}" context="{'type':parent.type}"
