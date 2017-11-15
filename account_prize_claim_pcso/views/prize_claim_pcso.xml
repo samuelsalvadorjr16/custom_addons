@@ -110,7 +110,7 @@
                             </div>
                         </group>
 
-                        <group>
+                        <group>                            
                             <field name="claimant_gender" readonly="1"/>
                             <field name="claimant_occupation" readonly="1"/>
                             <field name="claimant_birthdate"  readonly="1"/>   
@@ -126,7 +126,8 @@
                     </group>
                     <notebook>
                         <page string="Prize Claims">
-                            <field context="{'type': type, 'journal_id': journal_id, 'transaction_type':transaction_type, 'jackpot_prize':jackpot_prize, 'branch_id': branch_id}" name="invoice_line_ids">
+                            <field context="{'type': type, 'journal_id': journal_id, 'transaction_type':transaction_type, 'jackpot_prize':jackpot_prize, 'branch_id': branch_id}" name="invoice_line_ids"
+                                   attrs="{'readonly': [('state', 'not in', ['draft', 'return'])]}">
                                 <tree string="Prize Claim lines" editable="bottom">
                                     <field name="sequence" widget="handle" />
                                     <!--
@@ -166,8 +167,9 @@
                                         domain="[('company_id', '=', parent.company_id), ('internal_type', '=', 'other'), ('deprecated', '=', False)]"/>
                                     <field name="account_analytic_id" groups="analytic.group_analytic_accounting"
                                         domain="[('company_id', '=', parent.company_id)]"
-                                        context="{'default_partner_id': parent.partner_id}"/>
-                                    <field name="analytic_tag_ids" groups="analytic.group_analytic_accounting" widget="many2many_tags" options="{'color_field': 'color'}"/>                                    
+                                        context="{'default_partner_id': parent.partner_id}" string="Cost Center/Department"
+                                        options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="analytic_tag_ids" groups="analytic.group_analytic_accounting" widget="many2many_tags" options="{'color_field': 'color'}" invisible="1"/>                                    
                                     <field name="bettype_id" required="1"/>
                                     <field name="agency_id" required="1"/>
                                     <field name="ticket_serial" required="1"/>
@@ -244,6 +246,7 @@
             <field name="model">account.invoice</field>
             <field name="arch" type="xml">
                 <tree decoration-info="state == 'draft'" decoration-muted="state in ['cancel','denied']" string="Invoice">
+                    <field name="draft_number_sequence" string="Reference Number"/>                    
                     <field name="number"/>
                     <field name="partner_id" groups="base.group_user" string="Claimaint"/>
                     <field name="transaction_date"/>
@@ -278,7 +281,7 @@
 
             <field name="domain">[('type','=','in_invoice'), ('transaction_type', '=', 'prize_claim'), ('transaction_type', '!=', False)]</field>
             <field name="context">{'default_type': 'in_invoice', 'type': 'in_invoice', 'journal_type': 'purchase', 'default_transaction_type': 'prize_claim', 'transaction_type': 'prize_claim', 'default_journal_id': 7}</field>            
-            <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+            <field name="search_view_id" ref="account_prize_claim_pcso.pcso_view_account_invoice_filter"/>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
                 Click to record a new Prize Claim.

@@ -22,7 +22,7 @@ class account_invoice_prize_claim(models.Model):
 
 	branch_id = fields.Many2one('config.prize.branch', string='Branch', readonly=True, states={'draft': [('readonly', False)]})
 	#transaction_id = fields.Many2one('config.prize.transactiontype', string='Transaction Type')
-	draft_number_sequence = fields.Char(String='Number',default=lambda self: _('New Voucher'))
+	draft_number_sequence = fields.Char(String='Reference Number',default=lambda self: _('New Voucher'))
 
 	claimant_id = fields.Many2one('res.partner', string='Claimant')
 	claimant_type_id = fields.Selection(related='partner_id.id_type', string='ID Type')
@@ -34,6 +34,7 @@ class account_invoice_prize_claim(models.Model):
 	transaction_date = fields.Date('Transaction Date', default=fields.Date.context_today)
 	jackpot_prize = fields.Boolean('Jackpot Winner', readonly=True, states={'draft': [('readonly', False)]})
 	analytic_account_id = fields.Many2one('account.analytic.account', string="Cost Center/Department")
+	date_received = fields.Date('SOA Date Received', track_visibility='onchange')
 
 	write_date = fields.Datetime('Write Date', track_visibility='always', copy=True)
 	transaction_type = fields.Selection([
@@ -719,11 +720,28 @@ class account_invoice_prize_claim(models.Model):
 		if vals.get('draft_number_sequence', _('New Voucher')) == _('New Voucher'):
 			seq_str = ''
 			if self._context.get('transaction_type') == 'prize_claim':
-				seq_str = 'PRF' + self.env['ir.sequence'].next_by_code('account.invoice.voucher.seq') 
+				seq_str = 'PC' + self.env['ir.sequence'].next_by_code('account.invoice.voucher.seq') 
 			elif self._context.get('transaction_type')== 'charity':
-				seq_str = 'CHF' + self.env['ir.sequence'].next_by_code('account.invoice.voucher.seq') 
+				#raise Warning(self.env.user.groups_id)
+				for groups in self.env.user.groups_id:
+				
+					if groups in [self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_approve_below_100k_for_approval'),
+									self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_approve_below_100k_approved'),
+									self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_approve_above_100k_bel_200k_for_approval'),
+									self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_approve_above_100k_bel_200k_approved'),
+									self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_approve_above_200k_for_approval'),
+									self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_approve_above_200k_approved'),
+									self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_approve_below_100k_for_rev1'),
+									self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_approve_below_100k_for_rev2'),
+									self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_approve_above_100k_bel_200k_for_rev1'),
+									self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_approve_above_100k_bel_200k_for_rev2'),
+									self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_approve_above_200k_for_rev1'),
+									self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_approve_above_200k_for_rev2'),
+									self.env.ref('account_prize_claim_pcso.ccf_group_allow_to_submit_pcf_claim'),] and self.env.user.id != 1:
+						raise UserError(_("User has no access to Create the IMAP."))
+				seq_str = 'CH' + self.env['ir.sequence'].next_by_code('account.invoice.voucher.seq') 
 			else:
-				seq_str = 'OPX' + self.env['ir.sequence'].next_by_code('account.invoice.voucher.seq') 
+				seq_str = 'OP' + self.env['ir.sequence'].next_by_code('account.invoice.voucher.seq') 
 
 			vals['draft_number_sequence'] = seq_str
 		

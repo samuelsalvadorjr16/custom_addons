@@ -1,0 +1,106 @@
+<odoo>
+	<data>
+
+		<record model="ir.ui.view" id="view_pcso_transaction_tree">
+			<field name="name">pcso.transaction.tree</field>
+			<field name="model">pcso.transaction</field>
+			<field name="arch" type="xml">
+				<tree>
+                    <field name="name"/>
+					<field name="patient_name"/>
+                    <field name="assistance_id"/>
+                    <field name="specific_assistance_id"/>
+                    <field name="approved_assistance_amount"/>
+                    <field name="state"/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="view_pcso_transaction_form" model="ir.ui.view">
+            <field name="name">pcso.transaction.form</field>
+            <field name="model">pcso.transaction</field>
+            <field eval="25" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Transactions" >
+                 <header>
+                    <field name="state" widget="statusbar"/>
+                 </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" />
+                        </h1>
+                    </div>
+                    <notebook>
+                        <page string="DETAILS">
+                            <group>
+                                <group>
+                                    <field name="applicant_id"/>
+                                    <field name="application_id"/>
+                                    <field name="patient_name"/>
+                                    <field name="application_date"/>
+                                    <field name="date_approved"/>
+                                    <field name="transaction_code"/>
+                                </group>
+                                <group>
+                                    <field name="assistance_id"/>
+                                    <field name="specific_assistance_id"/>
+                                    <field name="approved_assistance_amount"/>
+                                    <field name="medical_institution_id"/>
+                                    <field name="branch_id"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="OTHER INFO">
+                            <group>
+                                <group string="Reversal Information">
+                                    <field name="reverse_transaction"/>
+                                    <field name="reverse_reason"/>
+                                    <field name="reverse_date"/>
+                                </group>
+                                <group string="Check Status">
+                                    <field name="check_number"/>
+                                    <field name="bank"/>
+                                    <field name="check_amount"/>
+                                    <field name="date_check_created"/>
+                                    <field name="is_released"/>
+                                    <field name="date_released"/>
+                                </group>
+
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="pcso_transaction_view_search" model="ir.ui.view">
+            <field name="name">pcso.transaction.search</field>
+            <field name="model">pcso.transaction</field>
+            <field name="priority" eval="8" />
+            <field name="arch" type="xml">
+                <search string="Transactions">
+                    <field name="name" />
+                    <field name="patient_name"/>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="pcso_transaction_action">
+            <field name="name">Transactions</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pcso.transaction</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="pcso_transaction_view_search" />
+            <field name="help" type="html">
+              <p>
+                Create your first record.
+              </p>
+            </field>
+        </record>
+
+	</data>
+</odoo>

@@ -42,7 +42,7 @@
 -->
 
                     <button name="action_invoice_open" type="object" states="approved" string="Validate" class="oe_highlight" groups="account.group_account_user,account.group_account_manager"/>
-                    <button name="%(act_acc_invo_paymt_prize)d" type="action" states="open" string="Register Payment" groups="account.group_account_user,account.group_account_manager" class="oe_highlight"/>
+                    <button name="%(act_acc_invo_paymt_char)d" type="action" states="open" string="Register Payment" groups="account.group_account_user,account.group_account_manager" class="oe_highlight"/>
 
                     <field name="state" widget="statusbar" statusbar_visible="draft,submit,under_review,for_approval,approved" />
                 </header>
@@ -71,22 +71,29 @@
                               context="{'default_partner_claimant': 1, 'search_default_partner_claimant_filter': 1}"
                               domain="[('partner_claimant', '=', True)]"/>
                             -->    
-                            <field string="Payee" name="partner_id"/>                                 
+                            <field string="Payee" name="partner_id" attrs="{'readonly': [('state', 'not in', ['draft', 'return'])]}"/>                                 
                         </group>
 
                         <group>
                             <field name="move_name" invisible="1"/>
                             <field name="currency_id" options="{'no_create': True, 'no_open': True}" groups="base.group_multi_currency"/>
                             <field name="company_currency_id" invisible="1"/>
+                            <field name="date_received" attrs="{'readonly': [('state', 'in', ['approved', 'open', 'paid', 'cancel'])]}" />
+                            
                         </group>
                     </group>
                     <notebook>
                         <page string="Guarantee Number Lines">
-                            <field context="{'type': type, 'journal_id': journal_id, 'transaction_type':transaction_type}" name="invoice_line_ids">
+                            <field context="{'type': type, 'journal_id': journal_id, 'transaction_type':transaction_type}" name="invoice_line_ids" attrs="{'readonly': [('state', 'not in', ['draft', 'return'])]}">
                                 <tree string="Guarantee Number Lines" editable="bottom">
                                     <field name="sequence" widget="handle" />
-                                    <field name="guarantee_number" required="1"/>
-                                    <field name="patient_name" required="1"/>
+                                    <field name="guarantee_number" invisible="1"/>
+                                    <field name="guarantee_id" options="{'no_create': True, 'no_open': True}" required="1" domain="[('state', '=', 'approve'),('is_released', '!=', True)]"/> 
+                                    
+                                    
+                                    <field name="guarantee_patient_name_rel" readonly="1"/>
+                                    
+                                    <field name="patient_name" invisible="1"/>
                                     <field name="product_id"
                                         context="{'partner_id': parent.partner_id}" domain="[('purchase_ok','=',True)]" string="Voucher" invisible="1"/>
                                     
@@ -96,7 +103,8 @@
                                     
                                     <field name="quantity" invisible="1"/>
                                     <field name="uom_id" groups="product.group_uom" invisible="1"/>
-                                    <field name="approved_amount" string="Approved Amount(CIS)" required="1"/>
+                                    <field name="guarantee_approve_amt_rel" string="Approved Amount(CIS)" readonly="1"/>
+                                    <field name="approved_amount" string="Approved Amount(CIS)" invisible="1"/>
                                     <field name="price_unit" string="Allowed Amount"/>
                                     <field name="discount" groups="base.group_no_one" invisible="1"/>
                                     <field name="invoice_line_tax_ids" widget="many2many_tags" options="{'no_create': True}" context="{'type':parent.type}"
@@ -109,8 +117,9 @@
                                         domain="[('company_id', '=', parent.company_id), ('internal_type', '=', 'other'), ('deprecated', '=', False)]"/>
                                     <field name="account_analytic_id" groups="analytic.group_analytic_accounting"
                                         domain="[('company_id', '=', parent.company_id)]"
-                                        context="{'default_partner_id': parent.partner_id}"/>
-                                    <field name="analytic_tag_ids" groups="analytic.group_analytic_accounting" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                        context="{'default_partner_id': parent.partner_id}" string="Cost Center/Department"
+                                        options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="analytic_tag_ids" groups="analytic.group_analytic_accounting" widget="many2many_tags" options="{'color_field': 'color'}" invisible="1"/>
                                     <field name="price_subtotal"/>
                                 </tree>
                             </field>
@@ -189,6 +198,7 @@
             <field name="model">account.invoice</field>
             <field name="arch" type="xml">
                 <tree decoration-info="state == 'draft'" decoration-muted="state in ['cancel','denied']" string="Invoice">
+                    <field name="draft_number_sequence" string="Reference Number"/>      
                     <field name="number"/>
                     <field name="partner_id" groups="base.group_user" string="Claimaint"/>
                     <field name="transaction_date"/>

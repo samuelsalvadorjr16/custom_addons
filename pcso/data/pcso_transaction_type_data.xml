@@ -1,0 +1,16 @@
+<odoo>
+	<data>
+		<record model="pcso.transaction.type" id="transaction_type_1">
+            <field name="name">IMAP</field>
+            <field name="code">IMAP</field>
+        </record>
+        <record model="pcso.transaction.type" id="transaction_type_2">
+            <field name="name">Endowment</field>
+            <field name="code">ED</field>
+        </record>
+        <record model="pcso.transaction.type" id="transaction_type_3">
+            <field name="name">Partner Institution</field>
+            <field name="code">PI</field>
+        </record>
+	</data>
+</odoo>

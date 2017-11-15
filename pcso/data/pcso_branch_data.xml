@@ -1,0 +1,11 @@
+<odoo>
+	<data>
+		<record model="pcso.branch" id="branch_1">
+            <field name="name">Head Office</field>
+            <field name="branch_id">1</field>
+            <field name="is_head_office">True</field>
+            <field name="address"></field>
+            <field name="cmid"></field>
+        </record>
+	</data>
+</odoo>

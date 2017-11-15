@@ -1,0 +1,16 @@
+<odoo>
+	<data>
+
+		<record id="view_res_partner_form_extend" model="ir.ui.view">
+            <field name="name">res.partner.form.extend</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_i" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='email']" position="after">
+                    <field name="vat" />
+                </xpath>
+            </field>
+        </record>
+
+	</data>
+</odoo>

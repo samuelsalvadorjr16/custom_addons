@@ -17,7 +17,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'account', 'purchase','hr','mail', 'res_claimant_pcso'],
+    'depends': ['base', 'account', 'purchase','hr','mail', 'res_claimant_pcso', 'pcso'],
 
     # always loaded
     'data': [
@@ -30,9 +30,9 @@
         'views/hr_employee.xml',
         'views/prize_charity_configuration.xml',
         'views/request_for_payment.xml',
-        'views/account_payment.xml',        
-        'views/prize_claim_pcso.xml',        
         'views/account_invoice.xml',
+        'views/account_payment.xml',        
+        'views/prize_claim_pcso.xml', 
         'views/charity_claim_pcso.xml',
         'views/hr_department.xml',
         'views/menu_access_rights_override.xml',

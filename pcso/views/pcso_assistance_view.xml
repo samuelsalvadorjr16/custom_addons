@@ -1,0 +1,67 @@
+<odoo>
+	<data>
+
+		<record model="ir.ui.view" id="view_pcso_assistance_tree">
+			<field name="name">pcso.assistance.tree</field>
+			<field name="model">pcso.assistance</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="name"/>
+					<field name="assistance_id"/>
+                    <!-- <field name="parent_id"/> -->
+				</tree>
+			</field>
+		</record>
+
+		<record id="view_pcso_assistance_form" model="ir.ui.view">
+            <field name="name">pcso.assistance.form</field>
+            <field name="model">pcso.assistance</field>
+            <field eval="25" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Assistance" >
+                 <header/>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="assistance_id"/>
+                            <!-- <field name="parent_id"/> -->
+                        </group>
+                    </group>
+                </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="pcso_assistance_view_search" model="ir.ui.view">
+            <field name="name">pcso.assistance.search</field>
+            <field name="model">pcso.assistance</field>
+            <field name="priority" eval="8" />
+            <field name="arch" type="xml">
+                <search string="Assistance">
+                    <field name="name" />
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="pcso_assistance_action">
+            <field name="name">Assistance</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pcso.assistance</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="pcso_assistance_view_search" />
+            <field name="help" type="html">
+              <p>
+                Create your first record.
+              </p>
+            </field>
+        </record>
+
+	</data>
+</odoo>

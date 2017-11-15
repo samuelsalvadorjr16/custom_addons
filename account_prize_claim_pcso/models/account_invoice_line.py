@@ -83,14 +83,35 @@ class account_invoice_line_prize_claim(models.Model):
 	name = fields.Text(string='Description',required=False)
 	price_unit = fields.Float(string='Unit Price', digits=dp.get_precision('Product Price'),required=True)
 	# For Charity
+	guarantee_id = fields.Many2one('pcso.transaction', string="Guarantee Number")
+	guarantee_patient_name_rel = fields.Char(related='guarantee_id.patient_name', string='Patient Name')
+	guarantee_approve_amt_rel = fields.Float(related='guarantee_id.approved_assistance_amount', string='Approved Amount', digits=dp.get_precision('Charity Assistance Amt'))
 	guarantee_number = fields.Char('Guarantee Number')
 	patient_name = fields.Char('Patient Name')
-	approved_amount = fields.Float(string='Approved Amount', digits=dp.get_precision('Price Claim First Prize'))
+	approved_amount = fields.Float(string='Approved Amount', digits=dp.get_precision('Charity Assistance Amt'))
 
 	product_id = fields.Many2one('product.product', string='Product',
 	    ondelete='restrict', index=True, default=_default_product_id)
 
-
 	@api.onchange('approved_amount')
 	def _approved_amount_onchange(self):
 		self.price_unit = self.approved_amount
+
+	@api.onchange('guarantee_id')
+	def guarantee_change(self):
+		#Check Guarantee Number
+		#raise Warning(111)
+		#if self.guarantee_number:
+		#	pcso_obj =self.env['pcso.transaction'].search([('name', '=', self.guarantee_number)])
+		#	if pcso_obj:
+		#		raise Warning(pcso_obj)
+		#		self.guarantee_id = pcso_obj.id
+				#self.patient_name = self.guarantee_id.patient_name or 0.00
+				#self.approved_amount = self.guarantee_id.approved_assistance_amount or 0.00
+		#	else:
+		#		raise Warning('Guarantee Number Not Define')
+		if self.guarantee_id:
+			self.patient_name = self.guarantee_id.patient_name or False
+			self.approved_amount =  self.guarantee_approve_amt_rel or 0.00
+		#elif not self.guarantee_id:
+		#	self.approved_amount = 0.00

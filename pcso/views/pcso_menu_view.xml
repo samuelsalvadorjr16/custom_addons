@@ -1,0 +1,19 @@
+<odoo>
+<data>
+	<menuitem id="menu_pcso_root" name="PCSO" sequence="100" />
+
+	<menuitem id="menu_pcso_transaction" parent="menu_pcso_root" name="Transactions" action="pcso_transaction_action" sequence="10" />
+
+	<menuitem id="menu_pcso_conf_root" parent="menu_pcso_root" name="Counfiguration" sequence="100" />
+	<menuitem id="menu_pcso_budget_allocation" parent="menu_pcso_conf_root" name="Budget Allocation" action="pcso_budget_allocation_action" sequence="10"/>
+
+	<menuitem id="menu_pcso_assistance_root" parent="menu_pcso_conf_root" name="Assistance" sequence="20"/>
+	<menuitem id="menu_pcso_assistance" parent="menu_pcso_assistance_root" name="Assistance" action="pcso_assistance_action" sequence="10"/>
+	<menuitem id="menu_pcso_specific_assistance" parent="menu_pcso_assistance_root" name="Specific Assistance" action="pcso_specific_assistance_action" sequence="20"/>
+
+	<menuitem id="menu_pcso_transaction_type" parent="menu_pcso_conf_root" name="Transaction Type" action="pcso_transaction_type_action" sequence="30" />
+	<menuitem id="menu_pcso_branch" parent="menu_pcso_conf_root" name="Branch" action="pcso_branch_action" sequence="40"/>
+	<menuitem id="menu_pcso_api_error_matrix" parent="menu_pcso_conf_root" name="API Error Matrix" action="pcso_api_error_matrix_action" sequence="50"/>
+	
+</data>
+</odoo>

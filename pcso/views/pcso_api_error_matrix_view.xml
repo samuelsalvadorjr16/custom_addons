@@ -1,0 +1,69 @@
+<odoo>
+	<data>
+
+		<record model="ir.ui.view" id="view_pcso_api_error_matrix_tree">
+			<field name="name">pcso.api.error.matrix.tree</field>
+			<field name="model">pcso.api.error.matrix</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="code"/>
+					<field name="message"/>
+                    <field name="type"/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="view_pcso_api_error_matrix_form" model="ir.ui.view">
+            <field name="name">pcso.api.error.matrix.form</field>
+            <field name="model">pcso.api.error.matrix</field>
+            <field eval="25" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="API Error Matrix" >
+                 <header/>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="code" class="oe_edit_only"/>
+                        <h1>
+                            <field name="code" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="message"/>
+                            <field name="type"/>
+                        </group>
+                    </group>
+                </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="pcso_api_error_matrix_view_search" model="ir.ui.view">
+            <field name="name">pcso.api.error.matrix.search</field>
+            <field name="model">pcso.api.error.matrix</field>
+            <field name="priority" eval="8" />
+            <field name="arch" type="xml">
+                <search string="API Error Matrix">
+                    <field name="code" />
+                    <field name="message" />
+                    <field name="type"/>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="pcso_api_error_matrix_action">
+            <field name="name">API Error Matrix</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pcso.api.error.matrix</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="pcso_api_error_matrix_view_search" />
+            <field name="help" type="html">
+              <p>
+                Create your first record.
+              </p>
+            </field>
+        </record>
+
+	</data>
+</odoo>

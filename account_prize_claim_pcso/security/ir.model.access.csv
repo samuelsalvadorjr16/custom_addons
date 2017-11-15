@@ -48,3 +48,5 @@ account.access_account_account_type_invoice_pcf,account.account.type invoice.pcf
 account.access_account_analytic_line_invoice_opex,account.analytic.line invoice.opex,account.model_account_analytic_line,account_prize_claim_pcso.opex_group_processor,1,1,1,1
 account.access_account_analytic_line_invoice_ccf,account.analytic.line invoice.ccf,account.model_account_analytic_line,account_prize_claim_pcso.ccf_group_processor,1,1,1,1
 account.access_account_analytic_line_invoice_pcf,account.analytic.line invoice.pcf,account.model_account_analytic_line,account_prize_claim_pcso.pcf_group_processor,1,1,1,1
+account_prize_claim_pcso.access_control_pcso_transaction_ccf,pcso.transaction.charity,pcso.model_pcso_transaction,account_prize_claim_pcso.ccf_group_processor,1,0,0,0
+account.access_account_payment_integration,account.payment,pcso.model_pcso_transaction,account.group_account_invoice,1,1,0,0
