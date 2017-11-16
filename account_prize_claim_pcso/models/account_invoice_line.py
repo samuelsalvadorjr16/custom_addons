@@ -64,6 +64,15 @@ class account_invoice_line_prize_claim(models.Model):
 				#return  self.env.ref('account_prize_claim_pcso.product_product_prize_claim_cost')
 			else:
 				return False
+	#@api.model
+	#def _default_analytic_acc_id(self):
+		#if self._context.get('branch_id'):
+		#	if self._context.get('transaction_type') == 'charity':
+		#		branch_obj = self.env['config.prize.branch'].search([('id', '=', self._context.get('branch_id'))])
+		#		#raise Warning(self._context.get('branch_id'))
+		#		self.account_analytic_id = branch_obj and branch_obj.analytic_account_id and branch_obj.analytic_account_id.id or False 
+	#	return False
+
 
 	draw_id = fields.Many2one('config.prize.draws', 'Draw ID')
 	draw_date = fields.Datetime(related='draw_id.draw_date', string='Draw Date')
@@ -82,6 +91,7 @@ class account_invoice_line_prize_claim(models.Model):
 	#Override Fields
 	name = fields.Text(string='Description',required=False)
 	price_unit = fields.Float(string='Unit Price', digits=dp.get_precision('Product Price'),required=True)
+	#account_analytic_id = fields.Many2one('account.analytic.account',string='Analytic Account', default=_default_analytic_acc_id)
 	# For Charity
 	guarantee_id = fields.Many2one('pcso.transaction', string="Guarantee Number")
 	guarantee_patient_name_rel = fields.Char(related='guarantee_id.patient_name', string='Patient Name')
@@ -110,6 +120,9 @@ class account_invoice_line_prize_claim(models.Model):
 				#self.approved_amount = self.guarantee_id.approved_assistance_amount or 0.00
 		#	else:
 		#		raise Warning('Guarantee Number Not Define')
+		if self._context.get('branch_id'):
+			branch_obj = self.env['config.prize.branch'].search([('id', '=', self._context.get('branch_id'))])
+			self.account_analytic_id = branch_obj and branch_obj.analytic_account_id and branch_obj.analytic_account_id.id or False 
 		if self.guarantee_id:
 			self.patient_name = self.guarantee_id.patient_name or False
 			self.approved_amount =  self.guarantee_approve_amt_rel or 0.00
