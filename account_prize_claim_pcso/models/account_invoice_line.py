@@ -113,5 +113,13 @@ class account_invoice_line_prize_claim(models.Model):
 		if self.guarantee_id:
 			self.patient_name = self.guarantee_id.patient_name or False
 			self.approved_amount =  self.guarantee_approve_amt_rel or 0.00
-		#elif not self.guarantee_id:
-		#	self.approved_amount = 0.00
+	@api.onchange('agency_id')
+	def agency_change(self):
+		if self.agency_id:
+			if self._context.get('transaction_type') == 'prize_claim':
+				self.account_analytic_id = self.agency_id and self.agency_id.analytic_account_id  and  self.agency_id.analytic_account_id.id or False
+
+	#@api.onchange('agency_id')
+	#def agency_change(self):
+	#	if self.agency_id:
+	#		self.account_analytic_id = if self.agency_id and self.agency_id.account_analytic_id  and  self.agency_id.account_analytic_id.id or False

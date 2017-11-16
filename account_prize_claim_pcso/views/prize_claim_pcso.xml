@@ -166,15 +166,18 @@
                                     <field name="account_id" groups="account.group_account_user"
                                         domain="[('company_id', '=', parent.company_id), ('internal_type', '=', 'other'), ('deprecated', '=', False)]"
                                         options="{'no_create': True, 'no_open': True}" />
-                                    <field name="account_analytic_id" groups="analytic.group_analytic_accounting"
-                                        domain="[('company_id', '=', parent.company_id)]"
-                                        context="{'default_partner_id': parent.partner_id}" string="Cost Center/Department"
-                                        options="{'no_create': True, 'no_open': True}" />
                                     <field name="analytic_tag_ids" groups="analytic.group_analytic_accounting" widget="many2many_tags" options="{'color_field': 'color'}" invisible="1"/>                                    
                                     <field name="bettype_id" required="1"
                                            options="{'no_create': True, 'no_open': True}"/>
                                     <field name="agency_id" required="1"
                                            options="{'no_create': True, 'no_open': True}"/>
+
+                                    <field name="account_analytic_id" groups="analytic.group_analytic_accounting"
+                                        domain="[('company_id', '=', parent.company_id)]"
+                                        context="{'default_partner_id': parent.partner_id}" string="Cost Ctr/Dept."
+                                        options="{'no_create': True, 'no_open': True}" />
+
+
                                     <field name="ticket_serial" required="1"/>
                                     <field name="jackpot_prize" groups="account_prize_claim_pcso.pcf_group_allow_create_jackpot,account_prize_claim_pcso.pcf_group_allow_submit_jackpot,account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_rev,account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_for_approv,account_prize_claim_pcso.pcf_group_allow_to_approve_jackpot_approved"/>                                    
                                     <field name="first_prize"/>

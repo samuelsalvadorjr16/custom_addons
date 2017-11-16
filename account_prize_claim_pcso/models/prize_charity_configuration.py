@@ -14,7 +14,7 @@ class prize_config_branch(models.Model):
 	_name = 'config.prize.branch'
 	
 	name = fields.Char('Name')
-	analytic_account_id = fields.Many2one('account.analytic.account', 'Analytic Account')
+	analytic_account_id = fields.Many2one('account.analytic.account', 'Cost Ctr/Dept')
 
 class prize_config_transaction_type(models.Model):
 	_name = 'config.prize.transactiontype'
@@ -28,6 +28,7 @@ class prize_config_agency(models.Model):
 	name = fields.Char('Name')
 	agency_id = fields.Char('ID')
 	owner_id = fields.Many2one('res.partner', 'Owner')
+	analytic_account_id =  fields.Many2one('account.analytic.account', 'Cost Ctr/Dept')
 
 
 	@api.model
@@ -83,7 +84,7 @@ class prize_config_draws(models.Model):
 	draw_date = fields.Datetime('Draw Date')
 	draw_result = fields.Char('Draw Result')
 	gametype_id = fields.Many2one('config.prize.gametype', 'Game Type')
-	jackpot_prize = fields.Many2one(string='Jackpot Prize', digits=dp.get_precision('Price Claim First Prize'))
+	jackpot_prize = fields.Float(string='Jackpot Prize', digits=dp.get_precision('Price Claim First Prize'))
 	first_prize = fields.Float(string='First Prize', digits=dp.get_precision('Price Claim First Prize'))
 	second_prize = fields.Float(string='Second Prize', digits=dp.get_precision('Price Claim Second Prize'))
 	third_prize = fields.Float(string='Third Prize', digits=dp.get_precision('Price Claim Third Prize'))

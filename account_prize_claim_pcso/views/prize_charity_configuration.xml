@@ -81,6 +81,7 @@
                 <tree string="Agency" editable="top">
                     <field name="name" required="1"/>
                     <field name="agency_id" required="1"/>
+                    <field name="analytic_account_id" required="1"/>                    
                     <field name="owner_id"/>
                 </tree>
             </field>
@@ -194,7 +195,7 @@
                                 <field name="gametype_id"/>                             
                             </group>
                             <group  string="Prize">                              
-                                <field name="jackpot_prize"/>
+                                <field name="jackpot_prize" invisible="1"/>
                                 <field name="first_prize"/>
                                 <field name="second_prize"/>
                                 <field name="third_prize"/>
@@ -217,7 +218,7 @@
                     <field name="draw_date"/>
                     <field name="draw_result"/>
                     <field name="gametype_id"/>                    
-                    <field name="jackpot_prize"/>
+                    <field name="jackpot_prize" invisible="1"/>
                     <field name="first_prize"/>
                     <field name="second_prize"/>
                     <field name="third_prize"/>
