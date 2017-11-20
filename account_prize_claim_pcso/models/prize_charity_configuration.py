@@ -26,7 +26,7 @@ class prize_config_agency(models.Model):
 
 	_rec_name = 'agency_id'
 	name = fields.Char('Name')
-	agency_id = fields.Char('ID')
+	agency_id = fields.Char('Agency ID')
 	owner_id = fields.Many2one('res.partner', 'Owner')
 	analytic_account_id =  fields.Many2one('account.analytic.account', 'Cost Ctr/Dept')
 
@@ -60,7 +60,7 @@ class prize_config_gametype(models.Model):
 	_name = 'config.prize.gametype'
 
 	name = fields.Char('Name')
-	id_char = fields.Char('ID')
+	id_char = fields.Char('Game Type ID')
 
 	jackpot_product_id = fields.Many2one('product.product', string="Jackpot")
 	high_tier_product_id = fields.Many2one('product.product', string="High Tier")
@@ -74,7 +74,7 @@ class prize_config_bettype(models.Model):
 	_name = 'config.prize.bettype'
 
 	name = fields.Char('Name')
-	id_char = fields.Char('ID')
+	id_char = fields.Char('Bet Type ID')
 
 class prize_config_draws(models.Model):
 	_name = "config.prize.draws"

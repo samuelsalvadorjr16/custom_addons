@@ -35,6 +35,7 @@
         'views/prize_claim_pcso.xml', 
         'views/charity_claim_pcso.xml',
         'views/hr_department.xml',
+        'views/account_account_view.xml',
         'views/menu_access_rights_override.xml',
     ],
 }

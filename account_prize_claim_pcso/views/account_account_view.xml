@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+       <record model="ir.ui.view" id="pcso_account_account_extend">
+            <field name="name">pcso.account.account.extend</field>
+            <field name="model">account.account</field>
+            <field name="inherit_id" ref="account.view_account_form"/>
+            <field name="arch" type="xml">
+                <field name="user_type_id" position="after">
+                    <field name="object_code_id" options="{'no_create': True, 'no_open': True}"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>
