@@ -126,7 +126,7 @@
                                       <td class="text-center" colspan="4" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 80%;"><span t-field="o.claimant_type_id"/> / <span t-field="o.claimant_id_number"/></td>
                                   </t>
                                   <t t-if="o.transaction_type=='charity'">
-                                     <td class="text-center" colspan="4" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 80%;"><span t-field="o.partner_id.id_number"/></td>
+                                     <td class="text-center" colspan="4" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 80%;"><span t-field="o.partner_id.vat"/></td>
                                   </t>                                      
 
                               </tr>    

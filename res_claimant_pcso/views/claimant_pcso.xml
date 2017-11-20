@@ -20,12 +20,11 @@
                 </field>
 
                 <field name='function' position="after">
-                    <!--
+                    
                     <field name="id_type" attrs="{'invisible': [('partner_claimant', '=', False)], 'required': [('partner_claimant', '=', True)]}"/>
                     <field name="id_number" attrs="{'invisible': [('partner_claimant', '=', False)], 'required': [('partner_claimant', '=', True)]}"/>
-                    -->
-                    <field name="id_type" attrs="{'required': [('partner_claimant', '=', True)]}"/>
-                    <field name="id_number" attrs="{'required': [('partner_claimant', '=', True)]}"/>                    
+                    
+                    <field name="vat" attrs="{'invisible': [('partner_claimant', '=', True)],'required': [('partner_claimant', '=', True)]}"/>
                 </field>                
 
                 <field name='street2' position="attributes">
