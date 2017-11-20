@@ -6,7 +6,7 @@ from odoo import api, fields, models
 from odoo import tools, _
 from odoo.exceptions import ValidationError
 from odoo.modules.module import get_module_resource
-
+from odoo.exceptions import AccessError, UserError, RedirectWarning, ValidationError, Warning
 import odoo.addons.decimal_precision as dp
 
 _logger = logging.getLogger(__name__)
@@ -64,6 +64,22 @@ class account_invoice_line_prize_claim(models.Model):
 				#return  self.env.ref('account_prize_claim_pcso.product_product_prize_claim_cost')
 			else:
 				return False
+
+	@api.model
+	def _filter_guarantee_number(self):
+		domain = [('state', '=', 'approve'),('is_released', '!=', True)]
+		guarantee_number_in_invoice = self.env['account.invoice.line'].search([('guarantee_id', '!=', False)])
+		list_guarantee = []
+		#raise Warning(1111)
+		if guarantee_number_in_invoice:
+			for line in guarantee_number_in_invoice:
+				list_guarantee.append(line.guarantee_id.id)
+
+			domain.append(('id', 'not in', list_guarantee))
+
+
+		return domain
+
 	#@api.model
 	#def _default_analytic_acc_id(self):
 		#if self._context.get('branch_id'):
@@ -93,7 +109,7 @@ class account_invoice_line_prize_claim(models.Model):
 	price_unit = fields.Float(string='Unit Price', digits=dp.get_precision('Product Price'),required=True)
 	#account_analytic_id = fields.Many2one('account.analytic.account',string='Analytic Account', default=_default_analytic_acc_id)
 	# For Charity
-	guarantee_id = fields.Many2one('pcso.transaction', string="Guarantee Number")
+	guarantee_id = fields.Many2one('pcso.transaction', string="Guarantee Number", domain=_filter_guarantee_number)
 	guarantee_patient_name_rel = fields.Char(related='guarantee_id.patient_name', string='Patient Name')
 	guarantee_approve_amt_rel = fields.Float(related='guarantee_id.approved_assistance_amount', string='Approved Amount', digits=dp.get_precision('Charity Assistance Amt'))
 	guarantee_number = fields.Char('Guarantee Number')
@@ -103,9 +119,9 @@ class account_invoice_line_prize_claim(models.Model):
 	product_id = fields.Many2one('product.product', string='Product',
 	    ondelete='restrict', index=True, default=_default_product_id)
 
-	@api.onchange('approved_amount')
+	@api.onchange('guarantee_approve_amt_rel')
 	def _approved_amount_onchange(self):
-		self.price_unit = self.approved_amount
+		self.price_unit = self.guarantee_approve_amt_rel or 0 
 
 	@api.onchange('guarantee_id')
 	def guarantee_change(self):
@@ -120,19 +136,35 @@ class account_invoice_line_prize_claim(models.Model):
 				#self.approved_amount = self.guarantee_id.approved_assistance_amount or 0.00
 		#	else:
 		#		raise Warning('Guarantee Number Not Define')
-		if self._context.get('branch_id'):
-			branch_obj = self.env['config.prize.branch'].search([('id', '=', self._context.get('branch_id'))])
-			self.account_analytic_id = branch_obj and branch_obj.analytic_account_id and branch_obj.analytic_account_id.id or False 
 		if self.guarantee_id:
-			self.patient_name = self.guarantee_id.patient_name or False
-			self.approved_amount =  self.guarantee_approve_amt_rel or 0.00
+			#guarantee_number_in_invoice = self.env['account.invoice.line'].search([('guarantee_id', '=', self.guarantee_id.id)])
+			#if guarantee_number_in_invoice:
+			#	self.guarantee_id = False
+				#raise Warning('Guarantee Number Already added in Other IMAP Claims.')
+			#else:
+			if self._context.get('branch_id'):
+				branch_obj = self.env['config.prize.branch'].search([('id', '=', self._context.get('branch_id'))])
+				self.account_analytic_id = branch_obj and branch_obj.analytic_account_id and branch_obj.analytic_account_id.id or False 
+			if self.guarantee_id:
+				self.patient_name = self.guarantee_id.patient_name or False
+				self.approved_amount =  self.guarantee_approve_amt_rel or 0.00
+	@api.multi
+	def write(self, values):
+		if values.has_key('guarantee_id') and values.get('guarantee_id') !=False:
+			guarantee_number_in_invoice = self.env['account.invoice.line'].search([('guarantee_id', '=', values.get('guarantee_id'))])
+			if guarantee_number_in_invoice:
+				raise Warning('GL %s Already added in Other IMAP Claims.' %(guarantee_number_in_invoice.guarantee_id.name))
+		return super(account_invoice_line_prize_claim, self).write(values)
+	@api.model
+	def create(self, values):
+		if values.has_key('guarantee_id') and values.get('guarantee_id') !=False:
+			guarantee_number_in_invoice = self.env['account.invoice.line'].search([('guarantee_id', '=', values.get('guarantee_id'))])
+			if guarantee_number_in_invoice:
+				raise Warning('GL %s Already added in Other IMAP Claims.' %(guarantee_number_in_invoice.guarantee_id.name))
+		return super(account_invoice_line_prize_claim, self).create(values)
+
 	@api.onchange('agency_id')
 	def agency_change(self):
 		if self.agency_id:
 			if self._context.get('transaction_type') == 'prize_claim':
 				self.account_analytic_id = self.agency_id and self.agency_id.analytic_account_id  and  self.agency_id.analytic_account_id.id or False
-
-	#@api.onchange('agency_id')
-	#def agency_change(self):
-	#	if self.agency_id:
-	#		self.account_analytic_id = if self.agency_id and self.agency_id.account_analytic_id  and  self.agency_id.account_analytic_id.id or False

@@ -20,9 +20,6 @@
             <field name="dpi">90</field>
         </record>
 
-        <record id="action_print_disbursement_voucher_pcso" model="ir.actions.report.xml">
-            <field name="paperformat_id" ref="account_prize_claim_pcso.paperformat_disbursement_voucher"/>
-        </record>
 
         <template id="dis_vouch_pcso">
 
@@ -114,19 +111,41 @@
                                 
                               <tr>
                                   <td class="text-left" colspan="10" style="border-top: 1px solid;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 90%;">NAME AND ADDRESS OF CLAIMANT</td>
-                                  <td class="text-left" colspan="4" style="border-top: 1px solid;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 90%;">ID TYPE/ NO:</td>
+                                  <t t-if="o.transaction_type=='prize_claim'">
+                                      <td class="text-left" colspan="4" style="border-top: 1px solid;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 90%;">ID TYPE/ NO:</td>
+                                  </t>
+                                  <t t-if="o.transaction_type=='charity'">
+                                    <td class="text-left" colspan="4" style="border-top: 1px solid;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 90%;">EMPLOYEE NO./ TIN</td>
+                                  </t>                                    
+                                  
                               </tr>    
                               <tr>
                                   <td class="text-center" colspan="10" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 100%;"><span t-field="o.partner_id"/></td>
-                                  <td class="text-center" colspan="4" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 80%;"><span t-field="o.claimant_type_id"/> / <span t-field="o.claimant_id_number"/></td>
+
+                                  <t t-if="o.transaction_type=='prize_claim'">
+                                      <td class="text-center" colspan="4" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 80%;"><span t-field="o.claimant_type_id"/> / <span t-field="o.claimant_id_number"/></td>
+                                  </t>
+                                  <t t-if="o.transaction_type=='charity'">
+                                     <td class="text-center" colspan="4" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 80%;"><span t-field="o.partner_id.id_number"/></td>
+                                  </t>                                      
+
                               </tr>    
                               <tr>
                                   <td class="text-center" colspan="10" style="border-top: 1px solid;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 120%;">PARTICULARS OF PAYMENT</td>
                                   <td class="text-center" colspan="4" style="border-top: 1px solid;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 120%;">AMOUNT</td>
                               </tr>  
                               <tr>
-                                  <td class="text-left" colspan="10" style="border-top: 1px solid;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 85%;">To Payment as per Prize details:</td>
-                                  <td class="text-center" colspan="4" style="border-top: 1px solid;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 85%;"> Php &amp;emsp; &amp;emsp;  <span t-field="o.amount_total"/></td>
+                                  <t t-if="o.transaction_type=='prize_claim'">
+                                    <td class="text-left" colspan="10" style="border-top: 1px solid;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 85%;">To Payment as per Prize details:</td>
+
+                                    <td class="text-center" colspan="4" style="border-top: 1px solid;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 85%;"> Php &amp;emsp; &amp;emsp;  <span t-field="o.amount_total"/></td>                                    
+                                  </t>
+                                  <t t-if="o.transaction_type=='charity'">
+                                    <td class="text-left" colspan="10" style="border-top: 1px solid;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 85%;">Financial Assistance for the medical expenses of patien(s) (IMAP) and other supporting papers hereto attached.</td>
+
+                                    <td class="text-center" colspan="4" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 85%;"/>                                          
+                                  </t>                                  
+                                  
                               </tr> 
                               <!--
                               <tr>
@@ -136,7 +155,7 @@
                               </tr> 
                               -->
                               <tr>
-                                  <td class="text-center" colspan="10" style="border-top: 1px solid;border-bottom: 1px solid;border-left: 1px solid;border-right: 1px solid;font-size: 85%;">
+                                  <td class="text-center" colspan="10" style="border-top: none;border-bottom: 1px solid;border-left: 1px solid;border-right: 1px solid;font-size: 85%;">
                                     <t t-if="o.transaction_type=='prize_claim'">
                                         <table class="table table-bordered table-condensed">
                                           <tbody>
@@ -175,7 +194,7 @@
                                                   <td colspan="4">&amp;emsp;</td> 
                                                   <td colspan="2"/>
                                                 </tr>                             
-                                            </t>                                        
+                                            </t>                                                                                 
                                           </tbody>
                                         </table>
                                     </t>
@@ -216,57 +235,18 @@
                                                 </tr>                             
                                             </t> 
 
-                                            <tr>
-                                              <td class="text-center" style="border-bottom:1px solid;font-size:75%"> <span t-esc="o.get_prepared_by_rfp()"/> </td>
-                                              <td class="text-left" />
-                                              <td class="text-center" style="border-bottom:1px solid;font-size:75%"> <span t-esc="o.get_certified_by_rfp()"/> </td>
-                                            </tr>
-                                            <tr>
-                                              <td class="text-center" style="border-bottom:1px solid;font-size:75%">Prepaired By </td>
-                                              <td class="text-left"/>
-                                              <td class="text-center" style="border-bottom:1px solid;font-size:75%"> Certified Correct By </td>
-                                            </tr>
-
                                           </tbody>
                                         </table>    
-<!--
-                                        <table class="table table-bordered table-condensed">
-                                          <tbody>
-                                            
-                                            <tr>
-                                              <td class="text-left" />
-                                              <td class="text-center" style="border-bottom:1px solid;font-size:75%"> <span t-esc="o.get_prepared_by_rfp()"/> </td>
-                                              <td class="text-left" />
-                                              <td class="text-center" style="border-bottom:1px solid;font-size:75%"> <span t-esc="o.get_certified_by_rfp()"/> </td>
-                                              <td class="text-left" />
-                                            </tr>
-                                            <tr>
-                                              <td class="text-left" />
-                                              <td class="text-center" style="border-bottom:1px solid;font-size:75%">Prepaired By </td>
-                                              <td class="text-left"/>
-                                              <td class="text-center" style="border-bottom:1px solid;font-size:75%"> Certified Correct By </td>
-                                              <td class="text-left" />
-                                            </tr>
-
-                                          </tbody>
-
-                                        </table>
-                                        -->                                                                             
+                                                                    
                                     </t>                                    
                                     <t t-if="o.transaction_type=='charity'">
                                         <table class="table table-bordered table-condensed">
                                           <tbody>
-                                            
-                                            <tr>
-                                               <td class="text-center" style="font-size: 75%;">GUARANTEE NUMBER</td>
-                                              <td class="text-center" style="font-size: 75%;">DESCRIPTION</td>
-                                              <td class="text-center" style="font-size:75%;">ACCOUNT</td>
-                                              <td class="text-center" style="font-size:75%;">RIZE AMOUNT.</td>
-                                            </tr>
                                             <t t-foreach="o.invoice_line_ids" t-as="line">
-                                              <tr><td class="text-center" style="font-size:75%"><span t-field="line.guarantee_number"/> </td>
-                                                <td class="text-center" style="font-size:75%"><span t-field="line.name"/> </td>
-                                                <td class="text-center" style="font-size:75%"><span t-field="line.account_id"/></td>
+                                              <tr>
+                                                <td class="text-left" style="font-size:75%"><span t-field="line.guarantee_id.name"/> </td>
+                                                <td class="text-lef" style="font-size:75%"><span t-field="line.guarantee_patient_name_rel"/> </td>
+                                                <td >&amp;emsp;</td> 
                                                 <td class="text-right" style="font-size:75%"><span t-field="line.price_unit"/> </td>
                                               </tr>                                          
                                             </t> 
@@ -286,13 +266,64 @@
                                                   <td colspan="4">&amp;emsp;</td> 
                                                   <td colspan="2"/>
                                                 </tr>                             
-                                            </t>                                        
+                                            </t>         
+
+                                            <t t-if="o.submitted_uid">
+                                                <tr>
+                                                  <td class="text-left"> Certified Correct </td>
+                                                </tr> 
+                                                <tr>
+                                                  <t t-if="o.get_certified_by_sig()">
+                                                    <td class="text-left"> <img t-att-src="'data:image/png;base64,%s' % o.get_certified_by_sig()" width='130px' height='20px'/> </td>                                                
+                                                  </t>
+                                                  
+                                                </tr>
+                                                <tr>
+                                                  <td class="text-center"> <span t-esc="o.get_certified_by()"/> </td>
+                                                </tr>                                                  
+                                            </t>
+                                                                                                                     
                                           </tbody>
                                         </table>                                      
                                     </t>       
 
                                   </td>
-                                  <td colspan="6" class="text-left" style="border-top: 1px solid;border-bottom: 1px solid;border-left: 1px solid;border-right: 1px solid;font-size: 100%;"/>
+                                  <td colspan="6" class="text-left" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 100%;">
+                                        <t t-if="o.transaction_type=='charity'">
+                                            <table class="table table-bordered table-condensed">
+                                              <tbody>
+                                                <tr>
+
+                                                   <td class="text-left" style="font-size:100%">Php</td>      
+                                                  <td class="text-left" style="font-size:75%"><span t-field="o.amount_untaxed"/> </td>
+
+                                                </tr>
+
+                                                <t t-if="o.tax_line_ids">
+                                                      <tr>
+
+                                                         <td class="text-left" style="font-size:100%" colspan="2">Less</td>      
+
+                                                      </tr>  
+                                                      <t t-foreach="o.tax_line_ids" t-as="line">
+                                                        <tr>
+
+                                                          <td class="text-center" style="font-size:75%"><span t-field="line.name"/> </td>
+                                                          <td class="text-left" style="font-size:75%"><span t-field="line.amount"/> </td>
+                                                        </tr>                                          
+                                                      </t>      
+                                                      <tr>
+                                                        <td class="text-left" style="font-size:75%">Net</td>
+                                                        <td class="text-left" style="border-bottom:1px solid;font-size:75%"><span t-field="o.amount_total"/></td>
+                                                      </tr>                                                                                                                                                      
+                                                </t>
+
+                                                                                                                    
+                                              </tbody>
+                                            </table>                                             
+                                        </t>
+                                        
+                                  </td>
                               </tr>                               
                               
                               <tr>
@@ -356,7 +387,7 @@
                                   <td class="text-right" colspan="2" style="border-top: none;border-bottom: none;border-left: 1px solid;border-right: 1px solid;font-size: 75%;"><span t-field="o.amount_total"/></td>                                  
                                 </tr> 
 
-                                    <t t-set="loop" t-value="3"/>
+                                    <t t-set="loop" t-value="1"/>
 
                                     <t t-foreach="loop" t-as="doc_loop">
                                         <tr> 
@@ -552,6 +583,12 @@
             report_type="qweb-pdf"
             attachment_use="False"
             attachment="'voucher_'+(object.partner_id.name or '')+'_'+(object.name or '')+'.pdf'" />
+
+        <record id="action_print_disbursement_voucher_pcso" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="account_prize_claim_pcso.paperformat_disbursement_voucher"/>
+            <field name="attachment_use">False</field>
+        </record>
+
 
     </data>
 </openerp>

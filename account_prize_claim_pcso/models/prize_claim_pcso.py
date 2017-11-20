@@ -461,14 +461,28 @@ class account_invoice_prize_claim(models.Model):
 	    if self.status_history:
 	    	stats_his = self.status_history
 	    return self.write({'state': 'return', 'denied_uid': self._uid,
-	    				  'status_history': 'RETURNED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n *****REASON \n' + reason  + '\n' + stats_his})
+	    				  'status_history': 'RETURNED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n *****REASON \n' + reason  + '\n' + stats_his,
+	    				   'certified_correct_uid':False,
+							'certified_correct_2_uid':False,
+							'under_review_uid':False,
+							'approved_uid':False,
+							'submitted_uid':False,
+							'for_approval_uid':False,
+							})
 	@api.multi
 	def action_set_to_cancel(self, reason=''):
 	    stats_his =''
 	    if self.status_history:
 	    	stats_his = self.status_history
 	    return self.write({'state': 'cancel', 'cancelled_uid': self._uid,
-	    				  'status_history': 'CANCELLED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n *****REASON \n' + reason  + '\n' + stats_his + reason + '\n'})	
+	    				  'status_history': 'CANCELLED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n *****REASON \n' + reason  + '\n' + stats_his + reason + '\n',
+							'certified_correct_uid':False,
+							'certified_correct_2_uid':False,
+							'under_review_uid':False,
+							'approved_uid':False,
+							'submitted_uid':False,
+							'for_approval_uid':False,
+	    				  })	
 	    				  	
 	@api.onchange('amount_total')
 	def _onchange_amount_total(self):
@@ -496,6 +510,22 @@ class account_invoice_prize_claim(models.Model):
 		if self.origin:
 			rfp_obj = self.env['purchase.order'].search([('name', '=', self.origin)])
 			return rfp_obj.submitted_uid.name
+		return False
+
+	@api.multi
+	def get_certified_by(self):
+		self.ensure_one
+		if self.submitted_uid:
+			obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.submitted_uid.id)])
+			return obj_employee.name
+		return False
+
+	@api.multi
+	def get_certified_by_sig(self):
+		self.ensure_one
+		if self.submitted_uid:
+			obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.submitted_uid.id)])
+			return obj_employee.image_signature
 		return False
 
 
@@ -622,13 +652,25 @@ class account_invoice_prize_claim(models.Model):
 			ret_id = self.for_approval_uid.id or 0
 		else:
 			ret_id = self.under_review_uid.id or 0	
+
 		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', ret_id)])
 		if obj_employee:
+
 			if self.transaction_type == 'prize_claim':
 				if self.jackpot_prize == True:
 					return obj_employee.image_signature
-				else:				
+				else:		
 					return obj_employee.image_signature_for
+
+			elif self.transaction_type == 'charity':
+				if obj_employee.job_id.name == 'DEPARTMENT MANAGER':
+					return obj_employee.image_signature
+				else:
+					return obj_employee.image_signature_for
+			else:
+				return obj_employee.image_signature_for
+
+
 		else:
 			return False
 

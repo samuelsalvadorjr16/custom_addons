@@ -9,4 +9,5 @@ from . import hr_employee
 from . import account_journal
 from . import mail_tracking_value
 from . import res_users
+from . import pcso_transaction
 #from . import account_journal_dashboard
