@@ -493,7 +493,19 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_amount_in_words(self):
 		self.ensure_one()
-		return  self.env['account.payment']._get_check_amount_in_words(self.amount_total).upper() + ' ONLY'  #self.currency_id.amount_to_text(self.amount_total).upper() + ' ONLY'
+		return  self.env['account.payment']._get_check_amount_in_words(self.amount_total).upper() + ' ONLY'
+
+	@api.multi
+	def get_product_acct(self):
+		self.ensure_one
+		for inv in self.invoice_line_ids:
+			return [inv.account_id.name or False, inv.account_id.code or False, self.amount_untaxed or 0.00]
+	@api.multi
+	def filter_account_entry_view_status(self):
+		self.ensure_one
+		if self.state not in ['open', 'approved', 'for_approval']:
+			return False
+		return True
 
 
 	@api.multi
@@ -679,14 +691,14 @@ class account_invoice_prize_claim(models.Model):
 		self.ensure_one()
 		ret_id = 0
 		if self.transaction_type  == 'prize_claim':
-			ret_id = self.for_approval_uid.id or 0
+			ret_id = self.submitted_uid.id or 0
 		elif self.transaction_type  == 'charity':
-			ret_id = self.for_approval_uid.id or 0
+			ret_id = self.certified_correct_2_uid.id or 0
 		else:
-			ret_id = self.under_review_uid.id or 0	
+			ret_id = self.certified_correct_2_uid.id or 0	
 		obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', ret_id)])
 		if obj_employee:
-			return obj_employee.image_signature
+			return obj_employee.image_signature_initial
 		else:
 			return False
 
