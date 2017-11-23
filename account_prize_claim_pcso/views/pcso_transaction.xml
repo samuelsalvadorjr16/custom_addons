@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+       <record model="ir.ui.view" id="view_pcso_transaction_extend_form">
+            <field name="name">pcso.transaction.extend.form</field>
+            <field name="model">pcso.transaction</field>
+            <field name="inherit_id" ref="pcso.view_pcso_transaction_form"/>
+            <field name="arch" type="xml">            
+
+                <xpath expr="//page[2]" position="attributes">
+                        <attribute name="groups">account_prize_claim_pcso.pcso_rfp_sup_user_view</attribute>
+                </xpath>
+            </field>
+       </record>
+    </data>
+</odoo>

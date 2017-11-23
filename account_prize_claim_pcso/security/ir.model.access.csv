@@ -51,3 +51,5 @@ account.access_account_analytic_line_invoice_pcf,account.analytic.line invoice.p
 account_prize_claim_pcso.access_control_pcso_transaction_ccf,pcso.transaction.charity,pcso.model_pcso_transaction,account_prize_claim_pcso.ccf_group_processor,1,1,1,0
 account.access_account_payment_integration,account.payment,pcso.model_pcso_transaction,account.group_account_invoice,1,1,1,0
 account_prize_claim_pcso.imap_user,config.prize.branch.group.imap,account_prize_claim_pcso.model_config_prize_branch,account_prize_claim_pcso.ccf_group_processor,1,0,0,0
+account_prize_claim_pcso.access_control_pcso_assistance_ccf,pcso.assistance.charity,pcso.model_pcso_assistance,account_prize_claim_pcso.ccf_group_processor,1,0,0,0
+account.access_account_payment_assistance,pcso.assistance.account,pcso.model_pcso_assistance,account.group_account_invoice,1,0,0,0

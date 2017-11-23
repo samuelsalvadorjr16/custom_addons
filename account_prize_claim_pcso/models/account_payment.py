@@ -24,6 +24,7 @@ class account_payment(models.Model):
 	date_available = fields.Date('Date Available', track_visibility='onchange')
 	date_released = fields.Date('Date Released', track_visibility='onchange')
 	date_check_created = fields.Date('Date Check Created')
+	or_number = fields.Char('OR Number', size=50)
 
 	@api.multi
 	def do_print_checks(self):

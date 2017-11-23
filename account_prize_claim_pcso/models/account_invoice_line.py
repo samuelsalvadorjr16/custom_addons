@@ -65,12 +65,15 @@ class account_invoice_line_prize_claim(models.Model):
 			else:
 				return False
 
+	#@api.model
+	#def _default_assistance(self):
+
+
 	@api.model
 	def _filter_guarantee_number(self):
 		domain = [('state', '=', 'approve'),('is_released', '!=', True)]
 		guarantee_number_in_invoice = self.env['account.invoice.line'].search([('guarantee_id', '!=', False)])
 		list_guarantee = []
-		#raise Warning(1111)
 		if guarantee_number_in_invoice:
 			for line in guarantee_number_in_invoice:
 				list_guarantee.append(line.guarantee_id.id)
@@ -112,6 +115,8 @@ class account_invoice_line_prize_claim(models.Model):
 	guarantee_id = fields.Many2one('pcso.transaction', string="Guarantee Number", domain=_filter_guarantee_number)
 	guarantee_patient_name_rel = fields.Char(related='guarantee_id.patient_name', string='Patient Name')
 	guarantee_approve_amt_rel = fields.Float(related='guarantee_id.approved_assistance_amount', string='Approved Amount', digits=dp.get_precision('Charity Assistance Amt'))
+	guarantee_assistance_id_rel = fields.Char(related='guarantee_id.assistance_id', string='Assistance ID')
+	assistance_id = fields.Many2one('pcso.assistance', string='Assistance') 
 	guarantee_number = fields.Char('Guarantee Number')
 	patient_name = fields.Char('Patient Name')
 	approved_amount = fields.Float(string='Approved Amount', digits=dp.get_precision('Charity Assistance Amt'))
@@ -121,27 +126,24 @@ class account_invoice_line_prize_claim(models.Model):
 
 	@api.onchange('guarantee_approve_amt_rel')
 	def _approved_amount_onchange(self):
-		self.price_unit = self.guarantee_approve_amt_rel or 0 
+		self.price_unit = self.guarantee_approve_amt_rel or 0
+
+	@api.onchange('guarantee_assistance_id_rel')
+	def assistance_onchange(self):
+		if self.guarantee_assistance_id_rel:
+			assistance_obj=self.env['pcso.assistance'].search([('assistance_id','=', self.guarantee_assistance_id_rel)])
+			self.assistance_id = assistance_obj.id or False
+		return False
+	@api.onchange('assistance_id')
+	def assistanceId_onchange(self):
+		if self.assistance_id:
+			assistance_obj=self.env['pcso.assistance'].search([('id','=', self.assistance_id.id)])
+			self.guarantee_assistance_id_rel = assistance_obj.assistance_id
+
 
 	@api.onchange('guarantee_id')
 	def guarantee_change(self):
-		#Check Guarantee Number
-		#raise Warning(111)
-		#if self.guarantee_number:
-		#	pcso_obj =self.env['pcso.transaction'].search([('name', '=', self.guarantee_number)])
-		#	if pcso_obj:
-		#		raise Warning(pcso_obj)
-		#		self.guarantee_id = pcso_obj.id
-				#self.patient_name = self.guarantee_id.patient_name or 0.00
-				#self.approved_amount = self.guarantee_id.approved_assistance_amount or 0.00
-		#	else:
-		#		raise Warning('Guarantee Number Not Define')
 		if self.guarantee_id:
-			#guarantee_number_in_invoice = self.env['account.invoice.line'].search([('guarantee_id', '=', self.guarantee_id.id)])
-			#if guarantee_number_in_invoice:
-			#	self.guarantee_id = False
-				#raise Warning('Guarantee Number Already added in Other IMAP Claims.')
-			#else:
 			if self._context.get('branch_id'):
 				branch_obj = self.env['config.prize.branch'].search([('id', '=', self._context.get('branch_id'))])
 				self.account_analytic_id = branch_obj and branch_obj.analytic_account_id and branch_obj.analytic_account_id.id or False 

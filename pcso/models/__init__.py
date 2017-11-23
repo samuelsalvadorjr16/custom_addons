@@ -7,4 +7,4 @@ from . import pcso_assistance
 from . import pcso_specific_assistance
 from . import pcso_transaction
 from . import pcso_api_error_matrix
-# from . import res_partner
+from . import account
