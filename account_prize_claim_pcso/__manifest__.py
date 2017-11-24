@@ -26,6 +26,7 @@
         'security/voucher_security.xml',
         'security/ir.model.access.csv',
         'wizard/voucher_cancel_return.xml',
+        'wizard/account_invoice_transmittal_no.xml',
         'reports/disbursement_voucher.xml',
         'views/hr_employee.xml',
         'views/prize_charity_configuration.xml',

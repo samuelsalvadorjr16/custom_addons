@@ -99,6 +99,9 @@ class account_invoice_prize_claim(models.Model):
 	denied_uid = fields.Many2one('res.users', 'Denied By')
 	cancelled_uid = fields.Many2one('res.users', 'Cancelled By')
 
+	transmittal_charity_number = fields.Char('CPT No.')
+	transmittal_charity_account_number = fields.Char('APT No.')
+
 	@api.onchange('purchase_id')
 	def purchase_order_change(self):
 		#raise Warning(self.purchase_id.analytic_account_id)
@@ -456,7 +459,6 @@ class account_invoice_prize_claim(models.Model):
 
 	@api.multi
 	def action_set_to_return(self, reason):
-
 	    stats_his =''
 	    if self.status_history:
 	    	stats_his = self.status_history
@@ -702,7 +704,6 @@ class account_invoice_prize_claim(models.Model):
 		else:
 			return False
 
-
 	@api.multi
 	def get_approver_signatory_under_box_C(self):
 		self.ensure_one()
@@ -712,7 +713,6 @@ class account_invoice_prize_claim(models.Model):
 		else:
 			return False
 
-
 	@api.multi
 	def get_approver_name(self):
 		self.ensure_one()
@@ -721,8 +721,6 @@ class account_invoice_prize_claim(models.Model):
 			return obj_employee.name
 		else:
 			return self.approve_uid.name
-
-
 
 	@api.multi
 	def get_approver_acc_dig_sig(self):
@@ -791,6 +789,7 @@ class account_invoice_prize_claim(models.Model):
 	#    if self.env.ref('account_prize_claim_pcso.pcf_group_allow_to_submit') in self.env.user.groups_id and self.jackpot_prize:
 	#    	raise UserError(_("User has no rights to submit the Claim. Prize Claim is a Jackpot Prize."))
 	#    return to_open_invoices.invoice_validate_submit()
+
 
 	@api.model
 	def create(self, vals):

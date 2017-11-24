@@ -305,7 +305,7 @@
                                 <t t-if="not o.get_approver_signatory_under_box_A()">
                                     <div style="width:100px; height:30px; min-width:100px;min-height: 30px; background-color: transparent;" ></div>
                                 </t>
-                              </label><br/>
+                              </label><!--<br/>-->
                               <label><t t-esc="o.get_certified_under_box_A_by()" /></label><br/>
                               <label><t t-esc="o.get_submitter_position()" /></label>
                           </div>
@@ -413,7 +413,9 @@
                                                     <div style="width:100px; height:30px; min-width:100px;min-height: 30px; background-color: transparent;" ></div>
                                                 </t>
                                               </label>
+                                              <!--
                                               <br/>
+                                              -->
                                               <span t-esc="o.get_certified_under_box_B_jl_by()"/>
                                               <span t-field="o.create_date" t-field-options="{&quot;format&quot;: &quot;MM/dd/yyyy&quot;}"/>
                                           </div>
@@ -473,7 +475,7 @@
                                         </t>
                                       </label>
 
-                                      <br/>
+                                      <!--<br/>-->
 
                                       <span>
                                           <b><u>ALEXANDER F. BALUTAN</u></b><br/>
@@ -501,8 +503,8 @@
                                                 <tr>
                                                     <td>Amount</td>
                                                     <td>
-                                                        <small>
-                                                            <t t-esc="o.amount_total" t-esc-options="{'widget': 'monetary', 'display_currency': 'o.currency_id'}"/>
+                                                        <small>                                                            
+                                                            <t t-esc="o.amount_total"/>
                                                         </small>
                                                     </td>
                                                 </tr>

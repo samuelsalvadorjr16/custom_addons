@@ -204,7 +204,9 @@
             <field name="name">account.invoice.charity.claim.tree</field>
             <field name="model">account.invoice</field>
             <field name="arch" type="xml">
-                <tree decoration-info="state == 'draft'" decoration-muted="state in ['cancel','denied']" string="Invoice">
+                <tree decoration-info="state == 'draft'" decoration-muted="state in ['cancel','denied']" string="Invoice">                    
+                    <field name="transmittal_charity_number" string="CPT No."/>      
+                    <field name="transmittal_charity_account_number" string="APT No."/>      
                     <field name="draft_number_sequence" string="Reference Number"/>      
                     <field name="number"/>
                     <field name="partner_id" groups="base.group_user" string="Claimaint"/>

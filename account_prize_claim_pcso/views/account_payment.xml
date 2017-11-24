@@ -12,6 +12,7 @@
             <field name="arch" type="xml">
                 <field name="payment_transaction_id" position="before">                    
                     <field name="or_number"/>
+                    <field name="or_date"/>                    
                     <field name="date_available"/>
                     <field name="date_released"/>
                 </field>

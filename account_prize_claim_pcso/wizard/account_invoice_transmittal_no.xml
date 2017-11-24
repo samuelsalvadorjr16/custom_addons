@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!--  Transmittal Number Generation IMAP -->        
+        <record id="view_transmit_number_charity" model="ir.ui.view">
+            <field name="name">Transmittal Number</field>
+            <field name="model">account.invoice.transmittal_number</field>
+            <field name="arch" type="xml">
+                <form string="Transmittal Number Generation">
+                    <group string="This operation will create a transmittal number for Charity for the selected Claims."/>                  
+                    <footer>
+                        <button name="action_create_transmittal_charity_number" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>         
+
+        <!--  Transmittal Number IMAP Accounting -->
+        <record id="view_transmit_number_acct" model="ir.ui.view">
+            <field name="name">Transmittal Number</field>
+            <field name="model">account.invoice.transmittal_number</field>
+            <field name="arch" type="xml">
+                <form string="Transmittal Number Generation">
+                    <group string="This operation will create a transmittal number for Accounting for the selected Claims."/>                  
+                    <footer>
+                        <button name="action_create_transimittal_account_number" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>     
+
+
+        <act_window id="action_account_invoice_create_charity_trans_no"
+            multi="True"
+            key2="client_action_multi" name="Create CPT No."
+            res_model="account.invoice.transmittal_number" src_model="account.invoice"
+            view_mode="form" target="new" view_type="form" />
+
+        <record id="action_account_invoice_crt_char_trans_no_form" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_transmit_number_charity"/>
+            <field name="act_window_id" ref="action_account_invoice_create_charity_trans_no"/>
+        </record>     
+
+
+        <act_window id="action_account_invoice_create_charity_acct_trans_no"
+            multi="True"
+            key2="client_action_multi" name="Create APT No."
+            res_model="account.invoice.transmittal_number" src_model="account.invoice"
+            view_mode="form" target="new" view_type="form" />       
+
+        <record id="action_account_inv_crt_char_acct_trans_no_form" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_transmit_number_acct"/>
+            <field name="act_window_id" ref="action_account_invoice_create_charity_acct_trans_no"/>
+        </record>                 
+<!--
+        <record id="action_return_voucher_prize" model="ir.actions.act_window">
+            <field name="name">Return Prize Claim</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.voucher.cancel</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record> 
+
+        <record id="action_return_voucher_prize_form" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_return_voucher"/>
+            <field name="act_window_id" ref="action_return_voucher_prize"/>
+        </record>
+
+-->    
+
+
+
+    </data>
+</odoo>    

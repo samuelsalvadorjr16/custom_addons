@@ -32,7 +32,9 @@
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.view_account_invoice_filter"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='date']" position="after">
+                <xpath expr="//field[@name='number']" position="before">
+                     <field name="transmittal_charity_number" string="CPT No." groups='account_prize_claim_pcso.ccf_group_processor,account.group_account_invoice'/>
+                     <field name="transmittal_charity_account_number" string="APT No." groups='account_prize_claim_pcso.ccf_group_processor,account.group_account_invoice'/>                    
                      <field name="draft_number_sequence" string="Reference Number"/>
                 </xpath>                
             </field>

@@ -55,7 +55,7 @@ class account_invoice_line_prize_claim(models.Model):
 			#raise Warning(self._context.get('transaction_type'))
 			if self._context.get('transaction_type') == 'prize_claim':
 				#raise Warning(self.env.ref('account_prize_claim_pcso.product_product_prize_claim_cost'))
-				return  self.env.ref('account_prize_claim_pcso.product_product_prize_claim_cost') #2189 #self.env.ref('account_prize_claim_pcso.product_product_prize_claim_cost_product_template')
+				return  False #self.env.ref('account_prize_claim_pcso.product_product_prize_claim_cost') #2189 #self.env.ref('account_prize_claim_pcso.product_product_prize_claim_cost_product_template')
 			elif self._context.get('transaction_type') == 'charity':
 				product_obj = self.env['product.product'].search([('name', '=', 'IMAP'),('default_code', '=', '424-2A1')])
 				if product_obj:
