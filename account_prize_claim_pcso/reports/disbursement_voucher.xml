@@ -74,7 +74,7 @@
 
 
 
-                                      <label>REF NO.&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;<t t-esc="o.draft_number_sequence" /></label><br/>
+                                      <label>REF NO.&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;<t t-esc="o.draft_number_sequence" /></label><br/>
                                       <t t-if="o.number">
                                           <label>VOUCHER NO.&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;<t t-esc="o.number" /></label><br/>
                                       </t>
