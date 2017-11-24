@@ -71,8 +71,14 @@
                                       <label>DISBURSEMENT VOUCHER</label>
                                     </td>
                                     <td id="t1_td_2">
-                                      <label>REF NO.&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;<t t-esc="o.draft_number_sequence" /></label><br/>
-                                      <label>VOUCHER NO.&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;<t t-esc="o.number" /></label><br/>
+
+
+
+                                      <label>REF NO.&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;<t t-esc="o.draft_number_sequence" /></label><br/>
+                                      <t t-if="o.number">
+                                          <label>VOUCHER NO.&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;<t t-esc="o.number" /></label><br/>
+                                      </t>
+                                      
                                       <label><t t-esc="o.get_date_in_words()" /></label>
                                     </td>
                                 </tr>
@@ -330,6 +336,32 @@
                                 <tbody>
                                       <!--<t t-if="o.state not in [open,for_approval, approved]">-->
                                       <t t-if="not o.filter_account_entry_view_status()">
+
+
+
+                                        <t t-if="o.transaction_type == 'charity'">
+                                            <tr>
+                                              <td></td>
+                                              <td></td>
+                                              <td><span><t t-esc="o.get_product_acct()[0]" /></span></td>
+                                              <td><span><t t-esc="o.get_product_acct()[1]" /></span></td>
+                                              <td><span t-field="o.amount_untaxed"/></td>
+                                              <td>0.00</td>
+                                            </tr>                                           
+                                        </t>
+                                        <t t-if="o.transaction_type != 'charity'">
+                                          <t t-foreach="o.invoice_line_ids" t-as="line">
+                                            <tr>
+                                              <td></td>
+                                              <td></td>
+                                              <td><span t-field="line.account_id.name"/></td>
+                                              <td><span t-field="line.account_id.code"/></td>
+                                              <td><span t-field="line.price_unit"/></td>
+                                              <td>0.00</td>
+                                            </tr>  
+                                          </t>                                        
+                                        </t>
+
                                         <!--
                                         <t t-foreach="o.invoice_line_ids" t-as="line">
                                             <tr>
@@ -340,15 +372,7 @@
                                               <td><span t-field="line.price_unit"/></td>
                                               <td>0.00</td>
                                             </tr>
-                                        </t>-->
-                                        <tr>
-                                          <td></td>
-                                          <td></td>
-                                          <td><span><t t-esc="o.get_product_acct()[0]" /></span></td>
-                                          <td><span><t t-esc="o.get_product_acct()[1]" /></span></td>
-                                          <td><span t-field="o.amount_untaxed"/></td>
-                                          <td>0.00</td>
-                                        </tr>                                        
+                                        </t>-->                                       
                                         <t t-foreach="o.tax_line_ids" t-as="line">
                                             <tr>
                                               <td></td>
@@ -503,16 +527,18 @@
                                                 <tr>
                                                     <td>Amount</td>
                                                     <td>
-                                                        <small>                                                            
-                                                            <t t-esc="o.amount_total"/>
-                                                        </small>
+                                                        <t t-foreach="o.payment_ids" t-as="payment_lines">
+                                                            <small><span t-esc="payment_lines.amount"/></small>
+                                                        </t>  
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>Date</td>
                                                     <td>
                                                         <small>
-                                                            <t t-esc="o.transaction_date"/>
+                                                          <t t-foreach="o.payment_ids" t-as="payment_lines">
+                                                              <small><span t-esc="payment_lines.payment_date"/></small>
+                                                          </t>  
                                                         </small>
                                                     </td>
                                                 </tr>
@@ -521,11 +547,25 @@
                                                 </tr>
                                                 <tr>
                                                     <td>No.</td>
-                                                    <td></td>
+                                                    <td>
+
+                                                        <t t-foreach="o.payment_ids" t-as="payment_lines">
+                                                              <small>
+                                                                <span t-esc="payment_lines.or_number"/> 
+                                                              </small>
+                                                        </t>                                                      
+                                                
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <td>Amount</td>
-                                                    <td></td>
+                                                    <td>
+                                                      
+                                                        <t t-foreach="o.payment_ids" t-as="payment_lines">
+                                                            <small><span t-esc="payment_lines.amount"/></small>
+                                                        </t>   
+
+                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -537,7 +577,10 @@
                                           <small>
                                             <u> 
                                               &amp;emsp;
-                                              <span t-esc="o.get_amount_in_words()" class="text-center"/> 
+                                              <t t-if="o.payment_ids">                                                
+                                                  <span t-esc="o.get_amount_in_words()" class="text-center"/>   
+                                              </t>
+                                              
                                               &amp;emsp;
                                             </u>
                                           </small>
