@@ -29,6 +29,7 @@
         'wizard/voucher_cancel_return.xml',
         'wizard/account_invoice_transmittal_no.xml',
         'reports/disbursement_voucher.xml',
+        'reports/transmittal_reports.xml',
         'views/hr_employee.xml',
         'views/prize_charity_configuration.xml',
         'views/request_for_payment.xml',

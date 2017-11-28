@@ -52,16 +52,13 @@ class account_invoice_line_prize_claim(models.Model):
 	@api.model
 	def _default_product_id(self):
 		if self._context.get('transaction_type'):
-			#raise Warning(self._context.get('transaction_type'))
 			if self._context.get('transaction_type') == 'prize_claim':
-				#raise Warning(self.env.ref('account_prize_claim_pcso.product_product_prize_claim_cost'))
 				return  False #self.env.ref('account_prize_claim_pcso.product_product_prize_claim_cost') #2189 #self.env.ref('account_prize_claim_pcso.product_product_prize_claim_cost_product_template')
 			elif self._context.get('transaction_type') == 'charity':
 				product_obj = self.env['product.product'].search([('name', '=', 'IMAP'),('default_code', '=', '424-2A1')])
 				if product_obj:
 					return product_obj.id
 				return False
-				#return  self.env.ref('account_prize_claim_pcso.product_product_prize_claim_cost')
 			else:
 				return False
 
@@ -156,6 +153,10 @@ class account_invoice_line_prize_claim(models.Model):
 			guarantee_number_in_invoice = self.env['account.invoice.line'].search([('guarantee_id', '=', values.get('guarantee_id'))])
 			if guarantee_number_in_invoice:
 				raise Warning('GL %s Already added in Other IMAP Claims.' %(guarantee_number_in_invoice.guarantee_id.name))
+		if values.has_key('ticket_serial') and values.has_key('ticket_serial')  !=False:
+			ticket_serial_in_invoice = self.env['account.invoice.line'].search([('ticket_serial', '=', values.get('ticket_serial'))])
+			if ticket_serial_in_invoice:
+				raise  Warning('Ticket No. %s has Already added in Other Prize Claims.' %(ticket_serial_in_invoice[0].ticket_serial))
 		return super(account_invoice_line_prize_claim, self).write(values)
 	@api.model
 	def create(self, values):
@@ -163,6 +164,10 @@ class account_invoice_line_prize_claim(models.Model):
 			guarantee_number_in_invoice = self.env['account.invoice.line'].search([('guarantee_id', '=', values.get('guarantee_id'))])
 			if guarantee_number_in_invoice:
 				raise Warning('GL %s Already added in Other IMAP Claims.' %(guarantee_number_in_invoice.guarantee_id.name))
+		if values.has_key('ticket_serial') and values.has_key('ticket_serial')  !=False:
+			ticket_serial_in_invoice = self.env['account.invoice.line'].search([('ticket_serial', '=', values.get('ticket_serial'))])
+			if ticket_serial_in_invoice:
+				raise  Warning('Ticket No. %s has Already added in Other Prize Claims.' %(ticket_serial_in_invoice[0].ticket_serial))
 		return super(account_invoice_line_prize_claim, self).create(values)
 
 	@api.onchange('agency_id')
