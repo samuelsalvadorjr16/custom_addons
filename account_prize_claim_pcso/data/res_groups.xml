@@ -12,6 +12,7 @@
             <field name="name">Allow to Maintain Charity Fund Master Files</field>
             <field name="comment">User that can Maintain the Charity Fund Master Files.</field>
         </record>
+            
 
         <!-- Price Claim -->
         <record id="module_category_prize_claim" model="ir.module.category">
@@ -372,5 +373,21 @@
             <field name="name">Allow PCSO Other Settings View</field>
             <field name="comment">User to View some of the Technical Setting for PCSO.</field>
         </record>
+
+         <!-- EXTRA RIGHTS -->
+        <record id="ccf_group_allow_create_char_ap_trans_no" model="res.groups">
+             <field name="category_id" ref="base.module_category_extra"/>
+              <field name="implied_ids" eval="[(4, ref('ccf_group_processor'))]"/>
+            <field name="name">Allow Generate IMAP Transmittal Number (Accounting)</field>
+            <field name="comment">User that Generate a Transmittal Number For Accounting.</field>
+        </record>     
+
+        <record id="ccf_group_allow_create_char_trans_no" model="res.groups">
+            <field name="category_id" ref="base.module_category_extra"/>
+            <field name="implied_ids" eval="[(4, ref('ccf_group_processor'))]"/>
+            <field name="name">Allow Generate IMAP Transmittal Number</field>
+            <field name="comment">User that Generate a Transmittal Number For IMAP.</field>
+        </record>  
+
 </odoo>
 

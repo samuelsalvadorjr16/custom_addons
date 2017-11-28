@@ -54,32 +54,43 @@
         <template id="print_disbursment_voucher">
             <t t-call="report.html_container">
                 <t t-foreach="docs" t-as="o">
-                    <!--
-                    <div t-foreach="pages(o)" t-as="page" class="page ckus_page ckus_top_page_mactycoon" t-attf-style="top: {{ o.company_id.us_check_margin_top }}in; left: {{ o.company_id.us_check_margin_left }}in;">
-                    -->
-                    <!--<t t-call="report.basic_layout">  -->
-                    <!--<t t-call="report.layout">-->
-
-
                     <div class="page" id="voucher_print">
 
                         <table class="table table-bordered">
                             <tbody>
                                 <tr>
-                                    <td id="t1_td_1">
-                                      <label>Republic of the Philippines</label><br/>
-                                      <label>DISBURSEMENT VOUCHER</label>
+                                    <td id="t2_td_1">
+                                      <div class="text-left">
+                                          <small>General Form No. 5(A)</small><br/>
+                                          <small>Revised August 1992</small><br/>
+                                      </div>    
+                                      <div class="text-center">
+                                          <label>Republic of the Philippines</label>
+                                      </div>
+                                      <div class="text-center">
+                                          <label>DISBURSEMENT VOUCHER</label>
+                                      </div>                                   
                                     </td>
                                     <td id="t1_td_2">
 
+                                      <div class="row">
+                                          <div class="text-left col-xs-4">
+                                            <label>REF NO.</label>
+                                          </div>
+                                          <div class="text-right col-xs-8">
+                                            <label><t t-esc="o.draft_number_sequence" /></label>
+                                          </div>
+                                      </div>
 
 
-                                      <label>REF NO.&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;<t t-esc="o.draft_number_sequence" /></label><br/>
-                                      <t t-if="o.number">
-                                          <label>VOUCHER NO.&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;<t t-esc="o.number" /></label><br/>
-                                      </t>
-                                      
-                                      <label><t t-esc="o.get_date_in_words()" /></label>
+                                      <div class="row">
+                                          <div class="text-left col-xs-6">
+                                            <label>VOUCHER NO.</label>
+                                          </div>
+                                          <div class="text-right col-xs-6">
+                                            <label><t t-esc="o.number" /></label>
+                                          </div>
+                                      </div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -97,6 +108,9 @@
                                       </div>
                                     </td>
                                     <td>
+                                      <div class="text-center">
+                                        <label><t t-esc="o.get_date_in_words()" /></label>
+                                      </div>
                                     </td>
                                 </tr>
                                 <tr>
@@ -143,10 +157,10 @@
                                     <td>
                                       <div id="particulars_segment" class="text-left">
                                         <t t-if="o.transaction_type=='prize_claim'">
-                                            <label>To Payment as per Prize details:</label>
+                                            <label>To Payment of Prizes as per Prize details:</label>
                                         </t>
                                         <t t-if="o.transaction_type=='charity'">
-                                            <label>Financial Assistance for the medical expenses of patien(s) (IMAP) and other supporting papers hereto attached.</label>
+                                            <label>Financial Assistance for the medical expenses of patient(s) (IMAP) and other supporting papers hereto attached.</label>
                                         </t>                                        
                                         
 
@@ -227,7 +241,7 @@
                                                         <label>Certified Correct</label>
                                                       </small><br/>
 
-                                                      <label>
+                                                      <label style="margin-bottom:0">
                                                         <t t-if="o.get_certified_by_sig()">
                                                             <img t-att-src="'data:image/png;base64,%s' % o.get_certified_by_sig()" style="width:200px;height:60px;"/>
                                                         </t>
@@ -298,18 +312,21 @@
 
 
                         <div id="certification_segment_2" class="col-xs-12">
+                          <div class="text-center" style="width: 20px; position:absolute; top:0px; left: 0px; border: 1px solid black">
+                              <label>A</label>
+                          </div>                          
                           <div class="col-xs-6 text-center">
-                              <label>CERTIFIED: Expenses, Cash Advance, necessar, lawful and incurred under mydirect supervision.</label>
+                              <label>CERTIFIED: Expenses, Cash Advance, necessar, lawful and incurred under my direct supervision.</label>
                           </div>
                           <div class="col-xs-6 text-center">
                               
 
-                              <label>
+                              <label style="margin-bottom:0">
                                 <t t-if="o.get_approver_signatory_under_box_A()">
-                                    <img t-att-src="'data:image/png;base64,%s' % o.get_approver_signatory_under_box_A()" style="width:200px;height:60px;"/>
+                                    <img t-att-src="'data:image/png;base64,%s' % o.get_approver_signatory_under_box_A()" style="width:200px;height:60px;"/><br/>
                                 </t>
                                 <t t-if="not o.get_approver_signatory_under_box_A()">
-                                    <div style="width:100px; height:30px; min-width:100px;min-height: 30px; background-color: transparent;" ></div>
+                                    <div style="width:100px; height:30px; min-width:100px;min-height: 30px; background-color: transparent;" ></div><br/>
                                 </t>
                               </label><!--<br/>-->
                               <label><t t-esc="o.get_certified_under_box_A_by()" /></label><br/>
@@ -318,6 +335,9 @@
                         </div>
 
                         <div id="accounting_entries_title" class="text-center col-xs-12">
+                            <div class="text-center" style="width: 20px; position:absolute; top:0px; left: 0px; border: 1px solid black">
+                                <label>B</label>
+                            </div>                          
                             <label>ACCOUNTING ENTRIES</label>
                         </div>
 
@@ -429,7 +449,7 @@
                                               </small>
                                           </div>
                                           <div class="col-xs-8">
-                                              <label style="">
+                                              <label style="margin-bottom:0">
                                                 <t t-if="o.get_approver_signatory_under_box_B_jl_by()">
                                                     <img t-att-src="'data:image/png;base64,%s' % o.get_approver_signatory_under_box_B_jl_by()" style="width:200px;height:60px;"/>
                                                 </t>
@@ -463,7 +483,7 @@
                                           </small><br/>
 
                                           <span>
-                                              <label>
+                                              <label style="margin-bottom:0">
                                                 <t t-if="o.get_approver_signatory_under_box_B()">
                                                     <img t-att-src="'data:image/png;base64,%s' % o.get_approver_signatory_under_box_B()" style="width:200px;height:60px;"/>
                                                 </t>
@@ -478,7 +498,10 @@
 
                                       </div>
                                   </td>
-                                  <td class="text-center">
+                                  <td class="text-center" style="position:relative">
+                                      <div class="text-center" style="width: 20px; position:absolute; top:0px; left: 0px; border: 1px solid black">
+                                          <label>C</label>
+                                      </div>                                    
                                       <small>APPROVED For: <u><span t-field="o.amount_total"/></u></small><br/><br/>
 
                                       <small>
@@ -490,7 +513,7 @@
                                       <small>AMOUNT IN WORDS</small><br/><br/>
 
 
-                                      <label>
+                                      <label style="margin-bottom:0">
                                         <t t-if="o.get_approver_signatory_under_box_C()">
                                             <img t-att-src="'data:image/png;base64,%s' % o.get_approver_signatory_under_box_C()" style="width:200px;height:60px;"/>
                                         </t>
@@ -498,10 +521,11 @@
                                             <div style="width:100px; height:30px; min-width:100px;min-height: 30px; background-color: transparent;" ></div>
                                         </t>
                                       </label>
-
-                                      <!--<br/>-->
-
-                                      <span>
+                                      <!--<t t-if="not o.get_approver_signatory_under_box_C()">
+                                          <br/>
+                                      </t> -->
+                                      <br/>
+                                      <span class="text-center">
                                           <b><u>ALEXANDER F. BALUTAN</u></b><br/>
                                           <small><small>PRINTED NAME AND SIGNATURE OF THE APPROVING OFFICER/REPRESENTATIVE</small></small>
                                       </span>
@@ -520,7 +544,9 @@
                                                     <td>No.</td>
                                                     <td>
                                                       <t t-foreach="o.payment_ids" t-as="payment_lines">
+                                                         <t t-if="payment_lines.check_number">
                                                           <small><t t-esc="payment_lines.journal_id.bank_id.name" /> - <t t-esc="payment_lines.check_number" /></small>
+                                                         </t>
                                                       </t>
                                                     </td>
                                                 </tr>
@@ -528,7 +554,9 @@
                                                     <td>Amount</td>
                                                     <td>
                                                         <t t-foreach="o.payment_ids" t-as="payment_lines">
-                                                            <small><span t-esc="payment_lines.amount"/></small>
+                                                          <t t-if="payment_lines.check_number">
+                                                            <small><span t-field="payment_lines.amount"/></small>
+                                                          </t>
                                                         </t>  
                                                     </td>
                                                 </tr>
@@ -537,7 +565,9 @@
                                                     <td>
                                                         <small>
                                                           <t t-foreach="o.payment_ids" t-as="payment_lines">
-                                                              <small><span t-esc="payment_lines.payment_date"/></small>
+                                                            <t t-if="payment_lines.check_number">
+                                                              <span t-field="payment_lines.payment_date"/>
+                                                            </t>
                                                           </t>  
                                                         </small>
                                                     </td>
@@ -550,9 +580,11 @@
                                                     <td>
 
                                                         <t t-foreach="o.payment_ids" t-as="payment_lines">
-                                                              <small>
-                                                                <span t-esc="payment_lines.or_number"/> 
-                                                              </small>
+                                                              <t t-if="payment_lines.or_number">
+                                                                <small>
+                                                                  <span t-esc="payment_lines.or_number"/> 
+                                                                </small>
+                                                              </t>
                                                         </t>                                                      
                                                 
                                                     </td>
@@ -562,7 +594,9 @@
                                                     <td>
                                                       
                                                         <t t-foreach="o.payment_ids" t-as="payment_lines">
-                                                            <small><span t-esc="payment_lines.amount"/></small>
+                                                          <t t-if="payment_lines.or_number">
+                                                            <small><span t-field="payment_lines.amount"/></small>
+                                                          </t>
                                                         </t>   
 
                                                     </td>

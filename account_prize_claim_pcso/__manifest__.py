@@ -25,6 +25,7 @@
         'data/res_groups.xml',
         'security/voucher_security.xml',
         'security/ir.model.access.csv',
+        'security/ir.sequence.csv',
         'wizard/voucher_cancel_return.xml',
         'wizard/account_invoice_transmittal_no.xml',
         'reports/disbursement_voucher.xml',

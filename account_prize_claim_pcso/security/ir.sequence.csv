@@ -1,0 +1,4 @@
+id,name,prefix,padding
+__export__.ir_sequence_18,Charity Fund,CF%(range_y)s%(month)s,6
+__export__.ir_sequence_15,Prize Fund,PF%(range_y)s%(month)s,6
+__export__.ir_sequence_9,Vendor Bills,OF%(range_y)s%(month)s,6

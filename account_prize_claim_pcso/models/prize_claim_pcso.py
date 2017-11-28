@@ -86,21 +86,23 @@ class account_invoice_prize_claim(models.Model):
 
 
 	progress_state = fields.Integer('Progress', default=1)
-	amount_in_words = fields.Char('Amount in Words')
+	amount_in_words = fields.Char('Amount in Words',copy=False)
 
-	prepared_by_uid = fields.Many2one('res.users', 'Prepared By')
-	certified_correct_uid = fields.Many2one('res.users', 'Certified Correct By')
-	certified_correct_2_uid = fields.Many2one('res.users', 'Endorsed By')
-	under_review_uid = fields.Many2one('res.users', 'Endorsed By')
-	for_approval_uid = fields.Many2one('res.users', 'Approval By')
+	prepared_by_uid = fields.Many2one('res.users', 'Prepared By', copy=False)
+	certified_correct_uid = fields.Many2one('res.users', 'Certified Correct By',copy=False)
+	certified_correct_2_uid = fields.Many2one('res.users', 'Endorsed By',copy=False)
+	under_review_uid = fields.Many2one('res.users', 'Endorsed By',copy=False)
+	for_approval_uid = fields.Many2one('res.users', 'Approval By',copy=False)
 
-	approve_uid = fields.Many2one('res.users', 'Approved By')
-	submitted_uid = fields.Many2one('res.users', 'Submitted By')
-	denied_uid = fields.Many2one('res.users', 'Denied By')
-	cancelled_uid = fields.Many2one('res.users', 'Cancelled By')
+	create_voucher_date =fields.Date('Creation of Voucher Number Date', copy=False)
 
-	transmittal_charity_number = fields.Char('CPT No.')
-	transmittal_charity_account_number = fields.Char('APT No.')
+	approve_uid = fields.Many2one('res.users', 'Approved By',copy=False)
+	submitted_uid = fields.Many2one('res.users', 'Submitted By',copy=False)
+	denied_uid = fields.Many2one('res.users', 'Denied By',copy=False)
+	cancelled_uid = fields.Many2one('res.users', 'Cancelled By',copy=False)
+
+	transmittal_charity_number = fields.Char('CPT No.',copy=False)
+	transmittal_charity_account_number = fields.Char('APT No.',copy=False)
 
 	@api.onchange('purchase_id')
 	def purchase_order_change(self):
@@ -198,7 +200,7 @@ class account_invoice_prize_claim(models.Model):
 	    if self.status_history:
 	    	stats_his = self.status_history
 
-	    res= self.write({'state': 'under_2nd_review', 'under_review_uid': self._uid, 
+	    res= self.write({'state': 'under_2nd_review', 'under_review_uid': self._uid, 'create_voucher_date': fields.Date.today(), 
 						   'status_history': 'ENDORSED FOR 2ND REVIEW : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + stats_his or ''})
 	    if res:
 	    	self.action_invoice_open()
@@ -326,7 +328,7 @@ class account_invoice_prize_claim(models.Model):
 	    stats_his = ''
 	    if self.status_history:
 	    	stats_his = self.status_history
-	    res= self.write({'state': 'for_approval', 'for_approval_uid': self._uid, 
+	    res= self.write({'state': 'for_approval', 'for_approval_uid': self._uid, 'create_voucher_date': fields.Date.today(),
 						   'status_history': 'ENDORSED FOR APPROVAL : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + stats_his or ''})
 	    if res:
 	    	self.action_invoice_open()
@@ -428,7 +430,7 @@ class account_invoice_prize_claim(models.Model):
 	    	elif self.amount_total >= 100000.00:
 	    		if self.env.ref('account_prize_claim_pcso.pcf_group_allow_to_approve_non_jack_above_100k_for_approv') not in self.env.user.groups_id:
 	    			raise UserError(_("User has no rights to Endorse the Claim."))
-	    res= self.write({'state': 'for_approval', 'for_approval_uid': self._uid,
+	    res= self.write({'state': 'for_approval', 'for_approval_uid': self._uid,'create_voucher_date': fields.Date.today(),
 	    				  'status_history': 'ENDORSED FOR APPROVAL : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + self.status_history or ''})
 	    if res:
 	    	self.action_invoice_open()
@@ -495,7 +497,7 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_amount_in_words(self):
 		self.ensure_one()
-		return  self.env['account.payment']._get_check_amount_in_words(self.amount_total).upper() + ' ONLY'
+		return  self.env['account.payment']._get_check_amount_in_words(self.amount_total).upper() + ' PESOS '+ ' ONLY'
 
 	@api.multi
 	def get_product_acct(self):
@@ -761,7 +763,11 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_submitter_position(self):
 		self.ensure_one()
-		return "DEPARTMENT MANAGER"
+		if self.transaction_type =='prize_claim':
+			return "OIC MANAGER"
+		else:
+			return "DEPARTMENT MANAGER"
+
 
 		#obj_employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.certified_correct_uid.id or 0)])
 		#if obj_employee:
@@ -772,8 +778,11 @@ class account_invoice_prize_claim(models.Model):
 	@api.multi
 	def get_date_in_words(self):
 		self.ensure_one()
-		new_formatted_date = datetime.strptime(self.transaction_date, '%Y-%m-%d')
-		return new_formatted_date.strftime('%B %d,%Y')
+		if self.create_voucher_date:
+			new_formatted_date = datetime.strptime(self.create_voucher_date, '%Y-%m-%d')
+			return new_formatted_date.strftime('%B %d,%Y')
+		else:
+			return False
 
 
 

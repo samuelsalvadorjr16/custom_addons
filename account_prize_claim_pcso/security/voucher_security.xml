@@ -80,7 +80,9 @@
                                              ref('ccf_group_allow_to_approve_above_100k_bel_200k_for_rev2'), 
                                              ref('ccf_group_allow_to_approve_above_200k_for_rev1'),
                                              ref('ccf_group_allow_to_approve_above_200k_for_rev2'),
-                                             ref('ccf_group_allow_to_submit_pcf_claim')])]"/>
+                                             ref('ccf_group_allow_to_submit_pcf_claim'),
+                                             ref('ccf_group_allow_create_char_ap_trans_no'),
+                                             ref('ccf_group_allow_create_char_trans_no')])]"/>
             <field name="domain_force">[('transaction_type','=','charity')]</field>
             <field name="active" eval="True"/>
             <field name="perm_read" eval="True"/>
