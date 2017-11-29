@@ -293,7 +293,16 @@
                                                         <tr>
 
                                                           <td class="text-center" style="font-size:100%"><span t-field="line.name"/> </td>
-                                                          <td class="text-right" style="font-size:100%"><span t-field="line.amount"/> </td>
+                                                          <t t-if="line.amount &lt; 0">
+                                                            <t t-set="amt" t-value="float(line.amount * -1)"/>
+
+                                                            <td class="text-right" style="font-size:100%"><span t-esc="amt" t-esc-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/> </td>
+                                                          </t>
+                                                          <t t-if="line.amount &gt; 0">
+                                                            <td class="text-right" style="font-size:100%"><span t-field="line.amount"/> </td>
+                                                          </t>
+
+                                                              
                                                         </tr>                                          
                                                       </t>      
                                                       <tr>
@@ -418,7 +427,7 @@
 
                                       <t t-if="o.filter_account_entry_view_status()">
                                         <t t-foreach="o.move_id" t-as="move_id_line">
-                                          <t t-foreach="move_id_line.line_ids.sorted(key=lambda r: r.debit, reverse=True)" t-as="j_line">
+                                          <t t-foreach="move_id_line.line_ids.sorted(key=lambda r: (r.debit, r.id), reverse=True)" t-as="j_line">
                                             <tr>
                                               <td></td>
                                               <td></td>

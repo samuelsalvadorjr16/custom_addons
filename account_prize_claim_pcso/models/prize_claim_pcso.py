@@ -104,6 +104,25 @@ class account_invoice_prize_claim(models.Model):
 	transmittal_charity_number = fields.Char('CPT No.',copy=False)
 	transmittal_charity_account_number = fields.Char('APT No.',copy=False)
 
+
+	@api.one
+	@api.depends('invoice_line_ids.price_subtotal', 'tax_line_ids.amount', 'currency_id', 'company_id', 'date_invoice', 'type')
+	def _compute_amount(self):
+		super(account_invoice_prize_claim, self)._compute_amount()
+		#self.amount_untaxed = sum(line.price_subtotal for line in self.invoice_line_ids)
+		#self.amount_tax = sum(round_curr(line.amount) for line in self.tax_line_ids)
+		if self.transaction_type == 'charity':
+			if self.amount_tax > 0:
+				self.amount_untaxed = self.amount_untaxed - self.amount_tax
+				amount_untaxed_signed = self.amount_untaxed
+				amount_total_company_signed = self.amount_total
+				sign = self.type in ['in_refund', 'out_refund'] and -1 or 1
+				self.amount_untaxed_signed = amount_untaxed_signed * sign
+				self.amount_total = self.amount_untaxed + self.amount_tax
+				self.amount_total_signed = self.amount_total * sign
+				self.amount_total_company_signed = amount_total_company_signed * sign
+
+
 	@api.onchange('purchase_id')
 	def purchase_order_change(self):
 		#raise Warning(self.purchase_id.analytic_account_id)
@@ -492,12 +511,19 @@ class account_invoice_prize_claim(models.Model):
 	def _onchange_amount_total(self):
 		if hasattr(super(account_invoice_prize_claim, self), '_onchange_amount'):
 			super(account_invoice_prize_claim, self)._onchange_amount()
-		self.amount_in_words =  self.env['account.payment']._get_check_amount_in_words(self.amount_total) #self.currency_id.amount_to_text(self.amount_total)
+		if self.transaction_type == 'charity':
+			self.amount_in_words =  self.env['account.payment']._get_check_amount_in_words(self.amount_untaxed) #self.currency_id.amount_to_text(self.amount_total)
+		else:
+			self.amount_in_words =  self.env['account.payment']._get_check_amount_in_words(self.amount_total) #self.currency_id.amount_to_text(self.amount_total)
 
 	@api.multi
 	def get_amount_in_words(self):
 		self.ensure_one()
-		return  self.env['account.payment']._get_check_amount_in_words(self.amount_total).upper() + ' PESOS '+ ' ONLY'
+		if self.transaction_type == 'charity':
+			return  self.env['account.payment']._get_check_amount_in_words(self.amount_untaxed).upper() + ' PESOS '+ ' ONLY'
+		else:
+			return  self.env['account.payment']._get_check_amount_in_words(self.amount_total).upper() + ' PESOS '+ ' ONLY'
+
 
 	@api.multi
 	def get_product_acct(self):
@@ -840,20 +866,33 @@ class account_invoice_prize_claim(models.Model):
 			if self.env.ref('account_prize_claim_pcso.pcf_group_allow_create_jackpot') not in self.env.user.groups_id:
 				raise UserError(_("User has no access to Create the Claim. Prize Claim is a Jackpot Prize."))
 		res = super(account_invoice_prize_claim, self).create(vals)
-
 		return res
 
-	#@api.one
-	#def action_to_submit_prize_claim_jackpot(self):
-	    # lots of duplicate calls to action_invoice_open, so we remove those already open
-	#    to_open_invoices = self.filtered(lambda inv: inv.state != 'open')
-	#    if to_open_invoices.filtered(lambda inv: inv.state != 'draft'):
-	#        raise UserError(_("Prize Claim must be in draft state in order to validate it."))
-	#    if to_open_invoices.filtered(lambda inv: inv.amount_total < 0):
-	#        raise UserError(_("You cannot validate a Prize Claim with a negative total amount. You should create a credit note instead."))
-	#    if self.env.ref('account_prize_claim_pcso.pcf_group_allow_to_submit') in self.env.user.groups_id and self.amount_total >=1000000.00:
-	 #   	raise UserError(_("User has no rights to submit the Claim. Prize Claim is a Jackpot Prize."))
-	#    return to_open_invoices.invoice_validate_submit()
+
+	#@api.multi
+	#def compute_invoice_totals(self, company_currency, invoice_move_lines):
+	#	_logger.info('START HERE ----------------------------------------------------')
+	#	for inv in invoice_move_lines:
+	#		_logger.info(inv)
+	#	_logger.info('END HERE ----------------------------------------------------')
+		#raise Warning(invoice_move_lines)
+	#	total, total_currency, invoice_move_lines= super(account_invoice_prize_claim, self).compute_invoice_totals(company_currency, invoice_move_lines)
+		#raise Warning(total)
+		#if self.transaction_type == 'charity':
+		#	total_tax = 0.00
+		#	total_amt = 0.00
+		#	for line in invoice_move_lines:
+		#		if line.has_key('invoice_tax_line_id'):
+		#			total_tax += line['price']
+		#
+		#	if total <0:
+		#		total_amt =  total - ((total_tax *2)* -1)
+		#	else:
+		#		total_amt =  total - (total_tax *2)
+		#	total = total_amt
+		#raise Warning(total_amt)
+	#	return total, total_currency, invoice_move_lines
+		
 
 	@api.multi
 	def action_to_approved_prize_claim(self):

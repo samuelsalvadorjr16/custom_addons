@@ -10,8 +10,8 @@ class AccountTax(models.Model):
 		if self.amount_type == 'base_price':
 			if self.price_include == True:
 				base_amount = price_unit / 1.12
-				return base_amount * (self.amount/100)
+				return (base_amount * (self.amount/100) ) * -1
 			else:
 				base_amount = price_unit
-				return base_amount * (self.amount/100)
+				return (base_amount * (self.amount/100) )* -1
 		return res
