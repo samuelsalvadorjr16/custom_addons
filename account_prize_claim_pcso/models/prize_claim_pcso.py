@@ -504,10 +504,16 @@ class account_invoice_prize_claim(models.Model):
 		self.ensure_one
 		for inv in self.invoice_line_ids:
 			return [inv.account_id.name or False, inv.account_id.code or False, self.amount_untaxed or 0.00]
+
+	#@api.multi
+	#def get_summarize_acct(self):
+	#	self.ensure_one
+	#	for 
+
 	@api.multi
 	def filter_account_entry_view_status(self):
 		self.ensure_one
-		if self.state not in ['open', 'approved', 'for_approval']:
+		if self.state not in ['open', 'approved', 'for_approval','paid']:
 			return False
 		return True
 
