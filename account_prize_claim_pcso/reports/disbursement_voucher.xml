@@ -373,12 +373,17 @@
                                             <tr>
                                               <td></td>
                                               <td></td>
+
                                               <td><span><t t-esc="o.get_product_acct()[0]" /></span></td>
                                               <td><span><t t-esc="o.get_product_acct()[1]" /></span></td>
                                               <td><span t-field="o.amount_untaxed"/></td>
                                               <td>0.00</td>
                                             </tr>                                           
                                         </t>
+
+
+
+
                                         <t t-if="o.transaction_type != 'charity'">
                                           <t t-foreach="o.invoice_line_ids" t-as="line">
                                             <tr>
@@ -407,10 +412,20 @@
                                             <tr>
                                               <td></td>
                                               <td></td>
+
                                               <td><span t-field="line.account_id.object_code_id.name"/></td>
                                               <td><span t-field="line.account_id.object_code_id.code"/></td>
-                                              <td><span class="text-right" t-field="line.amount"/></td>   
-                                              <td>0.00</td>                                                                                         
+                                              <t t-if="line.amount &lt; 0">
+                                                  <t t-set="amt" t-value="float(line.amount * -1)"/>
+                                                  <td>0.00</td>         
+                                                  <td><span class="text-left" t-esc="amt" t-esc-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/></td>   
+
+                                              </t>
+                                              <t t-if="line.amount &gt;= 0">
+                                                  <td><span class="text-right" t-field="line.amount"/></td>   
+                                                  <td>0.00</td>                                                
+                                              </t>                                                                                            
+                                                                                         
                                             </tr>
                                         </t>
 

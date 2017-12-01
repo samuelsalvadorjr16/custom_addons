@@ -11,5 +11,16 @@
                 </field>
             </field>
         </record>
+
+       <record model="ir.ui.view" id="pcso_account_tax_form_extend">
+            <field name="name">account.tax.form.extend</field>
+            <field name="model">account.tax</field>
+            <field name="inherit_id" ref="account.view_tax_form"/>
+            <field name="arch" type="xml">
+                <field name="price_include" position="after">
+                    <field name="is_custom_price_included" />
+                </field>
+            </field>
+        </record>        
     </data>
 </odoo>
