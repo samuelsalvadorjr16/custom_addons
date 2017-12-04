@@ -292,7 +292,7 @@
                                                       <t t-foreach="o.tax_line_ids" t-as="line">
                                                         <tr>
 
-                                                          <td class="text-center" style="font-size:100%"><span t-field="line.name"/> </td>
+                                                          <td class="text-center" style="font-size:100%"><span t-field="line.tax_id.amount" t-field-options='{"widget": "integer"}'/> % </td>
                                                           <t t-if="line.amount &lt; 0">
                                                             <t t-set="amt" t-value="float(line.amount * -1)"/>
 
@@ -377,7 +377,7 @@
                                               <td><span><t t-esc="o.get_product_acct()[0]" /></span></td>
                                               <td><span><t t-esc="o.get_product_acct()[1]" /></span></td>
                                               <td><span t-field="o.amount_untaxed"/></td>
-                                              <td>0.00</td>
+                                              <td></td>
                                             </tr>                                           
                                         </t>
 
@@ -392,7 +392,7 @@
                                               <td><span t-field="line.account_id.name"/></td>
                                               <td><span t-field="line.account_id.code"/></td>
                                               <td><span t-field="line.price_unit"/></td>
-                                              <td>0.00</td>
+                                              <td></td>
                                             </tr>  
                                           </t>                                        
                                         </t>
@@ -417,7 +417,7 @@
                                               <td><span t-field="line.account_id.object_code_id.code"/></td>
                                               <t t-if="line.amount &lt; 0">
                                                   <t t-set="amt" t-value="float(line.amount * -1)"/>
-                                                  <td>0.00</td>         
+                                                  <td></td>         
                                                   <td><span class="text-left" t-esc="amt" t-esc-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/></td>   
 
                                               </t>
@@ -434,8 +434,11 @@
                                               <td class="text-left"></td>
                                               <td class="text-left" ><span t-field="o.account_id.name"/></td>
                                               <td class="text-left" ><span t-field="o.account_id.code"/></td>
-                                              <td class="text-right">0.00</td>
-                                              <td class="text-right"><span t-field="o.amount_total"/></td>                                  
+                                              <td class="text-right"></td>
+                                              <t t-if="o.amount_total &lt;=0">
+                                                <td class="text-right"><span t-field="o.amount_total"/></td>                                  
+                                              </t>
+                                                
                                             </tr> 
                                       </t>
 
@@ -448,8 +451,20 @@
                                               <td></td>
                                               <td><span t-field="j_line.account_id.name"/></td>
                                               <td><span t-field="j_line.account_id.code"/></td>
-                                              <td><span t-field="j_line.debit"/></td>
-                                              <td><span t-field="j_line.credit"/></td>
+                                              <t t-if="j_line.debit !=0">
+                                                <td><span t-field="j_line.debit"/></td>
+                                              </t>
+                                              <t t-if="j_line.debit==0">
+                                                <td></td>
+                                              </t>                             
+
+                                              <t t-if="j_line.credit !=0">
+                                                <td><span t-field="j_line.credit"/></td>
+                                              </t>
+                                              <t t-if="j_line.credit==0">
+                                                <td></td>
+                                              </t>                                                                                                 
+                                              
                                             </tr>    
                                           </t>
                                         </t>
@@ -502,7 +517,14 @@
                                       </div>
                                       <div class="text-center">
                                           <small>
-                                            CERTIFIED: &amp;emsp; Adequate available Funds / budgetary allotment in the amount of <u><span t-field="o.amount_total"/></u>__;
+                                            CERTIFIED: &amp;emsp; Adequate available Funds / budgetary allotment in the amount of <u>
+                                            <t t-if="o.transaction_type != 'charity'">
+                                                <span t-field="o.amount_total"/>
+                                            </t>
+                                            <t t-if="o.transaction_type == 'charity'">
+                                                <span t-field="o.amount_untaxed"/>
+                                            </t>                                            
+                                            </u>__;
                                             expenditure properly certified; supported by documents marked(x) per checklist and back hereof; account codes proper; previous cash advance /
                                             liquidated / accounted for. 
                                           </small><br/>
@@ -527,7 +549,15 @@
                                       <div class="text-center" style="width: 20px; position:absolute; top:0px; left: 0px; border: 1px solid black">
                                           <label>C</label>
                                       </div>                                    
-                                      <small>APPROVED For: <u><span t-field="o.amount_total"/></u></small><br/><br/>
+                                      <small>APPROVED For: <u>
+                                        <t t-if="o.transaction_type != 'charity'">
+                                          <span t-field="o.amount_total"/>
+                                        </t>
+                                        <t t-if="o.transaction_type == 'charity'">
+                                          <span t-field="o.amount_untaxed"/>
+                                        </t>                                        
+
+                                        </u></small><br/><br/>
 
                                       <small>
                                           <small>
@@ -636,8 +666,12 @@
                                           <small>
                                             <u> 
                                               &amp;emsp;
-                                              <t t-if="o.payment_ids">                                                
-                                                  <span t-esc="o.get_amount_in_words()" class="text-center"/>   
+                                              <t t-if="o.payment_ids"> 
+                                                  <t t-foreach="o.payment_ids" t-as="payment_lines">  
+                                                      <t t-if="payment_lines.check_number">                                             
+                                                          <span t-esc="payment_lines.check_amount_in_words" class="text-center"/>   
+                                                      </t>
+                                                  </t>
                                               </t>
                                               
                                               &amp;emsp;
@@ -661,14 +695,33 @@
                                   </td>
                                   <td class="text-center">
                                       <small>
-                                        FOR A COA USER ONLY ALLOWED IN AUDIT: For  (<u><span t-field="o.amount_total"/></u>)
+                                        FOR A COA USER ONLY ALLOWED IN AUDIT: For  (<u>
+
+
+                                              <t t-if="o.payment_ids"> 
+                                                  <t t-foreach="o.payment_ids" t-as="payment_lines">  
+                                                      <t t-if="payment_lines.check_number">                                             
+                                                          <span t-esc="payment_lines.amount" t-esc-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>   
+                                                      </t>
+                                                  </t>
+                                              </t>
+                                      </u>)
                                       </small>
 
                                       <br/><br/>
 
                                       <small>
                                           <small>
-                                              <u><span t-esc="o.get_amount_in_words()"/></u>
+                                              <u>
+
+                                                <t t-if="o.payment_ids"> 
+                                                    <t t-foreach="o.payment_ids" t-as="payment_lines">  
+                                                        <t t-if="payment_lines.check_number">                                             
+                                                            <span t-esc="payment_lines.check_amount_in_words" class="text-center"/>   
+                                                        </t>
+                                                    </t>
+                                                </t>
+                                              </u>
                                           </small>
                                       </small><br/>
                                       <small>AMOUNT IN WORDS</small><br/><br/><br/><br/>

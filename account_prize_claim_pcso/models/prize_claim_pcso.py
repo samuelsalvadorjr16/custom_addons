@@ -534,7 +534,18 @@ class account_invoice_prize_claim(models.Model):
 	#@api.multi
 	#def get_summarize_acct(self):
 	#	self.ensure_one
-	#	for 
+	#	group_by_products = []
+	#	for inv in self.invoice_line_ids:
+	#		if len(group_by_products) > 0:
+	#			if inv.product_id not in group_by_products:
+	#				group_by_products.append(inv.product_id)
+	#		else:
+	#			group_by_products.append(inv.product_id)
+	#	#Start Summarizing
+	#	if self.invoice_line_ids:
+	#		for inv
+
+
 
 	@api.multi
 	def filter_account_entry_view_status(self):
