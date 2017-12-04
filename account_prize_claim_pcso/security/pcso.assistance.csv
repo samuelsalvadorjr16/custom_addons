@@ -1,0 +1,17 @@
+id,assistance_id,name
+pcso_assistance.1,1,Confinement
+pcso_assistance.2,4,Radiation Therapy
+pcso_assistance.3,5,Medicines
+pcso_assistance.4,6,Surgical Supplies
+pcso_assistance.5,7,Implant/Devices
+pcso_assistance.6,8,Laboratory/Diagnostic Procedure
+pcso_assistance.7,9,Medical Device
+pcso_assistance.8,10,Assistive Device
+pcso_assistance.9,11,Non- and Minimally-Invasive Procedures
+pcso_assistance.10,12,Transplant
+pcso_assistance.11,13,Rehabilitative Therapy
+pcso_assistance.12,14,Others
+pcso_assistance.13,15,Hearing Aid
+pcso_assistance.14,16,Eye Operation/Laser Treatment
+pcso_assistance.15,17,Chemo Drugs
+pcso_assistance.16,23,Dialysis

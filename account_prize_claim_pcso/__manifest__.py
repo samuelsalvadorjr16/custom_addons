@@ -26,6 +26,7 @@
         'security/voucher_security.xml',
         'security/ir.model.access.csv',
         'security/ir.sequence.csv',
+        'security/pcso.assistance.csv',
         'wizard/voucher_cancel_return.xml',
         'wizard/account_invoice_transmittal_no.xml',
         'wizard/account_payment_check_cancel.xml',

@@ -130,7 +130,7 @@ class account_invoice_line_prize_claim(models.Model):
 		if self.guarantee_assistance_id_rel:
 			assistance_obj=self.env['pcso.assistance'].search([('assistance_id','=', self.guarantee_assistance_id_rel)])
 			self.assistance_id = assistance_obj.id or False
-		return False
+		#return False
 	@api.onchange('assistance_id')
 	def assistanceId_onchange(self):
 		if self.assistance_id:
@@ -147,6 +147,7 @@ class account_invoice_line_prize_claim(models.Model):
 			if self.guarantee_id:
 				self.patient_name = self.guarantee_id.patient_name or False
 				self.approved_amount =  self.guarantee_approve_amt_rel or 0.00
+				
 	@api.multi
 	def write(self, values):
 		if values.has_key('guarantee_id') and values.get('guarantee_id') !=False:
