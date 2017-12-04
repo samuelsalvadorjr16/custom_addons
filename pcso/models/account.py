@@ -10,7 +10,8 @@ class AccountTax(models.Model):
 		res = super(AccountTax, self)._compute_amount(base_amount, price_unit, quantity, product, partner)
 		if self.amount_type == 'base_price':
 			if self.is_custom_price_included == True:
-				base_amount = price_unit / 1.12
+				base_amount = round(price_unit / 1.12,5)
+				#raise Warning(round(base_amount,5) * (self.amount/100))
 				return (base_amount * (self.amount/100) ) * -1
 			else:
 				base_amount = price_unit

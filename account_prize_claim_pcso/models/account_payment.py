@@ -12,18 +12,19 @@ import odoo.addons.decimal_precision as dp
 _logger = logging.getLogger(__name__)
 
 class account_payment(models.Model):
-	_inherit = "account.payment"
+	_name = "account.payment"
+	_inherit = ['account.payment','mail.thread']
 
 	@api.model
 	def _filter_journal_id(self):
 		#return_val =[]
-		return_val = ['&',('type', 'in', ('bank', 'cash'))]
-		if self._context.get('transaction_type') == 'prize_claim':
-			return_val.append(('name', 'ilike','PRF'))
-		elif self._context.get('transaction_type') == 'charity':
-			return_val.append(('name', 'ilike','CHF'))
-		else:
-			return_val.append(('name', 'ilike','OPF'))
+		return_val = [('type', 'in', ('bank', 'cash'))]
+		#if self._context.get('transaction_type') == 'prize_claim':
+		#	return_val.append(('name', 'ilike','PRF'))
+		#elif self._context.get('transaction_type') == 'charity':
+		#	return_val.append(('name', 'ilike','CHF'))
+		#else:
+		#	return_val.append(('name', 'ilike','OPF'))
 		#for x in self._context:
 		#	_logger.info(x)
 		#raise Warning(return_val)
@@ -37,15 +38,19 @@ class account_payment(models.Model):
 	    ], index=True, change_default=True,string='PCSO Transaction Type')
 
 	#payment_process_type = fields.Selectiom([('released', 'Date Released'),('released', 'Date Released')])
+	name = fields.Char(readonly=True, copy=False, default="Draft Payment", track_visibility='always')
+	check_number = fields.Integer(string="Check Number", readonly=True, copy=False, default=0,
+        help="Number of the check corresponding to this payment. If your pre-printed check are not already numbered, "
+             "you can manage the numbering in the journal configuration page.", track_visibility='always')
+	journal_id = fields.Many2one('account.journal', string='Payment Journal', required=True, domain=[('type', 'in', ('bank', 'cash'))], track_visibility='always')
+	amount = fields.Monetary(string='Payment Amount', required=True, track_visibility='always')
 	date_available = fields.Date('Date Available', track_visibility='onchange')
 	date_released = fields.Date('Date Released', track_visibility='onchange')
-	date_check_created = fields.Date('Date Check Created')
-	or_number = fields.Char('OR Number', size=50)
-	or_date = fields.Date('OR Date')
+	date_check_created = fields.Date('Date Check Created', track_visibility='onchange')
+	or_number = fields.Char('OR Number', size=50, track_visibility='onchange')
+	or_date = fields.Date('OR Date', track_visibility='onchange')
 	journal_id = fields.Many2one('account.journal', string='Payment Journal', required=True, domain=_filter_journal_id)
-
-
-
+	reasons = fields.Char('Reasons', track_visibility='onchange')
 
 
 
@@ -55,6 +60,16 @@ class account_payment(models.Model):
 		if res:
 			if self.date_check_created:
 				self.write({'date_check_created': fields.Date.today()})
+
+	@api.multi
+	def action_confirm(self, reasons=''):
+		self.unmark_sent()
+		self.write({'reasons': reasons})
+
+	@api.multi
+	def action_cancel_check_confirm(self, reasons=''):
+		self.cancel()
+		self.write({'reasons': reasons})
 
 
 	@api.multi

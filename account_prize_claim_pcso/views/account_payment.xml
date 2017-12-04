@@ -10,6 +10,14 @@
             <field name="model">account.payment</field>
             <field name="inherit_id" ref="payment.view_account_payment_form_inherit_payment"/>
             <field name="arch" type="xml">
+                
+                <xpath expr="//sheet" position="after">
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>                    
+                </xpath>
+                
                 <field name="payment_transaction_id" position="before">                    
                     <field name="or_number"/>
                     <field name="or_date"/>                    
@@ -18,7 +26,6 @@
                 </field>
             </field>
         </record>
-
 
         <record id="account.action_account_payments_payable" model="ir.actions.act_window">
             <field name="name">Payments</field>
@@ -98,7 +105,33 @@
                 </p>
             </field>
         </record>   
-payment_address or ''
+
+
+
+       <!-- OVERRIDE THE PAYMENT IN THE CHECKS -->
+       <record model="ir.ui.view" id="pcso_view_account_payment_form_inherited">
+            <field name="name">pcso.account.payment.form.inherited</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account_check_printing.view_account_payment_form_inherited"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='unmark_sent']" position="attributes">
+                    <attribute name="name">%(account_prize_claim_pcso.action_unmark_cancel_check)d</attribute>
+                    <attribute name="type">action</attribute>
+                </xpath>                
+            </field>
+        </record>
+
+       <record model="ir.ui.view" id="pcso_payment_cancel_form_inherit">
+            <field name="name">pcso.payment.cancel.form.inherit</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account_cancel.payment_cancel_form_inherit"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='cancel']" position="attributes">
+                    <attribute name="name">%(account_prize_claim_pcso.action_cancel_check)d</attribute>
+                    <attribute name="type">action</attribute>
+                </xpath>                
+            </field>
+        </record>    
 
         <menuitem id="menu_pymnt_pcso" name="Payment" 
                   parent="res_claimant_pcso.menu_pcso_claimant_document"

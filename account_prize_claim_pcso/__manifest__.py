@@ -17,7 +17,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'account', 'purchase','hr','mail', 'res_claimant_pcso', 'pcso'],
+    'depends': ['base', 'account', 'purchase','hr','mail', 'res_claimant_pcso', 'pcso','account_cancel'],
 
     # always loaded
     'data': [
@@ -28,6 +28,7 @@
         'security/ir.sequence.csv',
         'wizard/voucher_cancel_return.xml',
         'wizard/account_invoice_transmittal_no.xml',
+        'wizard/account_payment_check_cancel.xml',
         'reports/disbursement_voucher.xml',
         'reports/transmittal_reports.xml',
         'views/hr_employee.xml',

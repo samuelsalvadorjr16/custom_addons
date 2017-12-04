@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!--  Payment Return -->        
+        <record id="view_unmark_cancel_check" model="ir.ui.view">
+            <field name="name">Return/Cancel Checks</field>
+            <field name="model">account.payment.check.cancel</field>
+            <field name="arch" type="xml">
+                <form string="Returnl Check">
+                    <group string="This operation will return as unmark sent the printed check.">
+                        <field name="reason" required="1" string="Reason"/>
+                    </group>                    
+                    <footer>
+                        <button name="action_confirm" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>         
+ 
+
+        <record id="view_cancel_check" model="ir.ui.view">
+            <field name="name">Cancel Checks</field>
+            <field name="model">account.payment.check.cancel</field>
+            <field name="arch" type="xml">
+                <form string="Cancel Check">
+                    <group string="This operation will cancel the payment.">
+                        <field name="reason" required="1" string="Reason"/>
+                    </group>                    
+                    <footer>
+                        <button name="action_cancel_confirm" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>   
+
+
+
+
+        <record id="action_unmark_cancel_check" model="ir.actions.act_window">
+            <field name="name">Unmark Sent Check</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.payment.check.cancel</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record> 
+
+        <record id="action_view_unmark_cancel_check_from" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_unmark_cancel_check"/>
+            <field name="act_window_id" ref="action_unmark_cancel_check"/>
+        </record>
+
+
+
+        <record id="action_cancel_check" model="ir.actions.act_window">
+            <field name="name">Unmark Sent Check</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.payment.check.cancel</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record> 
+
+        <record id="action_cancel_check_form" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_cancel_check"/>
+            <field name="act_window_id" ref="action_cancel_check"/>
+        </record>
+
+    </data>
+</odoo>    
