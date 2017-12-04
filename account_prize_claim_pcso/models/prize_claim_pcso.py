@@ -532,18 +532,24 @@ class account_invoice_prize_claim(models.Model):
 			return [inv.account_id.name or False, inv.account_id.code or False, self.amount_untaxed or 0.00]
 
 	#@api.multi
-	#def get_summarize_acct(self):
+	#def get_summarize_acct_move(self):
 	#	self.ensure_one
 	#	group_by_products = []
-	#	for inv in self.invoice_line_ids:
+	#	ret_val= []
+	#	line_ids = 0
+	#	for inv in self.move_id:
 	#		if len(group_by_products) > 0:
 	#			if inv.product_id not in group_by_products:
 	#				group_by_products.append(inv.product_id)
 	#		else:
 	#			group_by_products.append(inv.product_id)
-	#	#Start Summarizing
+	#		line_ids = inv.invoice_id.id
+		#Start Summarizing
 	#	if self.invoice_line_ids:
-	#		for inv
+	#		for prod in group_by_products:
+	#			line_obj = self.env['account.invoice'].search([('product_id', '=', prod),('invoice_id', '=', line_ids)])
+	#			if line_obj:
+	#				ret_val.append([line_obj.])
 
 
 
@@ -876,6 +882,15 @@ class account_invoice_prize_claim(models.Model):
 		if vals.get('jackpot_prize'):
 			if self.env.ref('account_prize_claim_pcso.pcf_group_allow_create_jackpot') not in self.env.user.groups_id:
 				raise UserError(_("User has no access to Create the Claim. Prize Claim is a Jackpot Prize."))
+		if vals.get('account_id'):
+
+			if vals.get('transaction_type')== 'charity':
+				#raise Warning(self.transaction_type)
+				account_payable_char_id = self.env.ref('__export__.account_account_1946')
+				#raise Warning(vals.get('account_id'))
+				if vals.get('account_id') !=account_payable_char_id.id:
+					raise UserError(_("Accounts Payable define for this Supplier/Vendor for charity\n must be 401-4 ACCOUNTS PAYABLE-CHARITY FUND."))
+
 		res = super(account_invoice_prize_claim, self).create(vals)
 		return res
 
@@ -964,7 +979,7 @@ class account_invoice_prize_claim(models.Model):
 	    	#if to_open_invoices.filtered(lambda inv: inv.transaction_type  == 'charity')
 	        raise UserError(_("Voucher must be in For Approval/Under Review state in order to validate it."))
 	    #if to_open_invoices.filtered(lambda inv: inv.state != 'approved') and to_open_invoices.filtered(lambda inv: inv.transaction_type != False):
-	    #    raise UserError(_("Price Claim must be in approved state in order to validate it."))	       
+	    #    raise UserError(_("Price Claim must be in approved state in order to validate it."))	
 	    if to_open_invoices.filtered(lambda inv: inv.amount_total < 0):
 	        raise UserError(_("You cannot validate an invoice with a negative total amount. You should create a credit note instead."))
 	    to_open_invoices.action_date_assign()
