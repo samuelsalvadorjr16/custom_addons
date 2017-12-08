@@ -105,6 +105,14 @@ class account_invoice_prize_claim(models.Model):
 	transmittal_charity_account_number = fields.Char('APT No.',copy=False)
 
 
+	@api.onchange('partner_id', 'company_id')
+	def _onchange_partner_id(self):
+		res = super(account_invoice_prize_claim, self)._onchange_partner_id()
+		if self.transaction_type == 'charity':
+			self.account_id = self.env.ref('__export__.account_account_1946')
+		return res
+
+
 	@api.one
 	@api.depends('invoice_line_ids.price_subtotal', 'tax_line_ids.amount', 'currency_id', 'company_id', 'date_invoice', 'type')
 	def _compute_amount(self):

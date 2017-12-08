@@ -236,7 +236,7 @@
             <field eval="False" name="view_id"/>
 
             <field name="domain">[('type','=','in_invoice'), ('transaction_type', '=', 'charity'), ('transaction_type', '!=', False)]</field>
-            <field name="context">{'default_type': 'in_invoice', 'type': 'in_invoice', 'journal_type': 'purchase', 'default_transaction_type': 'charity', 'transaction_type': 'charity', 'default_journal_id': 8}</field>            
+            <field name="context">{'default_type': 'in_invoice', 'type': 'in_invoice', 'journal_type': 'purchase', 'default_transaction_type': 'charity', 'transaction_type': 'charity', 'default_journal_id': 8, 'default_account_id': 1946}</field>            
             <field name="search_view_id" ref="account.view_account_invoice_filter"/>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
