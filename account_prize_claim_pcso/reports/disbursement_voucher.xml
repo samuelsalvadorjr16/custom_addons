@@ -423,7 +423,7 @@
                                               </t>
                                               <t t-if="line.amount &gt;= 0">
                                                   <td><span class="text-right" t-field="line.amount"/></td>   
-                                                  <td>0.00</td>                                                
+                                                  <td></td>                                                
                                               </t>                                                                                            
                                                                                          
                                             </tr>
@@ -435,7 +435,7 @@
                                               <td class="text-left" ><span t-field="o.account_id.name"/></td>
                                               <td class="text-left" ><span t-field="o.account_id.code"/></td>
                                               <td class="text-right"></td>
-                                              <t t-if="o.amount_total &lt;=0">
+                                              <t t-if="o.amount_total &gt;=0">
                                                 <td class="text-right"><span t-field="o.amount_total"/></td>                                  
                                               </t>
                                                 
