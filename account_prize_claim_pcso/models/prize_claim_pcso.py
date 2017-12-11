@@ -539,6 +539,27 @@ class account_invoice_prize_claim(models.Model):
 		for inv in self.invoice_line_ids:
 			return [inv.account_id.name or False, inv.account_id.code or False, self.amount_untaxed or 0.00]
 
+
+	@api.multi
+	def get_summarize_acct_entries(self):
+		self.env.cr.execute("""
+				SELECT account_id,
+					    (Select name from account_account where id = account_id),
+					    (Select code from account_account where id = account_id),
+					    sum(price_subtotal)
+			    FROM account_invoice_line
+			    WHERE  invoice_id = %d
+			    GROUP BY account_id
+
+			""" % (self.id)
+			)
+		#raise Warning(self.env.cr.fetchall())
+		return self.env.cr.fetchall()
+
+
+
+
+
 	#@api.multi
 	#def get_summarize_acct_move(self):
 	#	self.ensure_one
@@ -990,9 +1011,11 @@ class account_invoice_prize_claim(models.Model):
 	    #    raise UserError(_("Price Claim must be in approved state in order to validate it."))	
 	    if to_open_invoices.filtered(lambda inv: inv.amount_total < 0):
 	        raise UserError(_("You cannot validate an invoice with a negative total amount. You should create a credit note instead."))
-	    to_open_invoices.action_date_assign()
-	    
-	    return to_open_invoices.action_move_create() #to_open_invoices.invoice_validate()
+	    if to_open_invoices.number and to_open_invoices.move_id:
+	    	to_open_invoices.move_id.post()
+	    else:
+		    to_open_invoices.action_date_assign()	    
+		    return to_open_invoices.action_move_create() #to_open_invoices.invoice_validate()
 
 	@api.multi
 	def action_invoce_open_jackpot(self):

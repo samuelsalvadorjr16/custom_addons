@@ -365,10 +365,7 @@
                                 </thead>
                                 <tbody>
                                       <!--<t t-if="o.state not in [open,for_approval, approved]">-->
-                                      <t t-if="not o.filter_account_entry_view_status()">
-
-
-
+                                      <!--<t t-if="not o.filter_account_entry_view_status()"> -->
                                         <t t-if="o.transaction_type == 'charity'">
                                             <tr>
                                               <td></td>
@@ -380,21 +377,17 @@
                                               <td></td>
                                             </tr>                                           
                                         </t>
-
-
-
-
-                                        <t t-if="o.transaction_type != 'charity'">
-                                          <t t-foreach="o.invoice_line_ids" t-as="line">
+                                        <t t-if="o.transaction_type != 'charity'">                                          
+                                          <t t-foreach="o.get_summarize_acct_entries()" t-as="line">
                                             <tr>
                                               <td></td>
                                               <td></td>
-                                              <td><span t-field="line.account_id.name"/></td>
-                                              <td><span t-field="line.account_id.code"/></td>
-                                              <td><span t-field="line.price_unit"/></td>
+                                              <td><span t-esc="line[1]"/></td>
+                                              <td><span t-esc="line[2]"/></td>
+                                              <td><span t-esc="line[3]" t-esc-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/></td>
                                               <td></td>
                                             </tr>  
-                                          </t>                                        
+                                          </t>                                      
                                         </t>
 
                                         <!--
@@ -418,11 +411,11 @@
                                               <t t-if="line.amount &lt; 0">
                                                   <t t-set="amt" t-value="float(line.amount * -1)"/>
                                                   <td></td>         
-                                                  <td><span class="text-left" t-esc="amt" t-esc-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/></td>   
+                                                  <td><span class="text-right" t-esc="amt" t-esc-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/></td>   
 
                                               </t>
                                               <t t-if="line.amount &gt;= 0">
-                                                  <td><span class="text-right" t-field="line.amount"/></td>   
+                                                  <td><span class="text-left" t-field="line.amount"/></td>   
                                                   <td></td>                                                
                                               </t>                                                                                            
                                                                                          
@@ -440,9 +433,9 @@
                                               </t>
                                                 
                                             </tr> 
-                                      </t>
+                                     <!--</t> -->
 
-
+<!--
                                       <t t-if="o.filter_account_entry_view_status()">
                                         <t t-foreach="o.move_id" t-as="move_id_line">
                                           <t t-foreach="move_id_line.line_ids.sorted(key=lambda r: (r.debit, r.id), reverse=True)" t-as="j_line">
@@ -469,7 +462,7 @@
                                           </t>
                                         </t>
                                       </t>
-
+-->
 
                                 </tbody>
                             </table>

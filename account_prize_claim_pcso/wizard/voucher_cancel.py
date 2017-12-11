@@ -13,6 +13,8 @@ class voucher_cancel(models.TransientModel):
 			return {'type': 'ir.actions.act_window_close'}
 		inv = self.env['account.invoice'].browse(self._context['active_id'])
 		reason = self.reason
+		if inv.state in ['for_approval']:
+			inv.move_id.button_cancel()
 		inv.action_set_to_return(reason)
 		return {'type': 'ir.actions.act_window_close'}
 
@@ -20,6 +22,11 @@ class voucher_cancel(models.TransientModel):
 		if not self._context.get('active_id'):
 			return {'type': 'ir.actions.act_window_close'}
 		inv = self.env['account.invoice'].browse(self._context['active_id'])
+		if inv.state == 'open':
+			inv.action_invoice_cancel()
+		elif inv.move_id:
+			inv.action_cancel()
+
 		reason = self.reason
 		inv.action_set_to_cancel(reason)
 		return {'type': 'ir.actions.act_window_close'}

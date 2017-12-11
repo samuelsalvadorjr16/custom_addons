@@ -44,6 +44,7 @@
                     <button name="action_invoice_open" type="object" states="approved" string="Validate" class="oe_highlight" groups="account.group_account_user,account.group_account_manager"/>
 -->
                     <button name="%(act_acc_invo_paymt_char)d" type="action" states="open" string="Register Payment" groups="account.group_account_user,account.group_account_manager" class="oe_highlight"/>
+                    <button name="%(action_cancel_voucher)d" type="action" states="open" string="Cancel Voucher" groups="account.group_account_user,account.group_account_manager"/>
 
                     <field name="state" widget="statusbar" statusbar_visible="draft,submit,under_review,for_approval,approved" />
                 </header>
