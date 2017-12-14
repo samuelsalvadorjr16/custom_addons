@@ -106,8 +106,6 @@ class account_invoice_prize_claim(models.Model):
 	transmittal_charity_account_number = fields.Char('APT No.',copy=False, track_visibility='onchange')
 	transmittal_charity_acct_create_date = fields.Date('APT Date', copy=False, track_visibility='onchange')
 
-
-
 	#For Report Generation Transmittal Report
 	@api.multi
 	def get_apt_numbers(self, loop):
@@ -124,9 +122,6 @@ class account_invoice_prize_claim(models.Model):
 		self.ensure_one()
 		obj_account_innvoice = self.env['account.invoice'].search([('transmittal_charity_account_number', '=', apt_number)])
 		return obj_account_innvoice
-
-
-
 
 	@api.multi
 	def get_cpt_numbers(self, loop):
@@ -199,6 +194,8 @@ class account_invoice_prize_claim(models.Model):
 		total_net = 0.00
 		currency_id= 0
 		patient_total = 0
+		invoice_total = 0
+		created_uid = False
 		for inv in ref_no:
 			total_untax_amount += inv.amount_untaxed
 			total_tax_percent_1_amount += inv.get_sum_one_percent()
@@ -207,7 +204,17 @@ class account_invoice_prize_claim(models.Model):
 			total_net +=inv.amount_total
 			patient_total += len(inv.invoice_line_ids)
 			currency_id = inv.currency_id
-		return [patient_total, float(total_untax_amount), total_tax_percent_1_amount, total_tax_percent_3_5_amount, total_tax_amount, total_net,currency_id]
+			invoice_total += 1
+			created_uid = inv.create_uid.name
+		return [patient_total, 
+				float(total_untax_amount), 
+				total_tax_percent_1_amount, 
+				total_tax_percent_3_5_amount, 
+				total_tax_amount, 
+				total_net,
+				currency_id, 
+				invoice_total,
+				created_uid]
 
 
 	@api.onchange('partner_id', 'company_id')
