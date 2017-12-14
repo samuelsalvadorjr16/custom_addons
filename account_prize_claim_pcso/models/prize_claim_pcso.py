@@ -101,8 +101,113 @@ class account_invoice_prize_claim(models.Model):
 	denied_uid = fields.Many2one('res.users', 'Denied By',copy=False)
 	cancelled_uid = fields.Many2one('res.users', 'Cancelled By',copy=False)
 
-	transmittal_charity_number = fields.Char('CPT No.',copy=False)
-	transmittal_charity_account_number = fields.Char('APT No.',copy=False)
+	transmittal_charity_number = fields.Char('CPT No.',copy=False, track_visibility='onchange')
+	transmittal_charity_create_date = fields.Date('CPT Date', copy=False, track_visibility='onchange')
+	transmittal_charity_account_number = fields.Char('APT No.',copy=False, track_visibility='onchange')
+	transmittal_charity_acct_create_date = fields.Date('APT Date', copy=False, track_visibility='onchange')
+
+
+
+	#For Report Generation Transmittal Report
+	@api.multi
+	def get_apt_numbers(self, loop):
+		self.ensure_one()
+		if self.transmittal_charity_account_number:
+			if loop.has_key(self.transmittal_charity_account_number):
+				loop[self.transmittal_charity_account_number].append(self)
+			else:
+				 loop.update({self.transmittal_charity_account_number: [self]})
+		return loop	
+
+	@api.multi
+	def get_detail_apt_numbers(self, apt_number):
+		self.ensure_one()
+		obj_account_innvoice = self.env['account.invoice'].search([('transmittal_charity_account_number', '=', apt_number)])
+		return obj_account_innvoice
+
+
+
+
+	@api.multi
+	def get_cpt_numbers(self, loop):
+		self.ensure_one()
+		if self.transmittal_charity_number:
+			if loop.has_key(self.transmittal_charity_number):
+				loop[self.transmittal_charity_number].append(self)
+			else:
+				 loop.update({self.transmittal_charity_number: [self]})
+		return loop
+
+	@api.multi
+	def get_detail_cpt_numbers(self, cpt_number):
+		self.ensure_one()
+		obj_account_innvoice = self.env['account.invoice'].search([('transmittal_charity_number', '=', cpt_number)])
+		return obj_account_innvoice
+
+	@api.multi
+	def get_sum_one_percent(self):
+		self.ensure_one()
+		val = 0.00
+		for inv in self.invoice_line_ids:
+			val += inv.get_tax_one_percent()
+		return val
+
+	@api.multi
+	def get_sum_three_or_five_percent(self):
+		self.ensure_one()
+		val = 0.00
+		for inv in self.invoice_line_ids:
+			val += inv.get_tax_three_or_five_percent()
+		return val
+
+	@api.multi
+	def get_get_dates(self, loop):
+		self.ensure_one()
+		cpt_numbers = loop.keys()
+		account_invoice = self.env['account.invoice'].search([('transmittal_charity_number','=',cpt_numbers)])
+		account_invoice_min_date = account_invoice.search([('transmittal_charity_number','=',cpt_numbers)],limit=1, order='create_date asc')
+		account_invoice_max_date = account_invoice.search([('transmittal_charity_number','=',cpt_numbers)],limit=1, order='create_date desc')
+		#raise Warning(loop)
+		return [account_invoice_min_date.create_date,account_invoice_max_date.create_date]
+
+	@api.multi
+	def get_report_summary(self, loop):
+		self.ensure_one()
+		total_untax_amount = 0.00
+		total_tax_amount = 0.00
+		total_tax_percent_1_amount = 0.00
+		total_tax_percent_3_5_amount = 0.00
+		total_net = 0.00
+		patient_total = 0
+		for group_rec in loop:
+			for inv in group_rec:
+				total_untax_amount += inv.amount_untaxed
+				total_tax_percent_1_amount += inv.get_sum_one_percent()
+				total_tax_percent_3_5_amount += inv.get_sum_three_or_five_percent()
+				total_tax_amount += inv.amount_tax * -1
+				total_net +=inv.amount_total
+				patient_total += len(inv.invoice_line_ids)
+		return [patient_total, total_untax_amount, total_tax_percent_1_amount, total_tax_percent_3_5_amount, total_tax_amount, total_net]
+
+	@api.multi
+	def get_report_summary_refno(self, ref_no):
+		self.ensure_one()
+		total_untax_amount = 0.00
+		total_tax_amount = 0.00
+		total_tax_percent_1_amount = 0.00
+		total_tax_percent_3_5_amount = 0.00
+		total_net = 0.00
+		currency_id= 0
+		patient_total = 0
+		for inv in ref_no:
+			total_untax_amount += inv.amount_untaxed
+			total_tax_percent_1_amount += inv.get_sum_one_percent()
+			total_tax_percent_3_5_amount += inv.get_sum_three_or_five_percent()
+			total_tax_amount += inv.amount_tax * -1
+			total_net +=inv.amount_total
+			patient_total += len(inv.invoice_line_ids)
+			currency_id = inv.currency_id
+		return [patient_total, float(total_untax_amount), total_tax_percent_1_amount, total_tax_percent_3_5_amount, total_tax_amount, total_net,currency_id]
 
 
 	@api.onchange('partner_id', 'company_id')

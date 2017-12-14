@@ -27,21 +27,544 @@
             <field name="dpi">90</field>
         </record>
 
+<template id="external_layout_footer_transmitter">
+    <div class="footer">
+
+        <!--
+        <div class="text-left">
+            Date Printed : <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%m/%d/%Y')"/>
+        </div>
+    -->
+
+        <div class="text-right" style="border-top: 1px solid black;">
+            <ul class="list-inline">
+                <li>Page:</li>
+                <li><span class="page"/></li>
+                <li>/</li>
+                <li><span class="topage"/></li>
+            </ul>
+        </div>
+    </div>      
+</template>
+
+
+<template id="external_layout_header_transmitter">
+    <div class="header">
+        <div class="text-right">
+            <ul class="list-inline">
+                <li>Page:</li>
+                <li><span class="page"/></li>
+                <li>/</li>
+                <li><span class="topage"/></li>
+            </ul>
+        </div>
+    </div>  
+</template>
+
+
+<template id="external_layout_transmitter">
+    <t t-raw="0" />
+    <t t-call="account_prize_claim_pcso.external_layout_footer_transmitter" />
+</template>
+
+
+
 
         <template id="print_transmittal_report">
-            <t t-call="report.html_container">
-                <t t-foreach="docs" t-as="o">
-                    <div class="page">
+            <t t-set= "loop" t-value="{}" />
+            <t t-foreach="docs" t-as="doc">
+                <t t-set= "loop" t-value="doc.get_cpt_numbers(loop)" />
+                        
+            </t>    
 
-                          <div><label>HEREREERERER</label></div>
+            <t t-foreach="loop" t-as="doc_loop">
+                <t t-call="report.html_container">
+                    <t t-call="account_prize_claim_pcso.external_layout_transmitter"> 
+                            <div class="page" id="voucher_print">
+                                  <t t-set="date_max_min" t-value="loop[doc_loop][0].get_get_dates(loop)"/>
+                                  <div class="text-center"><p>PHILIPPINE CHARITY SWEEPSTAKES OFFICE</p></div>
+                                  <div class="text-center"><small>CHARITY ASSISTANCE DEPARTMENT</small></div>
+                                  <div class="text-center"><small>SUMMARY OF INDIVIDUAL MEDICAL ASSISTANCE PROGRAM(IMAP) AVAILMENT</small></div>
+                                  <div class="text-center"><small>CHARITY TRANSMITTAL DATE FROM <t t-esc="date_max_min[0]"  t-esc-options='{"widget": "date", "format": "MMMM dd, YYYY"}'/> TO <t t-esc="date_max_min[1]" t-esc-options='{"widget": "date", "format": "MMMM dd, YYYY"}'/> </small></div>
+                                  <div class="text-center"><small>TRANSMITTAL NUMBER <u>&amp;emsp;<t t-esc="int(loop[doc_loop][0].transmittal_charity_number[4:len(loop[doc_loop][0].transmittal_charity_number)])" />&amp;emsp;</u></small></div>
+                                  <t t-set= "start_num" t-value="1" />
+                                  <t t-set= "is_for_start_num" t-value="1" />
+                                  <br/>
+                                  
+                                  <t t-set="cpt_numbers_details" t-value="loop[doc_loop][0].get_detail_cpt_numbers(loop[doc_loop][0].transmittal_charity_number)"/>
 
-                    </div>
-                </t>
-            </t>
+                                    <table id="small_table_transmittal" class="table table-bordered">
+                                        <tbody>
+                                            <thead>
+                                                <tr>
+                                                    <td class="text-center">
+                                                        No.
+                                                    </td>
+                                                    <td class="text-center">
+                                                        DATE SOA CREATED.
+                                                    </td>
+                                                    <td class="text-center">
+                                                        DATE RECEIVED.
+                                                    </td>
+                                                    <td class="text-center">
+                                                        GL NO.
+                                                    </td>
+                                                    <td class="text-center">
+                                                        REQUEST NO.
+                                                    </td>
+                                                    <td class="text-center">
+                                                        NAME OF PATIENT.
+                                                    </td>
+                                                    <td class="text-center">
+                                                        PAYEE.
+                                                    </td>
+                                                    <td class="text-center">
+                                                        GROSS AMOUNT.
+                                                    </td>                                                                                                                        
+                                                    <td class="text-center">
+                                                        1%.
+                                                    </td>
+                                                    <td class="text-center">
+                                                        3% OR 5%.
+                                                    </td>
+                                                    <td class="text-center">
+                                                        TOTAL TAX WITHHELD
+                                                    </td>                                            
+                                                    <td class="text-center">
+                                                        NET AMOUNT.
+                                                    </td>
+                                                    <td class="text-center">
+                                                    </td>                                                
+                                                </tr>                                        
+                                            </thead>
+
+                                            <t t-foreach="cpt_numbers_details" t-as="inv">
+                                                <t t-foreach="inv.invoice_line_ids" t-as="inv_details">
+                                                    <tr>
+                                                        <td class="text-center">
+                                                            <t t-if="is_for_start_num ==1">
+                                                                <span t-esc="start_num"/>
+                                                                <t t-set= "is_for_start_num" t-value="0" />  
+                                                            </t>
+
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <span t-field="inv.date_received" t-field-options='{"widget": "date", "format": "dd-MMM-yy"}' style="font-size: 11px;"/>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <span t-field="inv.create_date" t-field-options='{"widget": "date", "format": "dd-MMM-yy"}' style="font-size: 11px;"/>
+                                                        </td>
+                                                        <td class="text-left">
+                                                            <span t-field="inv_details.guarantee_id.name" style="font-size: 11px;"/>
+                                                        </td>                                                 
+                                                        <td class="text-left">
+                                                            <span t-field="inv.draft_number_sequence"  style="font-size: 11px;"/>
+                                                        </td>
+                                                        <td class="text-left">
+                                                            <span t-field="inv_details.guarantee_patient_name_rel"  style="font-size: 11px;"/>
+                                                        </td>                                                
+                                                        <td class="text-left">
+                                                            <span t-field="inv.partner_id.name"  style="font-size: 11px;"/>
+                                                        </td>   
+                                                        <td class="text-right">
+
+                                                            <span t-field="inv_details.price_subtotal" style="font-size: 11px;"/>
+                                                        </td>       
+                                                        <td class="text-right">
+                                                            <span class="text-right" t-esc="inv_details.get_tax_one_percent()" t-esc-options='{"widget": "monetary", "display_currency": "inv.currency_id"}' style="font-size: 11px;"/>
+                                                        </td> 
+                                                        <td class="text-right">
+                                                            <span class="text-right" t-esc="inv_details.get_tax_three_or_five_percent()" t-esc-options='{"widget": "monetary", "display_currency": "inv.currency_id"}' style="font-size: 11px;"/>
+                                                        </td>
+                                                        <t t-set= "tot_tax_withheld" t-value="inv_details.get_tax_three_or_five_percent() + inv_details.get_tax_one_percent()" />  
+
+                                                        <td class="text-right">
+                                                            <span  t-esc="tot_tax_withheld" t-esc-options='{"widget": "monetary", "display_currency": "inv.currency_id"}' style="font-size: 11px;"/>
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <span class="text-right" t-esc="inv_details.get_net_per_line()" t-esc-options='{"widget": "monetary", "display_currency": "inv.currency_id"}' style="font-size: 11px;"/>
+                                                        </td>      
+                                                        <td/>                                              
+                                                    </tr>                                            
+                                                </t>
+
+                                                    <tr>
+                                                        <td colspan="7" class="text-center">TOTAL PER VOUCHER </td>
+                                                        <td class="text-right"> <span t-field="inv.amount_untaxed"/></td>
+                                                        <td class="text-right">
+                                                            <span t-esc="inv.get_sum_one_percent()" t-esc-options='{"widget": "monetary", "display_currency": "inv.currency_id"}'/>
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <span t-esc="inv.get_sum_three_or_five_percent()" t-esc-options='{"widget": "monetary", "display_currency": "inv.currency_id"}'/>
+                                                        </td>
+
+                                                        <t t-set= "tot_tax_withheld" t-value="inv.amount_tax *-1" /> 
+                                                        <td class="text-right"> 
+                                                            <span t-esc="tot_tax_withheld" t-esc-options='{"widget": "monetary", "display_currency": "inv.currency_id"}'/>
+                                                        </td>
+                                                        <td class="text-right"> <span t-field="inv.amount_total"/></td>    
+                                                        <td/>                                               
+                                                    </tr>  
+
+                                                <t t-set= "is_for_start_num" t-value="1" />
+                                                <t t-set= "start_num" t-value="start_num+1" />
+                                            </t>
+                                            <t t-set="cpt_numbers_summary" t-value="loop[doc_loop][0].get_report_summary_refno(loop[doc_loop])"/>
+                                            <tr>
+
+                                                <t t-set="untax_amount" t-value="float(cpt_numbers_summary[1])"/>
+                                                <t t-set="tax_amount_1" t-value="float(cpt_numbers_summary[2])"/>
+                                                <t t-set="tax_amount_2" t-value="float(cpt_numbers_summary[3])"/>
+                                                <t t-set="tax_amount" t-value="float(cpt_numbers_summary[4])"/>
+                                                <t t-set="net_amount" t-value="float(cpt_numbers_summary[5])"/>
+
+                                                <td colspan="5" class="text-center">TOTAL PER TRANSMITTAL NO </td>
+                                                <td class="text-center">
+                                                    <span t-esc="cpt_numbers_summary[0]"/>
+                                                </td>
+                                                <td/>
+                                                <td class="text-right"> 
+                                                    <span t-esc="untax_amount" t-esc-options='{"widget": "monetary", "display_currency": "cpt_numbers_summary[6]"}'/>
+                                                </td>
+                                                <td class="text-right"> 
+                                                    <span t-esc="tax_amount_1" t-esc-options='{"widget": "monetary", "display_currency": "cpt_numbers_summary[6]"}'/>
+                                                </td>
+                                                <td class="text-right"> 
+                                                    <span t-esc="tax_amount_2" t-esc-options='{"widget": "monetary", "display_currency": "cpt_numbers_summary[6]"}'/>
+                                                </td>
+                                                <td class="text-right"> 
+                                                    <span t-esc="tax_amount" t-esc-options='{"widget": "monetary", "display_currency": "cpt_numbers_summary[6]"}'/>
+                                                </td>                                                               
+                                                <td class="text-right"> 
+                                                    <span t-esc="net_amount" t-esc-options='{"widget": "monetary", "display_currency": "cpt_numbers_summary[6]"}'/>
+                                                </td>  
+                                                <td/>                                           
+                                            </tr>  
+
+                                        </tbody>
+                                    </table>
+
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    
+                                    <div class="row">
+                                        <div class="col-xs-3 text-center">
+                                            Prepared By:
+                                        </div>
+                                        <div class="col-xs-3 text-center">
+                                            Certified Correct by
+                                        </div>
+                                        <div class="col-xs-3 text-center">
+                                            Certified Supporting Documents Complete and Proper             
+                                        </div>   
+
+                                        <div class="col-xs-3 text-center">
+                                            Approved for Payment            
+                                        </div>                                                                                             
+                                    </div>      
+
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <div class="row">
+                                        <div class="col-xs-3" >
+                                            <div style="border-top: none;border-bottom: 1px solid;border-left: none;border-right: none;" />
+                                        </div>
+                                        <div class="col-xs-3">
+                                            <div style="border-top: none;border-bottom: 1px solid;border-left: none;border-right: none;" />
+                                        </div>
+                                        <div class="col-xs-3">
+                                            <div style="border-top: none;border-bottom: 1px solid;border-left: none;border-right: none;" />
+                                        </div>  
+                                        <div class="col-xs-3">
+                                            <div style="border-top: none;border-bottom: 1px solid;border-left: none;border-right: none;" />
+                                        </div>                                                      
+                                    </div>      
+
+
+                                    <br/>
+                                    <br/>
+                                    <div class="text-left">
+                                        Date Printed : <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%m/%d/%Y')"/>
+                                    </div>                                    
+                            </div>
+
+
+
+
+                    </t>
+
+                </t>                
+            </t>            
+
         </template>
 
+
+
+        <template id="print_transmittal_acct_report">
+            <t t-set= "loop" t-value="{}" />
+            <t t-foreach="docs" t-as="doc">
+                <t t-set= "loop" t-value="doc.get_apt_numbers(loop)" />                        
+            </t>    
+
+            <t t-foreach="loop" t-as="doc_loop">
+                <t t-call="report.html_container">
+                    <t t-call="account_prize_claim_pcso.external_layout_transmitter"> 
+                            <div class="page" id="voucher_print">
+                                  <t t-set="date_max_min" t-value="loop[doc_loop][0].get_get_dates(loop)"/>
+                                  <div class="text-center"><p>PHILIPPINE CHARITY SWEEPSTAKES OFFICE</p></div>
+                                  <div class="text-center"><small>ACCOUNTING AND BUDGET DEPARTMENT</small></div>
+                                  <div class="text-center"><small>SUMMARY OF PROCESSED DISBURSEMENT VOUCHERS</small></div>
+                                  <div class="text-center"><small>TRANSMITTAL NUMBER <u>&amp;emsp;<t t-esc="int(loop[doc_loop][0].transmittal_charity_account_number[4:len(loop[doc_loop][0].transmittal_charity_account_number)])" />&amp;emsp;</u></small></div>
+                                  <t t-set= "start_num" t-value="1" />
+                                  <t t-set= "is_for_start_num" t-value="1" />
+                                  <br/>
+                                  
+                                  <t t-set="apt_numbers_details" t-value="loop[doc_loop][0].get_detail_apt_numbers(loop[doc_loop][0].transmittal_charity_account_number)"/>
+                                    <div class="text-right">
+                                        Transaction Date: <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%A %d %B %Y')"/>
+                                    </div> 
+                                    <table id="small_table_transmittal_acct" class="table table-bordered">
+                                        <tbody>
+                                            <thead>
+                                                <tr>
+                                                    <td class="text-left">
+                                                        VOUCHER REGISTER
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-left">
+                                                        Charity Nos.
+                                                    </td>
+                                                    <td class="text-center">
+                                                        Voucher Nos.
+                                                    </td>
+                                                    <td class="text-center">
+                                                        Payee
+                                                    </td>
+                                                    <td class="text-center">
+                                                        Transaction Details
+                                                    </td>
+                                                    <td class="text-center">
+                                                        Type
+                                                    </td>
+                                                    <td class="text-center">
+                                                        Amount
+                                                    </td>
+                                                    <td class="text-center">
+                                                        Subtotal
+                                                    </td>
+                                                    <td class="text-center">
+                                                        Remarks
+                                                    </td>      
+                                                    <td class="text-center">
+                                                        Received by
+                                                    </td>                                              
+                                                </tr>                                        
+                                            </thead>
+
+                                            <t t-foreach="apt_numbers_details" t-as="inv">
+                                                <t t-foreach="inv.invoice_line_ids.sorted(key=lambda l: l.guarantee_patient_name_rel)" t-as="inv_details">
+                                                    <tr>
+                                                        <td class="text-left">
+                                                            <t t-if="is_for_start_num ==1">
+                                                                <span t-field="inv.draft_number_sequence"  style="font-size: 11px;"/>                                                                
+                                                            </t>
+
+                                                        </td>
+                                                         <td class="text-center">
+                                                            <t t-if="is_for_start_num ==1">
+                                                                <span t-field="inv.number"  style="font-size: 11px;"/>
+                                                                 
+                                                            </t>
+
+                                                        </td>
+
+                                                        <td class="text-center">
+                                                            <t t-if="is_for_start_num ==1">
+                                                               <span t-field="inv.partner_id.name"  style="font-size: 11px;"/>
+                                                                 
+                                                            </t>                                                            
+                                                            
+                                                        </td>  
+                                                        <t t-if="is_for_start_num ==1">
+                                                            <t t-set= "is_for_start_num" t-value="0" /> 
+                                                        </t>
+                                                        <td class="text-left">
+                                                            <span t-field="inv_details.guarantee_patient_name_rel"  style="font-size: 11px;"/>
+                                                        </td>  
+
+                                                        <td class="text-center">
+                                                            <span t-field="inv_details.account_id.code"  style="font-size: 11px;"/>
+                                                        </td>  
+
+                                                        <td class="text-right">
+
+                                                            <span t-field="inv_details.price_subtotal" style="font-size: 11px;"/>
+                                                        </td> 
+
+                                                        <td/>
+                                                        <td/>                                          
+                                                    </tr>                                            
+                                                </t>
+
+                                                <tr>
+                                                    <td colspan="3" class="text-right">Total Per Voucher </td>
+                                                    <td/>
+                                                    <td/>
+                                                    <td/>
+                                                    <td class="text-right"> <span t-field="inv.amount_total"/></td>
+                                                    <td/>
+                                                    <td/>                                               
+                                                </tr>
+                                                <t t-set= "is_for_start_num" t-value="1" />
+                                                <t t-set= "start_num" t-value="start_num+1" />
+                                               
+                                            </t>
+
+
+
+                                            <t t-set="apt_numbers_summary" t-value="loop[doc_loop][0].get_report_summary_refno(loop[doc_loop])"/>
+                                            <tr>
+
+                                                <t t-set="untax_amount" t-value="float(apt_numbers_summary[1])"/>
+                                                <t t-set="tax_amount_1" t-value="float(apt_numbers_summary[2])"/>
+                                                <t t-set="tax_amount_2" t-value="float(apt_numbers_summary[3])"/>
+                                                <t t-set="tax_amount" t-value="float(apt_numbers_summary[4])"/>
+                                                <t t-set="net_amount" t-value="float(apt_numbers_summary[5])"/>
+
+                                                <td colspan="3" class="text-right">Total Per Transmittal Number </td>
+                                                <td class="text-center">
+                                                    <span t-esc="apt_numbers_summary[0]"/>
+                                                </td>
+                                                <td/>
+                                                <td/>
+                                                <!--
+                                                <td class="text-right"> 
+                                                    <span t-esc="untax_amount" t-esc-options='{"widget": "monetary", "display_currency": "apt_numbers_summary[6]"}'/>
+                                                </td>
+                                                <td class="text-right"> 
+                                                    <span t-esc="tax_amount_1" t-esc-options='{"widget": "monetary", "display_currency": "apt_numbers_summary[6]"}'/>
+                                                </td>
+                                                <td class="text-right"> 
+                                                    <span t-esc="tax_amount_2" t-esc-options='{"widget": "monetary", "display_currency": "apt_numbers_summary[6]"}'/>
+                                                </td>
+                                                <td class="text-right"> 
+                                                    <span t-esc="tax_amount" t-esc-options='{"widget": "monetary", "display_currency": "apt_numbers_summary[6]"}'/>
+                                                </td> 
+                                                -->                                                              
+                                                <td class="text-right"> 
+                                                    <span t-esc="net_amount" t-esc-options='{"widget": "monetary", "display_currency": "apt_numbers_summary[6]"}'/>
+                                                </td>  
+                                                <td/>
+                                                <td/>                                             
+                                            </tr>                                            
+<!--                                            
+                                            <t t-set="cpt_numbers_summary" t-value="loop[doc_loop][0].get_report_summary_refno(loop[doc_loop])"/>
+                                            <tr>
+
+                                                <t t-set="untax_amount" t-value="float(cpt_numbers_summary[1])"/>
+                                                <t t-set="tax_amount_1" t-value="float(cpt_numbers_summary[2])"/>
+                                                <t t-set="tax_amount_2" t-value="float(cpt_numbers_summary[3])"/>
+                                                <t t-set="tax_amount" t-value="float(cpt_numbers_summary[4])"/>
+                                                <t t-set="net_amount" t-value="float(cpt_numbers_summary[5])"/>
+
+                                                <td colspan="5" class="text-center">TOTAL PER TRANSMITTAL NO </td>
+                                                <td class="text-center">
+                                                    <span t-esc="cpt_numbers_summary[0]"/>
+                                                </td>
+                                                <td/>
+                                                <td class="text-right"> 
+                                                    <span t-esc="untax_amount" t-esc-options='{"widget": "monetary", "display_currency": "cpt_numbers_summary[6]"}'/>
+                                                </td>
+                                                <td class="text-right"> 
+                                                    <span t-esc="tax_amount_1" t-esc-options='{"widget": "monetary", "display_currency": "cpt_numbers_summary[6]"}'/>
+                                                </td>
+                                                <td class="text-right"> 
+                                                    <span t-esc="tax_amount_2" t-esc-options='{"widget": "monetary", "display_currency": "cpt_numbers_summary[6]"}'/>
+                                                </td>
+                                                <td class="text-right"> 
+                                                    <span t-esc="tax_amount" t-esc-options='{"widget": "monetary", "display_currency": "cpt_numbers_summary[6]"}'/>
+                                                </td>                                                               
+                                                <td class="text-right"> 
+                                                    <span t-esc="net_amount" t-esc-options='{"widget": "monetary", "display_currency": "cpt_numbers_summary[6]"}'/>
+                                                </td>  
+                                                <td/>                                           
+                                            </tr>  
+-->
+                                        </tbody>
+                                    </table>
+<!--
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    
+                                    <div class="row">
+                                        <div class="col-xs-3 text-center">
+                                            Prepared By:
+                                        </div>
+                                        <div class="col-xs-3 text-center">
+                                            Certified Correct by
+                                        </div>
+                                        <div class="col-xs-3 text-center">
+                                            Certified Supporting Documents Complete and Proper             
+                                        </div>   
+
+                                        <div class="col-xs-3 text-center">
+                                            Approved for Payment            
+                                        </div>                                                                                             
+                                    </div>      
+
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <div class="row">
+                                        <div class="col-xs-3" >
+                                            <div style="border-top: none;border-bottom: 1px solid;border-left: none;border-right: none;" />
+                                        </div>
+                                        <div class="col-xs-3">
+                                            <div style="border-top: none;border-bottom: 1px solid;border-left: none;border-right: none;" />
+                                        </div>
+                                        <div class="col-xs-3">
+                                            <div style="border-top: none;border-bottom: 1px solid;border-left: none;border-right: none;" />
+                                        </div>  
+                                        <div class="col-xs-3">
+                                            <div style="border-top: none;border-bottom: 1px solid;border-left: none;border-right: none;" />
+                                        </div>                                                      
+                                    </div>      
+
+
+                                    <br/>
+                                    <br/>
+                                    <div class="text-left">
+                                        Date Printed : <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%m/%d/%Y')"/>
+                                    </div> 
+-->                                                                       
+                            </div>
+
+
+
+
+                    </t>
+
+                </t>                
+            </t>            
+
+        </template>
+
+
+
         <report id="action_print_transmittal_report"
-            string="Transmittal Report"
+            string="Summary of IMAP Availment"
             model="account.invoice"
             name="account_prize_claim_pcso.print_transmittal_report"
             file="account_prize_claim_pcso.print_transmittal_report"
@@ -53,6 +576,21 @@
             <field name="paperformat_id" ref="account_prize_claim_pcso.paperformat_transmittal"/>
             <field name="attachment_use">False</field>
         </record>
+
+
+        <report id="action_print_transmittal_apt_report"
+            string="Summary of Processed Disbursement Voucher"
+            model="account.invoice"
+            name="account_prize_claim_pcso.print_transmittal_acct_report"
+            file="account_prize_claim_pcso.print_transmittal_acct_report"
+            report_type="qweb-pdf"
+            attachment_use="False"
+            attachment="'transmittal_'+(object.partner_id.name or '')+'_'+(object.name or '')+'.pdf'" />
+
+        <record id="action_print_transmittal_apt_report" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="account_prize_claim_pcso.paperformat_transmittal"/>
+            <field name="attachment_use">False</field>
+        </record>        
 
         <!-- OVERRIDE. FOR NOT ALLOWING ORDINARY USER TO VIEW THE DUPLICATE, INVOICES 
         <record id= "account.account_invoice_action_report_duplicate" model = 'ir.actions.report.xml'>

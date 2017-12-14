@@ -121,6 +121,43 @@ class account_invoice_line_prize_claim(models.Model):
 	product_id = fields.Many2one('product.product', string='Product',
 	    ondelete='restrict', index=True, default=_default_product_id)
 
+	
+	@api.multi
+	def get_tax_one_percent(self):
+		self.ensure_one()
+		for tax in self.invoice_line_tax_ids:
+			if tax.amount == 1.0:
+				if tax.amount_type == 'base_price':
+					if tax.is_custom_price_included == True:
+						base_amount = round(self.price_unit / 1.12,5)
+						return (base_amount * (tax.amount/100) )
+					else:
+						base_amount = self.price_unit
+						return (base_amount * (tax.amount/100))
+		return 0.00
+
+	@api.multi
+	def get_tax_three_or_five_percent(self):
+		self.ensure_one()
+		for tax in self.invoice_line_tax_ids:
+			if tax.amount in [3.0, 5.0] :
+				if tax.amount_type == 'base_price':
+					if tax.is_custom_price_included == True:
+						base_amount = round(self.price_unit / 1.12,5) 
+						return (base_amount * (tax.amount/100))
+					else:
+						base_amount = self.price_unit
+						return (base_amount * (tax.amount/100))
+		return 0.00
+
+	@api.multi
+	def get_net_per_line(self):
+		self.ensure_one()
+		one_tax_percent = self.get_tax_one_percent()
+		other_tax_percent = self.get_tax_three_or_five_percent()
+		return self.price_subtotal - (one_tax_percent + other_tax_percent)
+
+
 	@api.onchange('guarantee_approve_amt_rel')
 	def _approved_amount_onchange(self):
 		self.price_unit = self.guarantee_approve_amt_rel or 0

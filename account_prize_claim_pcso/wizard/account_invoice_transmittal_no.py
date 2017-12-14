@@ -27,7 +27,9 @@ class voucher_cancel(models.TransientModel):
 		#Get the Sequence ID
 		seq_str = self.env['ir.sequence'].next_by_code('trans.number.charity') 
 		for invoice in invoices:
-			invoice.write({'transmittal_charity_number': seq_str})
+			invoice.write({'transmittal_charity_number': seq_str,
+						   'transmittal_charity_create_date': fields.Date.today()
+						 })
 
 
 		return {'type': 'ir.actions.act_window_close'}
@@ -45,7 +47,7 @@ class voucher_cancel(models.TransientModel):
 			if invoice.transmittal_charity_account_number:
 				raise UserError(_("Selected IMAP Claim cannot be confirmed as they have already an APT No."))
 				return {'type': 'ir.actions.act_window_close'}
-			if invoice.state not in ['approved']:
+			if invoice.state not in ['approved','open', 'for_approval']:
 				raise UserError(_("Selected IMAP Claim cannot be confirmed as they are not yet Approved."))
 				return {'type': 'ir.actions.act_window_close'}
 
@@ -54,8 +56,8 @@ class voucher_cancel(models.TransientModel):
 		#Get the Sequence ID
 		seq_str = self.env['ir.sequence'].next_by_code('trans.number.acct')
 		for invoice in invoices:
-			invoice.write({'transmittal_charity_account_number': seq_str})
-
+			invoice.write({'transmittal_charity_account_number': seq_str,
+						   'transmittal_charity_acct_create_date': fields.Date.today()})
 
 
 		return {'type': 'ir.actions.act_window_close'}
