@@ -121,6 +121,79 @@ class account_invoice_line_prize_claim(models.Model):
 	product_id = fields.Many2one('product.product', string='Product',
 	    ondelete='restrict', index=True, default=_default_product_id)
 
+	#For Report Purposes
+	request_number = fields.Char(related='invoice_id.draft_number_sequence', string='Request Number')
+	request_date = fields.Datetime(related='invoice_id.create_date', string='Request Date')
+	soa_request_date = fields.Date(related='invoice_id.date_received', string='SOA Date')
+	transmittal_number_charity = fields.Char(related='invoice_id.transmittal_charity_number', string='Transmittal No.')
+	voucher_number = fields.Char(related='invoice_id.number', string='Voucher Number')
+	voucher_date = fields.Date(related='invoice_id.date_received', string='Voucher Date')
+	invoice_state = fields.Selection(related='invoice_id.state', string='Status')
+	depart_approve_date= fields.Date(related='invoice_id.certified_correct_date', string='DM Approved Date')
+	gm_agm_approve_date= fields.Date(related='invoice_id.approve_date', string='GM/AGM Approved Date')
+	payment_ids = fields.Many2many(related='invoice_id.payment_ids', string='Payments')
+
+	cheque_number = fields.Integer(related='payment_ids.check_number', string='Cheque Number')
+	cheque_date = fields.Date(related='payment_ids.date_available', string='Cheque Date')
+	cheque_or_number = fields.Char(related='payment_ids.or_number', string='OR Number')
+	cheque_or_date = fields.Date(related='payment_ids.or_date', string='OR Date')
+	#TAX
+	tax_one_percent = fields.Monetary(string='Tax 1 Percent', currency_field='company_currency_id',store=True, readonly=True, compute='_compute_tax')
+	tax_two_percent = fields.Monetary(string='Tax 2 Percent', currency_field='company_currency_id',store=True, readonly=True, compute='_compute_tax')
+	tax_three_percent = fields.Monetary(string='Tax 3 Percent', currency_field='company_currency_id',store=True, readonly=True, compute='_compute_tax')
+	tax_five_percent = fields.Monetary(string='Tax 5 Percent', currency_field='company_currency_id',store=True, readonly=True, compute='_compute_tax')
+	net_amount = fields.Monetary(string='Net Amount', currency_field='company_currency_id',store=True, readonly=True, compute='_compute_tax')
+
+	gl_year = fields.Integer(string='GL Year', compute='_compute_year_gl', store=True)
+
+	#move_id
+	@api.one
+	@api.depends('voucher_date')
+	def _compute_year_gl(self):
+		if self.voucher_date:
+			self.gl_date = fields.Date.from_string(self.voucher_date).year
+
+	@api.one
+	@api.depends('price_unit', 'discount', 'invoice_line_tax_ids', 'quantity',
+        'product_id', 'invoice_id.partner_id', 'invoice_id.currency_id', 'invoice_id.company_id',
+        'invoice_id.date_invoice')
+	def _compute_tax(self):
+		for tax in self.invoice_line_tax_ids:
+			if tax.amount == 1.0:
+				if tax.amount_type == 'base_price':
+					if tax.is_custom_price_included == True:
+						base_amount = round(self.price_unit / 1.12,5)
+					else:
+						base_amount = self.price_unit
+					self.tax_one_percent = (base_amount * (tax.amount/100))
+			elif tax.amount == 2.0:
+				if tax.amount_type == 'base_price':
+					if tax.is_custom_price_included == True:
+						base_amount = round(self.price_unit / 1.12,5)
+					else:
+						base_amount = self.price_unit
+					self.tax_two_percent = (base_amount * (tax.amount/100))
+			elif tax.amount == 3.0:
+				if tax.amount_type == 'base_price':
+					if tax.is_custom_price_included == True:
+						base_amount = round(self.price_unit / 1.12,5)
+					else:
+						base_amount = self.price_unit
+					self.tax_three_percent = (base_amount * (tax.amount/100))
+			elif tax.amount == 5.0:
+				if tax.amount_type == 'base_price':
+					if tax.is_custom_price_included == True:
+						base_amount = round(self.price_unit / 1.12,5)
+					else:
+						base_amount = self.price_unit
+					self.tax_five_percent = (base_amount * (tax.amount/100))
+			self.net_amount = self.price_unit - (self.tax_one_percent + self.tax_five_percent)
+
+
+
+
+
+
 	
 	@api.multi
 	def get_tax_one_percent(self):

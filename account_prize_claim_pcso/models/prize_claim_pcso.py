@@ -90,6 +90,8 @@ class account_invoice_prize_claim(models.Model):
 
 	prepared_by_uid = fields.Many2one('res.users', 'Prepared By', copy=False)
 	certified_correct_uid = fields.Many2one('res.users', 'Certified Correct By',copy=False)
+	certified_correct_date = fields.Date('Date of Approved Box A', copy=False)
+
 	certified_correct_2_uid = fields.Many2one('res.users', 'Endorsed By',copy=False)
 	under_review_uid = fields.Many2one('res.users', 'Endorsed By',copy=False)
 	for_approval_uid = fields.Many2one('res.users', 'Approval By',copy=False)
@@ -97,6 +99,7 @@ class account_invoice_prize_claim(models.Model):
 	create_voucher_date =fields.Date('Creation of Voucher Number Date', copy=False)
 
 	approve_uid = fields.Many2one('res.users', 'Approved By',copy=False)
+	approve_date = fields.Date('Date of Approved Box C', copy=False)
 	submitted_uid = fields.Many2one('res.users', 'Submitted By',copy=False)
 	denied_uid = fields.Many2one('res.users', 'Denied By',copy=False)
 	cancelled_uid = fields.Many2one('res.users', 'Cancelled By',copy=False)
@@ -422,7 +425,7 @@ class account_invoice_prize_claim(models.Model):
 	    stats_his = ''
 	    if self.status_history:
 	    	stats_his = self.status_history
-	    return self.write({'state': 'under_review', 'certified_correct_uid': self._uid, 
+	    return self.write({'state': 'under_review', 'certified_correct_uid': self._uid, 'certified_correct_date': self.write_date,
 						   'status_history': 'ENDORSED FOR 1ST REVIEW : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + stats_his or ''})
 
 
@@ -491,7 +494,7 @@ class account_invoice_prize_claim(models.Model):
 	    stats_his = ''
 	    if self.status_history:
 	    	stats_his = self.status_history
-	    res = self.write({'state': 'approved', 'approve_uid': self._uid, 
+	    res = self.write({'state': 'approved', 'approve_uid': self._uid, 'approve_date': self.write_date,
 						   'status_history': 'APPROVED : ' + '['+ self.write_date +'] ' + self.env.user.name + '\n' + stats_his or ''})
 	    #return res
 

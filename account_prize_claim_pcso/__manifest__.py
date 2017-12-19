@@ -32,6 +32,7 @@
         'wizard/account_payment_check_cancel.xml',
         'reports/disbursement_voucher.xml',
         'reports/transmittal_reports.xml',
+        'reports/account_invoice_line_report.xml',
         'views/hr_employee.xml',
         'views/prize_charity_configuration.xml',
         'views/request_for_payment.xml',
