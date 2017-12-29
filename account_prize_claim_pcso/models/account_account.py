@@ -15,3 +15,12 @@ class account_account(models.Model):
 	_inherit = ["account.account"]
 
 	object_code_id = fields.Many2one('account.account', string='Cost Object Code')
+
+class account_tax(models.Model):
+	_inherit=["account.tax"]
+
+	tax_type = fields.Selection([
+            ('goods','Goods'),
+            ('service','Service'),
+            ], string ="Tax Type",
+            default='service')	

@@ -13,7 +13,8 @@
                      <field name="guarantee_id"/>  
                      <field name="guarantee_patient_name_rel"/>  
                      <field name="partner_id" string="Payee"/>
-                     <field name="price_unit"/>
+                     <field name="guarantee_approve_amt_rel" string="GL Amount"/>
+                     <field name="price_unit" string="Billed Amount"/>
                      <field name="tax_one_percent"/>
                      <field name="tax_five_percent"/>
 

@@ -27,45 +27,45 @@
             <field name="dpi">90</field>
         </record>
 
-<template id="external_layout_footer_transmitter">
-    <div class="footer">
+        <template id="external_layout_footer_transmitter">
+            <div class="footer">
 
-        <!--
-        <div class="text-left">
-            Date Printed : <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%m/%d/%Y')"/>
-        </div>
-    -->
+                <!--
+                <div class="text-left">
+                    Date Printed : <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%m/%d/%Y')"/>
+                </div>
+            -->
 
-        <div class="text-right" style="border-top: 1px solid black;">
-            <ul class="list-inline">
-                <li>Page:</li>
-                <li><span class="page"/></li>
-                <li>/</li>
-                <li><span class="topage"/></li>
-            </ul>
-        </div>
-    </div>      
-</template>
-
-
-<template id="external_layout_header_transmitter">
-    <div class="header">
-        <div class="text-right">
-            <ul class="list-inline">
-                <li>Page:</li>
-                <li><span class="page"/></li>
-                <li>/</li>
-                <li><span class="topage"/></li>
-            </ul>
-        </div>
-    </div>  
-</template>
+                <div class="text-right" style="border-top: 1px solid black;">
+                    <ul class="list-inline">
+                        <li>Page:</li>
+                        <li><span class="page"/></li>
+                        <li>/</li>
+                        <li><span class="topage"/></li>
+                    </ul>
+                </div>
+            </div>      
+        </template>
 
 
-<template id="external_layout_transmitter">
-    <t t-raw="0" />
-    <t t-call="account_prize_claim_pcso.external_layout_footer_transmitter" />
-</template>
+        <template id="external_layout_header_transmitter">
+            <div class="header">
+                <div class="text-right">
+                    <ul class="list-inline">
+                        <li>Page:</li>
+                        <li><span class="page"/></li>
+                        <li>/</li>
+                        <li><span class="topage"/></li>
+                    </ul>
+                </div>
+            </div>  
+        </template>
+
+
+        <template id="external_layout_transmitter">
+            <t t-raw="0" />
+            <t t-call="account_prize_claim_pcso.external_layout_footer_transmitter" />
+        </template>
 
 
 
@@ -97,14 +97,25 @@
                                         <tbody>
                                             <thead>
                                                 <tr>
+                                                    <td class="text-center" colspan="8" >
+                                                        CHARITY ASSISTANCE DEPARTMENT
+                                                    </td>
+                                                    <td class="text-center" colspan="6" >
+                                                        ACCOUNTING AND BUDGET DEPARTMENT
+                                                    </td>                                                    
+                                                    <td class="text-center" colspan="3" >
+                                                        TREASURY DEPARTMENT
+                                                    </td>                                                        
+                                                </tr>
+                                                <tr>
                                                     <td class="text-center">
                                                         No.
                                                     </td>
                                                     <td class="text-center">
-                                                        DATE SOA CREATED.
+                                                        SOA RECEIVED.
                                                     </td>
                                                     <td class="text-center">
-                                                        DATE RECEIVED.
+                                                        DATE PREPARED.
                                                     </td>
                                                     <td class="text-center">
                                                         GL NO.
@@ -134,7 +145,20 @@
                                                         NET AMOUNT.
                                                     </td>
                                                     <td class="text-center">
-                                                    </td>                                                
+                                                        DATE DELIVERED TO ABD.
+                                                    </td>                     
+                                                    <td class="text-center">
+                                                        DATE DELIVERED TO BE PROVIDED BY ABD.
+                                                    </td>                     
+                                                    <td class="text-center">
+                                                        DATE RECEIVED FROM ABD.
+                                                    </td>
+                                                    <td class="text-center">
+                                                        DATE CHECKED AVAILABLE
+                                                    </td>
+                                                    <td class="text-center">
+                                                        NO OF DAYS.
+                                                    </td>                                                                                                        
                                                 </tr>                                        
                                             </thead>
 

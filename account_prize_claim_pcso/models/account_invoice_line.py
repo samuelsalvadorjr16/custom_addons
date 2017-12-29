@@ -188,6 +188,8 @@ class account_invoice_line_prize_claim(models.Model):
 						base_amount = self.price_unit
 					self.tax_five_percent = (base_amount * (tax.amount/100))
 			self.net_amount = self.price_unit - (self.tax_one_percent + self.tax_five_percent)
+		if self.net_amount <=0:
+			self.net_amount = self.price_unit
 
 
 
@@ -246,6 +248,13 @@ class account_invoice_line_prize_claim(models.Model):
 		if self.assistance_id:
 			assistance_obj=self.env['pcso.assistance'].search([('id','=', self.assistance_id.id)])
 			self.guarantee_assistance_id_rel = assistance_obj.assistance_id
+			#Get Default Taxes
+			#fiscal_postion_ids = self.env['account.fiscal.position'].search([('id','=', self.partner_id.property_account_position_id.id)])
+			account_tax = self.env['account.tax'].browse()
+			for tax in self.partner_id.tax_ids:
+				if tax.tax_type == self.assistance_id.tax_type:
+					account_tax |=  tax
+			self.invoice_line_tax_ids = account_tax
 
 
 	@api.onchange('guarantee_id')

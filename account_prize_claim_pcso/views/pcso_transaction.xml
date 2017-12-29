@@ -12,5 +12,42 @@
                 </xpath>
             </field>
        </record>
+
+       <record model="ir.ui.view" id="view_pcso_assistance_form_extend">
+            <field name="name">pcso.assistance.form.extend</field>
+            <field name="model">pcso.assistance</field>
+            <field name="inherit_id" ref="pcso.view_pcso_assistance_form"/>
+            <field name="arch" type="xml">            
+                <field name="assistance_id" position="after">
+                    <field name="tax_type"/>
+                </field>
+            </field>
+       </record>
+
+
+
+        <record model="ir.actions.act_window" id="pcso_transaction_imap_action">
+            <field name="name">Transactions Uploader</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pcso.transaction</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('is_manual_uploaded','=',True)]</field>
+            <field name="context">{'default_is_manual_uploaded': True}</field>   
+            <field name="search_view_id" ref="pcso.pcso_transaction_view_search" />
+            <field name="help" type="html">
+              <p>
+                Create/Upload your first record.
+              </p>
+            </field>
+        </record>
+
+        <!-- MENU -->
+        <menuitem id="menu_pcso_transaction_imap_action" name="Transaction Uploader" 
+                  parent="menu_pcso_charity_document"
+                  action="pcso_transaction_imap_action"
+                  sequence="4"
+                  groups="ccf_group_allow_create_csis_transaction"
+                  />            
     </data>
 </odoo>

@@ -43,6 +43,7 @@
         'views/hr_department.xml',
         'views/account_account_view.xml',
         'views/pcso_transaction.xml',
+        'views/res_partner_view.xml',
         'views/menu_access_rights_override.xml',
     ],
 }

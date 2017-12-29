@@ -389,5 +389,10 @@
             <field name="comment">User that Generate a Transmittal Number For IMAP.</field>
         </record>  
 
+        <record id="ccf_group_allow_create_csis_transaction" model="res.groups">
+            <field name="category_id" ref="base.module_category_extra"/>
+            <field name="name">Allow to Upload Records in CSIS Transaction</field>
+            <field name="comment">User to Upload Records in CSIS Transaction for IMAP.</field>
+        </record>  
 </odoo>
 

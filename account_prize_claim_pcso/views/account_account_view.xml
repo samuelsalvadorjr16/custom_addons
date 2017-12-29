@@ -19,6 +19,8 @@
             <field name="arch" type="xml">
                 <field name="price_include" position="after">
                     <field name="is_custom_price_included" />
+                    <field name="tax_type" required="1"/>
+
                 </field>
             </field>
         </record>        
