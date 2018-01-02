@@ -97,6 +97,12 @@
                                         <tbody>
                                             <thead>
                                                 <tr>
+                                                    <td class="text-center" colspan="9"  style="border-left: none;border-top: none;border-bottom: none;"/>
+                                                    <td class="text-center" colspan="2" style="border-bottom: none;">
+                                                        RSL-1394
+                                                    </td>                                                 
+                                                </tr>                                                
+                                                <tr>
                                                     <td class="text-center" colspan="8" >
                                                         CHARITY ASSISTANCE DEPARTMENT
                                                     </td>
@@ -108,29 +114,85 @@
                                                     </td>                                                        
                                                 </tr>
                                                 <tr>
-                                                    <td class="text-center">
-                                                        No.
+                                                    <td class="text-center" rowspan="2">
+                                                        <br/>
+                                                        <br/>
+                                                        <span>No.</span>
+                                                    </td>
+                                                    <td class="text-center" rowspan="2">
+                                                        <br/>
+                                                        <br/>
+                                                        <span>DATE SOA RECEIVED.</span>
+                                                        
+                                                    </td>
+                                                    <td class="text-center" rowspan="2">
+                                                        <br/>
+                                                        <br/>
+                                                        <span>DATE PREPARED</span>
+                                                    </td>
+                                                    <td class="text-center" rowspan="2">                                                        
+                                                        <br/>
+                                                        <br/>
+                                                        <span>GL NO.</span>                                                        
+                                                    </td>
+                                                    <td class="text-center" rowspan="2">
+                                                        <br/>
+                                                        <br/>
+                                                        <span>REQUEST NO.</span>
+                                                    </td>
+                                                    <td class="text-center" rowspan="2">
+                                                        <br/>
+                                                        <br/>
+                                                        <span>NAME OF PATIENT.</span>                                                        
+                                                    </td>
+                                                    <td class="text-center" rowspan="2">
+                                                        <br/>
+                                                        <br/>
+                                                        <span>PAYEE.</span>
+                                                        
                                                     </td>
                                                     <td class="text-center">
-                                                        SOA RECEIVED.
+                                                        GROSS
+                                                    </td>      
+                                                    <td class="text-center" colspan="2">
+                                                        EWT/VAT
                                                     </td>
                                                     <td class="text-center">
-                                                        DATE PREPARED.
+                                                        TOTAL TAX
+                                                    </td>                                            
+                                                    <td class="text-center" rowspan="2">
+                                                        <br/>
+                                                        <br/>
+                                                        <span>NET AMOUNT.</span>                                                        
                                                     </td>
                                                     <td class="text-center">
-                                                        GL NO.
+                                                        DATE DELIVERED TO ABD.
+                                                    </td>                     
+                                                    <td class="text-center" rowspan="2">
+                                                        <span>DATE DELIVERED TO BE PROVIDED BY ABD.</span>                                                        
+                                                    </td>                     
+                                                    <td class="text-center" rowspan="2">
+                                                        DATE RECEIVED FROM ABD.
                                                     </td>
-                                                    <td class="text-center">
-                                                        REQUEST NO.
+                                                    <td class="text-center" rowspan="2">
+                                                        DATE CHECKED AVAILABLE
                                                     </td>
+                                                    <td class="text-center" rowspan="2">
+                                                        NO OF DAYS.
+                                                    </td>                                                                                                        
+                                                </tr>      
+                                                <tr>
+                                                    <!--
+                                                    <td/>
+                                                    <td/>
+                                                    <td/>
+                                                    <td/>
+                                                    <td/>
+                                                    <td/>
+                                                    <td/>
+                                                    -->
                                                     <td class="text-center">
-                                                        NAME OF PATIENT.
-                                                    </td>
-                                                    <td class="text-center">
-                                                        PAYEE.
-                                                    </td>
-                                                    <td class="text-center">
-                                                        GROSS AMOUNT.
+                                                        AMOUNT.
                                                     </td>                                                                                                                        
                                                     <td class="text-center">
                                                         1%.
@@ -139,27 +201,32 @@
                                                         3% OR 5%.
                                                     </td>
                                                     <td class="text-center">
-                                                        TOTAL TAX WITHHELD
+                                                        WITHHELD
                                                     </td>                                            
+                                                    <!--
                                                     <td class="text-center">
-                                                        NET AMOUNT.
+                                                        
                                                     </td>
+
                                                     <td class="text-center">
-                                                        DATE DELIVERED TO ABD.
+                                                        
                                                     </td>                     
+                                                    -->
                                                     <td class="text-center">
-                                                        DATE DELIVERED TO BE PROVIDED BY ABD.
+                                                        VOUCHER NO.
                                                     </td>                     
+                                                    <!--
+                                                    <td class="text-center">                                                        
+                                                    </td>
+                                                    
                                                     <td class="text-center">
-                                                        DATE RECEIVED FROM ABD.
+                                                        
                                                     </td>
                                                     <td class="text-center">
-                                                        DATE CHECKED AVAILABLE
-                                                    </td>
-                                                    <td class="text-center">
-                                                        NO OF DAYS.
+                                                       
                                                     </td>                                                                                                        
-                                                </tr>                                        
+                                                    -->
+                                                </tr>                                                                                        
                                             </thead>
 
                                             <t t-foreach="cpt_numbers_details" t-as="inv">
@@ -208,7 +275,11 @@
                                                         <td class="text-right">
                                                             <span class="text-right" t-esc="inv_details.get_net_per_line()" t-esc-options='{"widget": "monetary", "display_currency": "inv.currency_id"}' style="font-size: 11px;"/>
                                                         </td>      
-                                                        <td/>                                              
+                                                        <td/>
+                                                        <td/>
+                                                        <td/>
+                                                        <td/>
+                                                        <td/>
                                                     </tr>                                            
                                                 </t>
 
@@ -227,7 +298,11 @@
                                                             <span t-esc="tot_tax_withheld" t-esc-options='{"widget": "monetary", "display_currency": "inv.currency_id"}'/>
                                                         </td>
                                                         <td class="text-right"> <span t-field="inv.amount_total"/></td>    
-                                                        <td/>                                               
+                                                        <td/>
+                                                        <td/>
+                                                        <td/>
+                                                        <td/>
+                                                        <td/>                                             
                                                     </tr>  
 
                                                 <t t-set= "is_for_start_num" t-value="1" />
@@ -263,6 +338,10 @@
                                                 <td class="text-right"> 
                                                     <span t-esc="net_amount" t-esc-options='{"widget": "monetary", "display_currency": "cpt_numbers_summary[6]"}'/>
                                                 </td>  
+                                                <td/>
+                                                <td/>
+                                                <td/>
+                                                <td/>
                                                 <td/>                                           
                                             </tr>  
 
@@ -271,21 +350,21 @@
 
                                     <br/>
                                     <br/>
-                                    <br/>
-                                    <br/>
-                                    <br/>
-                                    <br/>
-                                    <br/>
-                                    
+                                    <div class="row">
+                                        <div class="col-xs-3 text-left">
+                                            Documents Complete and Proper:
+                                        </div>                                                                                             
+                                    </div>    
+                                    <br/>                                    
                                     <div class="row">
                                         <div class="col-xs-3 text-center">
                                             Prepared By:
                                         </div>
                                         <div class="col-xs-3 text-center">
-                                            Certified Correct by
+                                            Verified by:
                                         </div>
                                         <div class="col-xs-3 text-center">
-                                            Certified Supporting Documents Complete and Proper             
+                                            <span> &amp;emsp; &amp;emsp; </span>                 
                                         </div>   
 
                                         <div class="col-xs-3 text-center">
@@ -295,21 +374,40 @@
 
                                     <br/>
                                     <div class="row">
-                                        <div class="col-xs-3 text-center" >
+                                        <div class="col-xs-3 text-center" >          
+                                            <span> &amp;emsp; &amp;emsp; </span>                                  
+                                            <div style="border-top: none;border-bottom: 1px solid;border-left: none;border-right: none;" />
                                             <span t-esc="cpt_numbers_summary[8]"/>
-                                            <div style="border-top: none;border-bottom: 1px solid;border-left: none;border-right: none;" />
-                                        </div>
-                                        <div class="col-xs-3">
-                                            <span> &amp;emsp; &amp;emsp; </span>                                            
-                                            <div style="border-top: none;border-bottom: 1px solid;border-left: none;border-right: none;" />
                                         </div>
                                         <div class="col-xs-3">
                                             <span> &amp;emsp; &amp;emsp; </span>
                                             <div style="border-top: none;border-bottom: 1px solid;border-left: none;border-right: none;" />
+                                            <div class="text-center">
+                                                SOLEDAD O. RASING
+                                            </div>
+                                            <div class="text-center" style="font-size:90%">
+                                                Financial Analyst III
+                                            </div>               
+                                        </div>
+                                        <div class="col-xs-3">
+                                            <span> &amp;emsp; &amp;emsp; </span>
+                                            <div style="border-top: none;border-bottom: 1px solid;border-left: none;border-right: none;" />
+                                            <div class="text-center">
+                                                RUBIN Z. MAGNO
+                                            </div>
+                                            <div class="text-center" style="font-size:90%">
+                                                Department Manager Charity Assistance Department
+                                            </div>                                               
                                         </div>  
                                         <div class="col-xs-3">
                                             <span> &amp;emsp; &amp;emsp; </span>
                                             <div style="border-top: none;border-bottom: 1px solid;border-left: none;border-right: none;" />
+                                            <div class="text-center">
+                                                Alexander F. Balutan
+                                            </div>
+                                            <div class="text-center" style="font-size:90%">
+                                                General Manager
+                                            </div>                                             
                                         </div>                                                      
                                     </div>      
 
