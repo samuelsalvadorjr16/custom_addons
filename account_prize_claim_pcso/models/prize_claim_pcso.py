@@ -225,6 +225,22 @@ class account_invoice_prize_claim(models.Model):
 		res = super(account_invoice_prize_claim, self)._onchange_partner_id()
 		if self.transaction_type == 'charity':
 			self.account_id = self.env.ref('__export__.account_account_1946')
+
+			#Tax Details
+			for inv in self.invoice_line_ids:
+				if inv.assistance_id:
+					assistance_obj=self.env['pcso.assistance'].search([('id','=', inv.assistance_id.id)])
+					account_tax = self.env['account.tax'].browse()
+
+					for tax in inv.partner_id.tax_ids:
+						if tax.tax_type == inv.assistance_id.tax_type:
+							account_tax |=  tax
+				if account_tax:
+					inv.invoice_line_tax_ids = account_tax
+				else:
+					inv.invoice_line_tax_ids = False
+
+
 		return res
 
 
