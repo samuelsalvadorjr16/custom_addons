@@ -84,6 +84,7 @@
                 <search string="Transactions">
                     <field name="name" />
                     <field name="patient_name"/>
+                    <filter string="Today" name="trans_today" domain="[('create_date','>=',time.strftime('%%Y-%%m-%%d 00:00:00'))]"/>
                 </search>
             </field>
         </record>

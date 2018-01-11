@@ -39,6 +39,8 @@
                      <field name="cheque_date" widget="date"/>
                      <field name="cheque_or_number"/>
                      <field name="cheque_or_date" widget="date"/>
+                     <field name="cheque_date_available" widget="date"/>
+                     <field name="cheque_date_released" widget="date"/>                                          
                     <field name="invoice_state"/>
                 </tree>
             </field>

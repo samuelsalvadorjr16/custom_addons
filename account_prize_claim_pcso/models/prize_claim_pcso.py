@@ -650,9 +650,30 @@ class account_invoice_prize_claim(models.Model):
 
 	@api.multi
 	def get_product_acct(self):
-		self.ensure_one
+		self.ensure_one		
+		previous_year_amount = 0.00
+		current_year_amount = 0.00
 		for inv in self.invoice_line_ids:
-			return [inv.account_id.name or False, inv.account_id.code or False, self.amount_untaxed or 0.00]
+			if inv.guarantee_id.date_approved:
+				year_date_approved = datetime.strptime(inv.guarantee_id.date_approved, '%Y-%m-%d %H:%M:%S').year
+				current_year_date_approved = datetime.strptime(fields.Date.today(), '%Y-%m-%d').year
+
+				if year_date_approved < current_year_date_approved:
+					previous_year_amount += inv.price_subtotal
+				else:
+					current_year_amount += inv.price_subtotal
+			else:
+				current_year_amount += inv.price_subtotal
+
+		list_gl_account = {}
+		if previous_year_amount > 0:
+			list_gl_account['previous_year'] = [inv.account_id.prior_year_acctcode_id.name or False, 
+											inv.account_id.prior_year_acctcode_id.code or False, 
+											previous_year_amount]
+		list_gl_account['current_year'] = [inv.account_id.name or False, 
+						  					inv.account_id.code or False, 
+						  					current_year_amount or 0.00]		  				
+		return list_gl_account #[inv.account_id.name or False, inv.account_id.code or False, self.amount_untaxed or 0.00]
 
 
 	@api.multi

@@ -367,6 +367,7 @@
                                       <!--<t t-if="o.state not in [open,for_approval, approved]">-->
                                       <!--<t t-if="not o.filter_account_entry_view_status()"> -->
                                         <t t-if="o.transaction_type == 'charity'">
+                                          <!--
                                             <tr>
                                               <td></td>
                                               <td></td>
@@ -375,7 +376,18 @@
                                               <td><span><t t-esc="o.get_product_acct()[1]" /></span></td>
                                               <td><span t-field="o.amount_untaxed"/></td>
                                               <td></td>
-                                            </tr>                                           
+                                            </tr>    
+                                          -->
+                                            <t t-foreach="o.get_product_acct()" t-as="line">
+                                              <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td><span t-esc="o.get_product_acct()[line][0]"/></td>
+                                                <td><span t-esc="o.get_product_acct()[line][1]"/></td>
+                                                <td><span t-esc="o.get_product_acct()[line][2]" t-esc-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/></td>
+                                                <td></td>
+                                              </tr>  
+                                            </t>                                                                                                                       
                                         </t>
                                         <t t-if="o.transaction_type != 'charity'">                                          
                                           <t t-foreach="o.get_summarize_acct_entries()" t-as="line">

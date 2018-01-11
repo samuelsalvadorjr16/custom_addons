@@ -8,6 +8,7 @@
             <field name="arch" type="xml">
                 <field name="user_type_id" position="after">
                     <field name="object_code_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="prior_year_acctcode_id" options="{'no_create': True, 'no_open': True}" groups="account_prize_claim_pcso.pcso_rfp_sup_user_view"/>
                 </field>
             </field>
         </record>

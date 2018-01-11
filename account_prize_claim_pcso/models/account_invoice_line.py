@@ -137,6 +137,8 @@ class account_invoice_line_prize_claim(models.Model):
 	cheque_date = fields.Date(related='payment_ids.date_available', string='Cheque Date')
 	cheque_or_number = fields.Char(related='payment_ids.or_number', string='OR Number')
 	cheque_or_date = fields.Date(related='payment_ids.or_date', string='OR Date')
+	cheque_date_available = fields.Date(related='payment_ids.date_available', string='Date Available')
+	cheque_date_released = fields.Date(related='payment_ids.date_released', string='Date Released')
 	#TAX
 	tax_one_percent = fields.Monetary(string='Tax 1 Percent', currency_field='company_currency_id',store=True, readonly=True, compute='_compute_tax')
 	tax_two_percent = fields.Monetary(string='Tax 2 Percent', currency_field='company_currency_id',store=True, readonly=True, compute='_compute_tax')

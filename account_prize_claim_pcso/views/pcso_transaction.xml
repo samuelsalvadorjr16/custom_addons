@@ -32,8 +32,8 @@
             <field name="res_model">pcso.transaction</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="domain">[('is_manual_uploaded','=',True)]</field>
-            <field name="context">{'default_is_manual_uploaded': True}</field>   
+            <field name="domain">[('is_manual_uploaded','=',True),('create_uid','=',uid)]</field>
+            <field name="context">{'default_is_manual_uploaded': True, 'search_default_trans_today': True}</field>   
             <field name="search_view_id" ref="pcso.pcso_transaction_view_search" />
             <field name="help" type="html">
               <p>
