@@ -20,8 +20,8 @@
             <field name="orientation">Landscape</field>
             <field name="margin_top">7</field>
             <field name="margin_bottom">7</field>
-            <field name="margin_left">7</field>
-            <field name="margin_right">7</field>
+            <field name="margin_left">0</field>
+            <field name="margin_right">0</field>
             <field name="header_line" eval="False" />
             <field name="header_spacing">0</field>
             <field name="dpi">90</field>
@@ -165,10 +165,11 @@
                                                         <br/>
                                                         <span>NET AMOUNT.</span>                                                        
                                                     </td>
-                                                    <td class="text-center">
-                                                        DATE DELIVERED TO ABD.
+                                                    <td class="text-left">
+                                                        <div style='max-width: 500px;'>DATA TO BE PROVIDED BY ADB</div>
+                                                        
                                                     </td>                     
-                                                    <td class="text-center" rowspan="2">
+                                                    <td class="text-left" rowspan="2">
                                                         <span>DATE DELIVERED TO BE PROVIDED BY ABD.</span>                                                        
                                                     </td>                     
                                                     <td class="text-center" rowspan="2">
@@ -212,7 +213,7 @@
                                                         
                                                     </td>                     
                                                     -->
-                                                    <td class="text-center">
+                                                    <td class="text-left">
                                                         VOUCHER NO.
                                                     </td>                     
                                                     <!--
